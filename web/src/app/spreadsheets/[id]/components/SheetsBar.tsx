@@ -3,7 +3,7 @@ import { GoTriangleDown } from 'react-icons/go'
 
 export default function SheetsBar() {
     return (
-        <div className="bg-[#F9FBFD] h-[37px] absolute bottom-0 flex align-middle">
+        <div className="bg-[#F9FBFD] h-[37px] flex align-middle">
             <button className="ml-[46px] hover:bg-slate-200 hover:rounded-full w-[37px] flex align-middle justify-center">
                 <LuPlus className="mt-auto mb-auto w-[20px] h-[20px]" />
             </button>
