@@ -1,7 +1,17 @@
-export default function Home() {
+import CellsGrid from "./components/CellsGrid";
+import FormulaBar from "./components/FormulaBar";
+import MenuBar from "./components/MenuBar";
+import SheetsBar from "./components/SheetsBar";
+import ToolsBar from "./components/ToolsBar";
+
+export default function Spreadsheet() {
     return (
-        <div>
-            This page will contain the actual spreadsheet.
-        </div>
+        <>
+            <MenuBar />
+            <ToolsBar />
+            <FormulaBar />
+            <CellsGrid />
+            <SheetsBar />
+        </>
     )
 }
