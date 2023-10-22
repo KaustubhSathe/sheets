@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './counterSlice'
+import nameBoxReducer from './nameBoxSlice'
+import formulaBarReducer from './formulaBarSlice'
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
+    nameBox: nameBoxReducer,
+    formulaBar: formulaBarReducer,
   },
 })
