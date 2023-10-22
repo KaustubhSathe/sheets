@@ -1,10 +1,18 @@
 "use client";
 
+import { setValue } from '../../../lib/redux/nameBoxSlice'
+import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
+import { useDispatch } from 'react-redux'
+
 export default function CellsGrid() {
+    const dispatch = useDispatch()
+
     const rowsNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < 1000; i++) {
         rowsNumbers.push((
-            <div className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans">
+            <div
+                key={(i + 1).toString()}
+                className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans">
                 {i + 1}
             </div>
         ));
@@ -13,7 +21,9 @@ export default function CellsGrid() {
     const colNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < 50; i++) {
         colNumbers.push((
-            <div className="min-w-[66px] h-full inline-block text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1]">
+            <div
+                key={String.fromCharCode(65 + i)}
+                className="min-w-[66px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1]">
                 {String.fromCharCode(65 + i)}
             </div>
         ));
@@ -22,15 +32,23 @@ export default function CellsGrid() {
     const cells: Array<React.ReactNode> = [];
     for (let i = 0; i < 1000; i++) {
         const x: Array<React.ReactNode> = [];
-        for (let j = 0; j < 36; j++) {
-            let cell = <div className={`pl-[4px] outline-none break-words break-all h-full min-w-[66px] inline-block border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] rid=${i} cid=${j}`}
+        for (let j = 0; j < 50; j++) {
+            x.push(<div className="overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full min-w-[66px] border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
                 contentEditable={true}
                 spellCheck={false}
-            ></div>;
-            x.push(cell);
+                id={String.fromCharCode(65 + j) + (i + 1).toString()}
+                onClick={(e) => {
+                    dispatch(setValue(e.currentTarget.id))
+                }}
+                onInput={(e) => {
+                    console.log(e)
+                    dispatch(setValueFormulaBar(e.target.outerText))
+                }}
+                key={String.fromCharCode(65 + j) + (i + 1).toString()}
+            ></div>);
         }
         cells.push((
-            <div className="h-[30px] overflow-x-hidden overflow-y-hidden">
+            <div className="h-[30px] flex bg-inherit" key={(i + 1).toString()}>
                 {x}
             </div>
         ));
@@ -44,10 +62,10 @@ export default function CellsGrid() {
                     rowsNumbers
                 }
             </div>
-            <div className="absolute top-0 left-[46px] w-[100%] h-[30px] bg-inherit m-0">
-                <div className="h-[30px] flex top-0 left-[46px] bg-inherit">
+            <div className="absolute top-0 left-[46px] h-[calc(100vh-60px-40px-35px-37px)] w-full bg-inherit m-0">
+                <div className="h-[30px] flex bg-inherit">
                     {
-                        colNumbers.map(x => x)
+                        colNumbers
                     }
                 </div>
                 {
