@@ -33,7 +33,7 @@ export default function CellsGrid() {
     for (let i = 0; i < 1000; i++) {
         const x: Array<React.ReactNode> = [];
         for (let j = 0; j < 50; j++) {
-            x.push(<div className="overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full min-w-[66px] border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
+            x.push(<div className="focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full min-w-[66px] border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
                 contentEditable={true}
                 spellCheck={false}
                 id={String.fromCharCode(65 + j) + (i + 1).toString()}
@@ -41,8 +41,7 @@ export default function CellsGrid() {
                     dispatch(setValue(e.currentTarget.id))
                 }}
                 onInput={(e) => {
-                    console.log(e)
-                    dispatch(setValueFormulaBar(e.target.outerText))
+                    dispatch(setValueFormulaBar(e.currentTarget.outerText))
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             ></div>);
@@ -65,7 +64,7 @@ export default function CellsGrid() {
             <div className="absolute top-0 left-[46px] h-[calc(100vh-60px-40px-35px-37px)] w-full bg-inherit m-0">
                 <div className="h-[30px] flex bg-inherit">
                     {
-                        colNumbers.map(x => x)
+                        colNumbers
                     }
                 </div>
                 {
