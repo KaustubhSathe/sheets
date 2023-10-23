@@ -6,7 +6,7 @@ export default function CellsGrid() {
     const dispatch = useDispatch()
 
     const rowsNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 200; i++) {
         rowsNumbers.push((
             <div
                 key={(i + 1).toString()}
@@ -28,7 +28,7 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 200; i++) {
         const x: Array<React.ReactNode> = [];
         for (let j = 0; j < 50; j++) {
             x.push(
