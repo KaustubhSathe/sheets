@@ -8,7 +8,6 @@ import ToolsBar from "./components/ToolsBar";
 import { Provider } from 'react-redux'
 import store from '../../lib/redux/store'
 
-
 export default function Spreadsheet() {
     return (
         <Provider store={store}>
