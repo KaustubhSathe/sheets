@@ -30,7 +30,7 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 500; i++) {
         const x: Array<React.ReactNode> = [];
         for (let j = 0; j < 50; j++) {
             x.push(
