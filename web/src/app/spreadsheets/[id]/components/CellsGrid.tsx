@@ -1,12 +1,10 @@
-'use client'
-
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
 
 export default function CellsGrid() {
     const dispatch = useDispatch()
-    
+
     const rowsNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < 1000; i++) {
         rowsNumbers.push((
@@ -30,7 +28,7 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 300; i++) {
         const x: Array<React.ReactNode> = [];
         for (let j = 0; j < 50; j++) {
             x.push(
