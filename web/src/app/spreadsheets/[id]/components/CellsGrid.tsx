@@ -17,7 +17,7 @@ export default function CellsGrid() {
     }
 
     const colNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 26; i++) {
         colNumbers.push((
             <div
                 key={String.fromCharCode(65 + i)}
