@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
