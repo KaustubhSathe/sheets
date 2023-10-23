@@ -30,7 +30,7 @@ export default function CellsGrid() {
     const cells: Array<React.ReactNode> = [];
     for (let i = 0; i < 100; i++) {
         const x: Array<React.ReactNode> = [];
-        for (let j = 0; j < 50; j++) {
+        for (let j = 0; j < 26; j++) {
             x.push(
                 <div className="relative m-0 p-0 h-full min-w-[66px]">
                     <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
