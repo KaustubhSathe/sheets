@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import CellsGrid from "./components/CellsGrid";
 import FormulaBar from "./components/FormulaBar";
