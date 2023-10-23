@@ -8,7 +8,7 @@ import ToolsBar from "./components/ToolsBar";
 import { Provider } from 'react-redux'
 import store from '../../lib/redux/store'
 
-export const maxDuration = 100; // This function can run for a maximum of 5 seconds
+export const maxDuration = 100; // This function can run for a maximum of 100 seconds
 
 
 export default function Spreadsheet() {
