@@ -2,6 +2,36 @@ import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
 
+function getDownID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    return col + (parseInt(row)+1).toString();
+}
+
+function getUpID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    return col + (parseInt(row)-1).toString();
+}
+
+function getRightID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65 
+    return String.fromCharCode(colCode + 1) + row;
+}
+
+function getLeftID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65 
+    return String.fromCharCode(colCode - 1) + row;
+}
+
 export default function CellsGrid() {
     const dispatch = useDispatch()
 
@@ -43,6 +73,27 @@ export default function CellsGrid() {
                         onInput={(e) => {
                             dispatch(setValueFormulaBar(e.currentTarget.outerText))
                         }}
+                        onKeyDown={(e) => {
+                            if (e.key === "ArrowDown") {
+                                const currentElementId = e.currentTarget.id
+                                document.getElementById(getDownID(currentElementId))?.focus()
+                            }
+
+                            if (e.key === "ArrowUp") {
+                                const currentElementId = e.currentTarget.id
+                                document.getElementById(getUpID(currentElementId))?.focus()
+                            }
+
+                            if (e.key === "ArrowRight") {
+                                const currentElementId = e.currentTarget.id
+                                document.getElementById(getRightID(currentElementId))?.focus()
+                            }
+
+                            if (e.key === "ArrowLeft") {
+                                const currentElementId = e.currentTarget.id
+                                document.getElementById(getLeftID(currentElementId))?.focus()
+                            }
+                        }}
                         key={String.fromCharCode(65 + j) + (i + 1).toString()}
                     ></div>
                     <div className="absolute -z-10 bottom-[-3px] right-[-3px] w-[10px] h-[10px] rounded-full peer-focus:bg-[#1a73e8] peer-focus:hover:cursor-crosshair peer-focus:z-10">
@@ -58,23 +109,21 @@ export default function CellsGrid() {
     }
 
     return (
-        <div className="bg-[#FFFFFF] h-[calc(100vh-60px-40px-35px-37px)] relative overflow-scroll p-0 m-0">
-            <div className="fixed bg-[#747d8c] h-[30px] w-[46px] z-10"></div>
-            <div className="sticky mt-[30px] left-0 bg-inherit w-[46px] overflow-x-hidden overflow-y-hidden">
+        <div className="bg-[#FFFFFF] h-[calc(100vh-60px-40px-35px-37px)] relative overflow-scroll p-0 m-0 hover:cursor-cell">
+            <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
+            <div className="h-[30px] ml-[46px] flex bg-inherit">
+                {
+                    colNumbers
+                }
+            </div>
+            <div className="sticky left-0 bg-inherit w-[46px] overflow-x-hidden overflow-y-hidden inline-block float-left">
                 {
                     rowsNumbers
                 }
             </div>
-            <div className="hover:cursor-cell absolute top-0 left-[46px] h-[calc(100vh-60px-40px-35px-37px)] w-full bg-inherit m-0">
-                <div className="h-[30px] flex bg-inherit">
-                    {
-                        colNumbers
-                    }
-                </div>
-                {
-                    cells
-                }
-            </div>
+            {
+                cells
+            }
         </div>
     );
 }
