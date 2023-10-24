@@ -39,7 +39,55 @@ export default function CellsGrid() {
     const dispatch = useDispatch()
     const rowsValue = useSelector<RowReducer, number>(state => state.row.value)
     const columnsValue = useSelector<ColumnReducer, number>(state => state.column.value)
-    const [activeColModifier, setActiveColModifier] = useState<string>("");
+    const [activeCol, setActiveCol] = useState<string | null>(null);
+
+    const mouseMove = useCallback((e: any) => {
+        let offsetLeft = document.getElementById("column" + activeCol)?.offsetLeft
+        offsetLeft = offsetLeft ? offsetLeft : 0
+        const width = e.clientX - offsetLeft
+        let element = document.getElementById("column" + activeCol)?.style
+        if (element) {
+            if (width > 30) {
+                element.minWidth = width.toString() + 'px'
+            }
+        }
+        element = document.getElementById("colModifier" + activeCol)?.style
+        if (element) {
+            console.log(element)
+            element.height = (rowsValue * 30 + 30).toString() + "px"
+            element.backgroundColor = 'red'
+        }
+    }, [activeCol, rowsValue]);
+
+    const removeListeners = useCallback(() => {
+        window.removeEventListener("mousemove", mouseMove);
+        window.removeEventListener("mouseup", removeListeners);
+    }, [mouseMove]);
+
+    const mouseUp = useCallback((e: any) => {
+        if (activeCol != "") {
+            let element = document.getElementById("colModifier" + activeCol)?.style
+            if (element) {
+                console.log(element)
+                element.height = '100%'
+                element.backgroundColor = ''
+            }
+            console.log("mpouse up")
+            setActiveCol(null);
+            removeListeners();
+        }
+    }, [activeCol, removeListeners]);
+
+    useEffect(() => {
+        if (activeCol !== null) {
+            window.addEventListener("mousemove", mouseMove);
+            window.addEventListener("mouseup", mouseUp);
+        }
+
+        return () => {
+            removeListeners();
+        };
+    }, [activeCol, rowsValue, mouseMove, mouseUp, removeListeners]);
 
     const rowsNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < rowsValue; i++) {
@@ -64,11 +112,20 @@ export default function CellsGrid() {
                 <span>{String.fromCharCode(65 + i)}</span>
                 <div
                     id={"colModifier" + String.fromCharCode(65 + i)}
-                    onMouseDown={(e) => {
-                        setActiveColModifier(e.currentTarget.id)
-                        e.currentTarget.style.backgroundColor = '#517ea5'
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
+                        e.currentTarget.style.backgroundColor = 'black'
                     }}
-                    className={`block absolute h-full cursor-col-resize w-[3px] hover:h-[${rowsValue * 30 + 30}px] hover:bg-slate-300 right-[-1.5px] top-0 z-30 ${activeColModifier === "colModifier" + String.fromCharCode(65 + i) ? "bg-[#517ea5]" : ""}`}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.height = '100%'
+                        e.currentTarget.style.backgroundColor = ''
+                    }}
+                    onMouseDown={(e) => {
+                        e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
+                        e.currentTarget.style.backgroundColor = 'red'
+                        setActiveCol(String.fromCharCode(65 + i))
+                    }}
+                    className={`block absolute h-full cursor-col-resize w-[3px] right-[-1.5px] top-0 z-30`}
                 >
                 </div>
             </div>
