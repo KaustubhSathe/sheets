@@ -10,7 +10,7 @@ import { CgProfile } from 'react-icons/cg'
 export default function MenuBar() {
     return (
         <div className="bg-[#F9FBFD] h-[60px] flex flex-grow-0 flex-shrink-0">
-            <Link href="#" className='w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer'>
+            <Link href="/spreadsheets" className='w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer'>
                 <Image title='Sheets Home' width={27} height={27} src={Sheet} alt="sheet-icon" />
             </Link>
             <div className='w-[calc(100%-350px-60px)] p-[8px]'>
