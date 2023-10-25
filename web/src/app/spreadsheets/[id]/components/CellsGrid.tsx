@@ -1,8 +1,6 @@
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
-import { useSelector, useDispatch } from 'react-redux'
-import type { Reducer } from 'redux';
-import { ColumnReducer, RowReducer } from '@/app/lib/redux/store';
+import { useDispatch } from 'react-redux'
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 function getDownID(id: string): string {
@@ -37,8 +35,8 @@ function getLeftID(id: string): string {
 
 export default function CellsGrid() {
     const dispatch = useDispatch()
-    const rowsValue = useSelector<RowReducer, number>(state => state.row.value)
-    const columnsValue = useSelector<ColumnReducer, number>(state => state.column.value)
+    const [rowsValue, setRowsValue] = useState<number>(100)
+    const [columnsValue, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
 
     const mouseMove = useCallback((e: any) => {
@@ -51,11 +49,20 @@ export default function CellsGrid() {
                 element.minWidth = width.toString() + 'px'
             }
         }
+        element = document.getElementById("cellcontainer" + activeCol)?.style
+        if (element) {
+            if (width > 30) {
+                element.minWidth = width.toString() + 'px'
+            }
+        }
+
+
+        // for background color
         element = document.getElementById("colModifier" + activeCol)?.style
         if (element) {
             console.log(element)
             element.height = (rowsValue * 30 + 30).toString() + "px"
-            element.backgroundColor = 'red'
+            element.backgroundColor = 'rgb(203,213,225,1)'
         }
     }, [activeCol, rowsValue]);
 
@@ -114,7 +121,7 @@ export default function CellsGrid() {
                     id={"colModifier" + String.fromCharCode(65 + i)}
                     onMouseOver={(e) => {
                         e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
-                        e.currentTarget.style.backgroundColor = 'black'
+                        e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                     }}
                     onMouseLeave={(e) => {
                         e.currentTarget.style.height = '100%'
@@ -122,7 +129,7 @@ export default function CellsGrid() {
                     }}
                     onMouseDown={(e) => {
                         e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
-                        e.currentTarget.style.backgroundColor = 'red'
+                        e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveCol(String.fromCharCode(65 + i))
                     }}
                     className={`block absolute h-full cursor-col-resize w-[3px] right-[-1.5px] top-0 z-30`}
@@ -133,11 +140,11 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let i = 0; i < rowsValue; i++) {
+    for (let j = 0; j < columnsValue; j++) {
         const x: Array<React.ReactNode> = [];
-        for (let j = 0; j < columnsValue; j++) {
+        for (let i = 0; i < rowsValue; i++) {
             x.push(
-                <div className="relative m-0 p-0 h-full min-w-[66px]">
+                <div className="relative m-0 p-0 w-full h-[30px]">
                     <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
                         contentEditable={true}
                         spellCheck={false}
@@ -177,7 +184,7 @@ export default function CellsGrid() {
             );
         }
         cells.push((
-            <div className="h-[30px] flex bg-inherit" key={(i + 1).toString()} id={"cellcontainer" + (i + 1).toString()}>
+            <div className="min-w-[66px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
                 {x}
             </div>
         ));
@@ -196,9 +203,11 @@ export default function CellsGrid() {
                     rowsNumbers
                 }
             </div>
-            {
-                cells
-            }
+            <div className="ml-[46px] flex">
+                {
+                    cells
+                }
+            </div>
         </div>
     );
 }
