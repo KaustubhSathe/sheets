@@ -35,11 +35,13 @@ function getLeftID(id: string): string {
 
 export default function CellsGrid() {
     const dispatch = useDispatch()
-    const [rowsValue, setRowsValue] = useState<number>(100)
-    const [columnsValue, setColumnsValue] = useState<number>(26)
+    const [rows, setRowsValue] = useState<number>(100)
+    const [columns, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
+    const [activeRow, setActiveRow] = useState<string | null>(null);
+    const [rowHeights, setRowHeights] = useState<number[]>([...Array(rows)].map(x => 30))
 
-    const mouseMove = useCallback((e: any) => {
+    const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
         let offsetLeft = document.getElementById("column" + activeCol)?.offsetLeft
         offsetLeft = offsetLeft ? offsetLeft : 0
         const width = e.clientX - offsetLeft
@@ -55,61 +57,113 @@ export default function CellsGrid() {
                 element.minWidth = width.toString() + 'px'
             }
         }
-
-
         // for background color
         element = document.getElementById("colModifier" + activeCol)?.style
         if (element) {
-            console.log(element)
-            element.height = (rowsValue * 30 + 30).toString() + "px"
+            let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+            offsetBottom = offsetBottom ? offsetBottom : 0
+            element.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
             element.backgroundColor = 'rgb(203,213,225,1)'
         }
-    }, [activeCol, rowsValue]);
+    }, [activeCol, rows]);
+
+    const mouseMoveVertical = useCallback((e: MouseEvent) => {
+        let offsetTop = document.getElementById("row" + activeRow)?.getBoundingClientRect().top
+        offsetTop = offsetTop ? offsetTop : 0
+        const height = e.clientY - offsetTop
+        let element = document.getElementById("row" + activeRow)?.style
+        if (element) {
+            element.minHeight = height.toString() + 'px'
+            const cpy = rowHeights.slice()
+            const index = activeRow ? parseInt(activeRow) : 0
+            cpy[index - 1] = Math.max(parseInt(element.minHeight), 30)
+            setRowHeights(cpy)
+        }
+        // for background color
+        element = document.getElementById("rowModifier" + activeRow)?.style
+        if (element) {
+            console.log(element)
+            element.width = '100vw'
+            element.backgroundColor = 'rgb(203,213,225,1)'
+        }
+    }, [activeRow, rowHeights]);
 
     const removeListeners = useCallback(() => {
-        window.removeEventListener("mousemove", mouseMove);
+        window.removeEventListener("mousemove", mouseMoveHorizontal);
+        window.removeEventListener("mousemove", mouseMoveVertical);
         window.removeEventListener("mouseup", removeListeners);
-    }, [mouseMove]);
+    }, [mouseMoveHorizontal, mouseMoveVertical]);
 
-    const mouseUp = useCallback((e: any) => {
-        if (activeCol != "") {
+    const mouseUp = useCallback((e: MouseEvent) => {
+        if (activeCol !== null) {
             let element = document.getElementById("colModifier" + activeCol)?.style
             if (element) {
-                console.log(element)
                 element.height = '100%'
                 element.backgroundColor = ''
             }
-            console.log("mpouse up")
             setActiveCol(null);
             removeListeners();
         }
-    }, [activeCol, removeListeners]);
+
+        if (activeRow !== null) {
+            let element = document.getElementById("rowModifier" + activeRow)?.style
+            if (element) {
+                element.width = '100%'
+                element.backgroundColor = ''
+            }
+            setActiveRow(null);
+            removeListeners();
+        }
+    }, [activeCol, activeRow, removeListeners]);
 
     useEffect(() => {
         if (activeCol !== null) {
-            window.addEventListener("mousemove", mouseMove);
+            window.addEventListener("mousemove", mouseMoveHorizontal);
+            window.addEventListener("mouseup", mouseUp);
+        }
+
+        if (activeRow !== null) {
+            window.addEventListener("mousemove", mouseMoveVertical);
             window.addEventListener("mouseup", mouseUp);
         }
 
         return () => {
             removeListeners();
         };
-    }, [activeCol, rowsValue, mouseMove, mouseUp, removeListeners]);
+    }, [activeCol, activeRow, rows, mouseMoveHorizontal, mouseMoveVertical, mouseUp, removeListeners]);
 
     const rowsNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < rowsValue; i++) {
+    for (let i = 0; i < rows; i++) {
         rowsNumbers.push((
             <div
                 id={"row" + (i + 1).toString()}
                 key={(i + 1).toString()}
-                className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans">
-                {i + 1}
+                className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans relative">
+                <span>{i + 1}</span>
+                <div
+                    id={"rowModifier" + (i + 1).toString()}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.width = '100vw'
+                        e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.width = '100%'
+                        e.currentTarget.style.backgroundColor = ''
+                    }}
+                    onMouseDown={(e) => {
+                        e.currentTarget.style.width = "100vw"
+                        e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
+                        setActiveRow((i + 1).toString())
+                    }}
+                    className={`block absolute w-full cursor-row-resize h-[3px] bottom-[-1.5px] left-0 z-100000`}
+                >
+                </div>
             </div>
         ));
     }
 
     const colNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < columnsValue; i++) {
+    for (let i = 0; i < columns; i++) {
         colNumbers.push((
             <div
                 id={"column" + String.fromCharCode(65 + i)}
@@ -120,7 +174,9 @@ export default function CellsGrid() {
                 <div
                     id={"colModifier" + String.fromCharCode(65 + i)}
                     onMouseOver={(e) => {
-                        e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
+                        let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+                        offsetBottom = offsetBottom ? offsetBottom : 0
+                        e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                     }}
                     onMouseLeave={(e) => {
@@ -128,7 +184,9 @@ export default function CellsGrid() {
                         e.currentTarget.style.backgroundColor = ''
                     }}
                     onMouseDown={(e) => {
-                        e.currentTarget.style.height = (rowsValue * 30 + 30).toString() + "px"
+                        let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+                        offsetBottom = offsetBottom ? offsetBottom : 0
+                        e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveCol(String.fromCharCode(65 + i))
                     }}
@@ -140,11 +198,13 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let j = 0; j < columnsValue; j++) {
+    for (let j = 0; j < columns; j++) {
         const x: Array<React.ReactNode> = [];
-        for (let i = 0; i < rowsValue; i++) {
+        for (let i = 0; i < rows; i++) {
             x.push(
-                <div className="relative m-0 p-0 w-full h-[30px]">
+                <div className="relative m-0 p-0 w-full" style={{
+                    height: rowHeights[i]
+                }}>
                     <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
                         contentEditable={true}
                         spellCheck={false}
@@ -198,7 +258,7 @@ export default function CellsGrid() {
                     colNumbers
                 }
             </div>
-            <div className="sticky left-0 bg-inherit w-[46px] overflow-x-hidden overflow-y-hidden inline-block float-left">
+            <div className="sticky left-0 bg-inherit w-[46px] inline-block float-left">
                 {
                     rowsNumbers
                 }
