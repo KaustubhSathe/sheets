@@ -16,10 +16,10 @@ export default function Home() {
           <span className="font-sans text-3xl font-semibold">Available On:</span>
         </div>
         <div className="flex align-middle justify-center gap-3">
-          <AiFillChrome className="w-[50px] h-[50px]" />
-          <AiFillAndroid className="w-[50px] h-[50px]" />
-          <AiFillApple className="w-[50px] h-[50px]" />
-          <AiOutlineDesktop className="w-[50px] h-[50px]" />
+          <AiFillChrome className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
+          <AiFillAndroid className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
+          <AiFillApple className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
+          <AiOutlineDesktop className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
         </div>
         <div className='flex justify-center'>
           <span className="font-sans text-2xl font-normal">Check the code here: <a href="https://github.com/KaustubhSathe/spreadsheet" target='_blank' className='text-blue-500 hover:text-blue-700'>Github</a></span>
@@ -44,10 +44,10 @@ export default function Home() {
               Login to unlock access to Work Sheets!!!
             </span>
           </div>
-          <div className="hover:bg-[#34a853] hover:cursor-pointer hover:scale-[1.02] hover:shadow-md hover:shadow-black h-[40px] m-[8px] mt-[16px] bg-in rounded-xl flex align-middle justify-center gap-3 border-[2px] border-black">
+          <a href="https://github.com/login/oauth/authorize?client_id=66089daaf1e92c19a356" className="hover:bg-[#34a853] hover:cursor-pointer hover:scale-[1.02] hover:shadow-md hover:shadow-black h-[40px] m-[8px] mt-[16px] bg-in rounded-xl flex align-middle justify-center gap-3 border-[2px] border-black">
             <AiFillGithub className="w-[25px] h-[25px] mt-auto mb-auto" />
             <span className='mt-auto mb-auto font-bold'>Continue with Github</span>
-          </div>
+          </a>
         </div>
       </div>
     </div>

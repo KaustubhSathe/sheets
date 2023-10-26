@@ -42,49 +42,44 @@ export default function CellsGrid() {
     const [rowHeights, setRowHeights] = useState<number[]>([...Array(rows)].map(x => 30))
 
     const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
-        let offsetLeft = document.getElementById("column" + activeCol)?.offsetLeft
-        offsetLeft = offsetLeft ? offsetLeft : 0
-        const width = e.clientX - offsetLeft
-        let element = document.getElementById("column" + activeCol)?.style
+        let element = document.getElementById("column" + activeCol)
         if (element) {
-            if (width > 30) {
-                element.minWidth = width.toString() + 'px'
+            let offsetLeft = document.getElementById("column" + activeCol)?.getBoundingClientRect().left
+            offsetLeft = offsetLeft ? offsetLeft : 0
+            const width = Math.max(e.clientX - offsetLeft, 30)
+            element.style.minWidth = width.toString() + 'px'
+            element = document.getElementById("cellcontainer" + activeCol)
+            if (element) {
+                element.style.minWidth = width.toString() + 'px'
             }
         }
-        element = document.getElementById("cellcontainer" + activeCol)?.style
-        if (element) {
-            if (width > 30) {
-                element.minWidth = width.toString() + 'px'
-            }
-        }
-        // for background color
-        element = document.getElementById("colModifier" + activeCol)?.style
+        element = document.getElementById("colModifier" + activeCol)
         if (element) {
             let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
             offsetBottom = offsetBottom ? offsetBottom : 0
-            element.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
-            element.backgroundColor = 'rgb(203,213,225,1)'
+            element.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
+            element.style.backgroundColor = 'rgb(203,213,225,1)'
         }
     }, [activeCol, rows]);
 
     const mouseMoveVertical = useCallback((e: MouseEvent) => {
-        let offsetTop = document.getElementById("row" + activeRow)?.getBoundingClientRect().top
-        offsetTop = offsetTop ? offsetTop : 0
-        const height = e.clientY - offsetTop
-        let element = document.getElementById("row" + activeRow)?.style
+        let element = document.getElementById("row" + activeRow)
         if (element) {
-            element.minHeight = height.toString() + 'px'
+            let offsetTop = document.getElementById("row" + activeRow)?.getBoundingClientRect().top
+            offsetTop = offsetTop ? offsetTop : 0
+            const height = Math.max(e.clientY - offsetTop, 30)
+            element.style.minHeight = height.toString() + 'px'
             const cpy = rowHeights.slice()
             const index = activeRow ? parseInt(activeRow) : 0
-            cpy[index - 1] = Math.max(parseInt(element.minHeight), 30)
+            cpy[index - 1] = Math.max(height)
+            console.log(offsetTop)
             setRowHeights(cpy)
         }
         // for background color
-        element = document.getElementById("rowModifier" + activeRow)?.style
+        element = document.getElementById("rowModifier" + activeRow)
         if (element) {
-            console.log(element)
-            element.width = '100vw'
-            element.backgroundColor = 'rgb(203,213,225,1)'
+            element.style.width = '100vw'
+            element.style.backgroundColor = 'rgb(203,213,225,1)'
         }
     }, [activeRow, rowHeights]);
 
@@ -152,6 +147,7 @@ export default function CellsGrid() {
                     }}
                     onMouseDown={(e) => {
                         e.currentTarget.style.width = "100vw"
+                        console.log("mouse down" + (i + 1).toString())
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveRow((i + 1).toString())
                     }}
@@ -189,6 +185,7 @@ export default function CellsGrid() {
                         e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveCol(String.fromCharCode(65 + i))
+                        console.log("mouse down" + String.fromCharCode(65 + i))
                     }}
                     className={`block absolute h-full cursor-col-resize w-[3px] right-[-1.5px] top-0 z-30`}
                 >
@@ -251,7 +248,7 @@ export default function CellsGrid() {
     }
 
     return (
-        <div className="bg-[#FFFFFF] h-[calc(100vh-60px-40px-35px-37px)] relative overflow-scroll p-0 m-0 hover:cursor-cell">
+        <div id="cellgrid" className="bg-[#FFFFFF] h-[calc(100vh-60px-40px-35px-37px)] relative overflow-scroll p-0 m-0 hover:cursor-cell">
             <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
             <div className="h-[30px] ml-[46px] flex bg-inherit">
                 {
