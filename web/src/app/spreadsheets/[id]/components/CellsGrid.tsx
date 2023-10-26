@@ -39,7 +39,6 @@ export default function CellsGrid() {
     const [columns, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
-    const [rowHeights, setRowHeights] = useState<number[]>([...Array(rows)].map(x => 30))
 
     const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
         let element = document.getElementById("column" + activeCol)
@@ -69,11 +68,10 @@ export default function CellsGrid() {
             offsetTop = offsetTop ? offsetTop : 0
             const height = Math.max(e.clientY - offsetTop, 30)
             element.style.minHeight = height.toString() + 'px'
-            const cpy = rowHeights.slice()
-            const index = activeRow ? parseInt(activeRow) : 0
-            cpy[index - 1] = Math.max(height)
-            console.log(offsetTop)
-            setRowHeights(cpy)
+            const elems = document.getElementsByClassName("rowbar-" + activeRow) as HTMLCollectionOf<HTMLElement>
+            for (let i = 0; i < elems.length; i++) {
+                elems[i].style.height = height.toString() + 'px'
+            }
         }
         // for background color
         element = document.getElementById("rowModifier" + activeRow)
@@ -81,7 +79,7 @@ export default function CellsGrid() {
             element.style.width = '100vw'
             element.style.backgroundColor = 'rgb(203,213,225,1)'
         }
-    }, [activeRow, rowHeights]);
+    }, [activeRow]);
 
     const removeListeners = useCallback(() => {
         window.removeEventListener("mousemove", mouseMoveHorizontal);
@@ -199,9 +197,7 @@ export default function CellsGrid() {
         const x: Array<React.ReactNode> = [];
         for (let i = 0; i < rows; i++) {
             x.push(
-                <div className="relative m-0 p-0 w-full" style={{
-                    height: rowHeights[i]
-                }}>
+                <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px]`}>
                     <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
                         contentEditable={true}
                         spellCheck={false}
