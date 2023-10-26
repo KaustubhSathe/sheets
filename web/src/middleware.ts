@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
     // const access_token = (new URL(request.url).searchParams.get("access_token")) || request.headers.get("access_token")
     // if (access_token === null) {
-    //     return NextResponse.redirect("http://localhost:3000/error")
+    //     return NextResponse.redirect(`${process.env.DOMAIN}/error`)
     // }
     // const res = await fetch(`https://api.github.com/applications/${String(process.env.GITHUB_CLIENT_ID)}/token`, {
     //     body: JSON.stringify({
