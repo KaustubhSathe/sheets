@@ -10,11 +10,13 @@ import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const router = useRouter()
-  const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
-  if (access_token === null) {
-    return router.push("/")
+  if (typeof window !== 'undefined') {
+    const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
+    if (access_token === null) {
+      return router.push("/")
+    }
+    localStorage.setItem("spreadsheet_access_token", access_token);
   }
-  localStorage.setItem("spreadsheet_access_token", access_token);
 
   return (
     <>

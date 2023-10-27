@@ -8,9 +8,11 @@ import { useEffect } from 'react'
 
 export default function Home() {
   const router = useRouter()
-  const access_token = localStorage.getItem("spreadsheet_access_token")
-  if (access_token !== null) {
-    return router.push("/spreadsheets")
+  if (typeof window !== 'undefined') {
+    const access_token = localStorage.getItem("spreadsheet_access_token")
+    if (access_token !== null) {
+      return router.push("/spreadsheets")
+    }
   }
   return (
     <div className="w-full h-screen flex bg-slate-200">
