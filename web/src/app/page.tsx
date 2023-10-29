@@ -5,12 +5,16 @@ import Sheet from '../../public/sheets.svg'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import useSWR from 'swr'
+import { Authenticate } from './api/auth'
+//@ts-ignore
+const fetcher = (...args) => fetch(...args).then((res) => res)
 
 export default function Home() {
   const router = useRouter()
   if (typeof window !== 'undefined') {
     const access_token = localStorage.getItem("spreadsheet_access_token")
-    if (access_token !== null) {
+    if (access_token !== null) { // then check for validitiy of token
       return router.push("/spreadsheets")
     }
   }

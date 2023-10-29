@@ -7,6 +7,7 @@ import { HiOutlineMagnifyingGlass } from 'react-icons/hi2'
 import { CgProfile } from 'react-icons/cg'
 import { PiPlusLight } from 'react-icons/pi'
 import { useRouter } from "next/navigation";
+import { Authenticate } from "../api/auth";
 
 export default function Dashboard() {
   const router = useRouter()
@@ -15,7 +16,15 @@ export default function Dashboard() {
     if (access_token === null) {
       return router.push("/")
     }
-    localStorage.setItem("spreadsheet_access_token", access_token);
+    Authenticate(access_token)
+      .then(res => {
+        if (res.status === 200) {
+          localStorage.setItem("spreadsheet_access_token", access_token)
+        } else {
+          localStorage.removeItem("spreadsheet_access_token");
+          return router.push("/");
+        }
+      })
   }
 
   return (

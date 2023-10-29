@@ -19,3 +19,4 @@
 cdk.out
 
 .env
+momento_key_info.json

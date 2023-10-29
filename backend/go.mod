@@ -11,7 +11,9 @@ require (
 	github.com/aws/aws-sdk-go v1.46.5
 	github.com/aws/constructs-go/constructs/v10 v10.2.70
 	github.com/aws/jsii-runtime-go v1.89.0
+	github.com/google/uuid v1.4.0
 	github.com/joho/godotenv v1.5.1
+	github.com/momentohq/client-sdk-go v1.12.0
 	gopkg.in/h2non/gentleman.v2 v2.0.5
 )
 
@@ -21,6 +23,8 @@ require (
 	github.com/cdklabs/awscdk-asset-kubectl-go/kubectlv20/v2 v2.1.2 // indirect
 	github.com/cdklabs/awscdk-asset-node-proxy-agent-go/nodeproxyagentv6/v2 v2.0.1 // indirect
 	github.com/fatih/color v1.15.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.3.0 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
@@ -30,5 +34,9 @@ require (
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
+	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
+	google.golang.org/grpc v1.52.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 )
