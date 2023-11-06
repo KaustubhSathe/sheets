@@ -8,6 +8,12 @@ import { CgProfile } from 'react-icons/cg'
 import { PiPlusLight } from 'react-icons/pi'
 import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
+import { Viewport } from 'next'
+
+export const viewPort: Viewport = {
+  userScalable: false,
+  width: 'device-width',
+}
 
 export default function Dashboard() {
   const router = useRouter()
@@ -16,7 +22,7 @@ export default function Dashboard() {
     if (access_token === null) {
       return router.push("/")
     }
-    
+
     Authenticate(access_token)
       .then(res => {
         if (res.status === 200) {
@@ -29,19 +35,21 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <div className="h-[64px] w-full bg-[#ffffff] flex justify-start">
-        <Link href="/spreadsheets" className='mb-auto mt-auto w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:cursor-pointer'>
-          <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
-        </Link>
-        <span className="mt-auto mb-auto font-sans font-semibold text-2xl text-[#5f6368]">Sheets</span>
-        <div className="ml-[100px] h-[48px] w-[717px] bg-[#f1f3f4] mt-auto mb-auto flex align-middle justify-start rounded-xl relative focus-within:bg-[#ffffff] focus-within:scale-[1.01] focus-within:shadow-sm focus-within:shadow-black">
-          <div className="left-[16px] top-[4px] absolute h-[40px] w-[40px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+    <div className="m-0 p-0">
+      <div className="h-[64px] w-full bg-[#ffffff] flex justify-between">
+        <div className="flex mr-4">
+          <Link href="/spreadsheets" className='mb-auto mt-auto min-w-[60px] pl-[10px] pr-[10px] flex align-middle justify-center hover:cursor-pointer'>
+            <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
+          </Link>
+          <span className="mt-auto mb-auto inline-block font-sans font-semibold text-2xl text-[#5f6368]">Sheets</span>
+        </div>
+        <div className="mr-4 h-[48px] w-[60%] bg-[#f1f3f4] mt-auto mb-auto flex align-middle justify-start rounded-xl relative focus-within:bg-[#ffffff] focus-within:scale-[1.01] focus-within:shadow-sm focus-within:shadow-black">
+          <div className="left-[4px] top-[4px] absolute h-[40px] w-[40px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
             <HiOutlineMagnifyingGlass className="w-[25px] h-[25px] mt-auto mb-auto" />
           </div>
-          <input type="text" className="ml-[70px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
+          <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
         </div>
-        <div className="mt-auto mb-auto ml-auto mr-[16px] h-[44px] w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+        <div className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
           <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
         </div>
       </div>
@@ -50,6 +58,6 @@ export default function Dashboard() {
         </div>
       </div>
       <PiPlusLight className="fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full" />
-    </>
+    </div>
   )
 }
