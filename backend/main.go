@@ -21,6 +21,7 @@ type Lambdas struct {
 	CallbackHandler          awscdklambdagoalpha.GoFunction
 	AuthenticateHandler      awscdklambdagoalpha.GoFunction
 	CreateSpreadSheetHandler awscdklambdagoalpha.GoFunction
+	GetSpreadSheetHandler    awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -86,10 +87,21 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Environment: envs,
 	})
 
+	getSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("getSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_GO_1_X(),
+		Entry:   jsii.String("./handlers/spreadsheets/get"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:        requiredRoles,
+		Environment: envs,
+	})
+
 	return &Lambdas{
 		CallbackHandler:          callbackHandler,
 		AuthenticateHandler:      authenticateHandler,
 		CreateSpreadSheetHandler: createSpreadSheetHandler,
+		GetSpreadSheetHandler:    getSpreadSheetHandler,
 	}
 }
 
@@ -130,6 +142,12 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Path:        jsii.String("/api/spreadsheet"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CreateSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path: jsii.String("/api/spreadsheet"),
+		Methods: &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.GetSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
 	return spreadsheetApi

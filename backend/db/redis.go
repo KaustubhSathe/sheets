@@ -80,6 +80,19 @@ func (redis *Redis) Get(ctx context.Context, key string) (string, error) {
 	return "", nil
 }
 
+func (redis *Redis) Delete(ctx context.Context, key string) error {
+	res, err := (*redis.Client).Delete(ctx, &momento.DeleteRequest{
+		CacheName: CACHE_NAME,
+		Key: momento.String(key),
+	})
+	if err != nil {
+		return err
+	}
+
+	
+}
+
+
 func (redis *Redis) AuthKey(access_token string) string {
 	return fmt.Sprintf("%s:%s", "user", access_token)
 }

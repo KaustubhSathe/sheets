@@ -16,6 +16,7 @@ export default function Dashboard() {
     if (access_token === null) {
       return router.push("/")
     }
+    
     Authenticate(access_token)
       .then(res => {
         if (res.status === 200) {
