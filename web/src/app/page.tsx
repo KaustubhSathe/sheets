@@ -5,10 +5,7 @@ import Sheet from '../../public/sheets.svg'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import useSWR from 'swr'
 import { Authenticate } from './api/auth'
-//@ts-ignore
-const fetcher = (...args) => fetch(...args).then((res) => res)
 
 export default function Home() {
   const router = useRouter()
@@ -18,9 +15,10 @@ export default function Home() {
       return router.push("/spreadsheets")
     }
   }
+
   return (
-    <div className="w-full h-screen flex bg-slate-200">
-      <div className="h-full w-[70%] flex flex-col align-middle justify-center gap-5">
+    <div className="w-full h-screen sm:flex bg-slate-200">
+      <div className="h-full sm:w-[70%] flex flex-col align-middle justify-center gap-5 p-8">
         <div className='flex justify-center'>
           <span className="font-sans text-4xl font-semibold">Make data-driven decisions, in Work Sheets</span>
         </div>
@@ -43,7 +41,7 @@ export default function Home() {
           <span className="font-sans text-2xl font-normal">Want to know how I built this. Click here: <a href="https://www.udemy.com/user/kaustubh-sathe-5/" target='_blank' className='text-blue-500 hover:text-blue-700'>Udemy</a></span>
         </div>
       </div>
-      <div className="h-full w-[30%] text-center p-[8px]">
+      <div className="h-full sm:w-[30%] text-center p-[8px]">
         <div className="border-[2px] h-full border-[#34a853] rounded-xl flex flex-col align-middle justify-center">
           <div className="flex align-middle justify-center gap-3 mb-[15px]">
             <Image title='Sheets' width={27} height={27} src={Sheet} alt="sheet-icon" className="mt-auto mb-auto" />

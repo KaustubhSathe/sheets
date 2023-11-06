@@ -81,15 +81,15 @@ func (redis *Redis) Get(ctx context.Context, key string) (string, error) {
 }
 
 func (redis *Redis) Delete(ctx context.Context, key string) error {
-	res, err := (*redis.Client).Delete(ctx, &momento.DeleteRequest{
+	_, err := (*redis.Client).Delete(ctx, &momento.DeleteRequest{
 		CacheName: CACHE_NAME,
 		Key: momento.String(key),
 	})
 	if err != nil {
 		return err
 	}
-
 	
+	return nil	
 }
 
 

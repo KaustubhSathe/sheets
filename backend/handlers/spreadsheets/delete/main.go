@@ -5,6 +5,7 @@ import (
 	"backend/db/model"
 	"backend/utils"
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -13,9 +14,9 @@ import (
 var dynamo *db.Dynamo
 var redis *db.Redis
 
-// This will be a GET request
+// This will be a DELETE request
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// First authenticate the request only after that create SpreadSheet
+	// First authenticate the request only after that delete SpreadSheet by id
 	access_token := request.Headers["spreadsheet_access_token"]
 	spreadsheet_id := request.QueryStringParameters["spreadsheet_id"]
 	// Now fetch the user details from redis
@@ -39,39 +40,9 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		dynamo = db.NewDynamo(ctx)
 	}
 
-	// Now first check for spreadsheet in redis, if not present in redis fetch from DB
-	res, err := redis.Get(ctx, redis.SpreadSheetKey(spreadsheet_id))
+	// Now delete the spreadsheet using spreadsheet ID from DB
+	err = redis.Delete(ctx, redis.SpreadSheetKey(spreadsheet_id))
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-		}, nil
-	}
-
-	if res == "" {
-		// means fetch from DB
-		spreadsheet, err := dynamo.GetSpreadSheet(spreadsheet_id, int64(userInfo.User["id"].(float64)))
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-			}, nil
-		}
-
-		// also set the spreadsheet object in redis
-		err = redis.Set(ctx, redis.SpreadSheetKey(spreadsheet_id), spreadsheet.Stringify())
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-			}, nil
-		}
-
-		return events.APIGatewayProxyResponse{
-			StatusCode: 200,
-			Body:       spreadsheet.Stringify(),
-		}, nil
-	}
-
-	spreadsheet := model.SpreadSheet{}
-	if err = utils.Parse(res, &spreadsheet); err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 		}, nil
@@ -79,7 +50,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       spreadsheet.Stringify(),
+		Body:       fmt.Sprintf("Spreadsheet deleted with id: %s", spreadsheet_id),
 	}, nil
 }
 
