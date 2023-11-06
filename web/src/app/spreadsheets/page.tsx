@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
 import { Viewport } from 'next'
 
-export const viewPort: Viewport = {
+export const viewport: Viewport = {
   userScalable: false,
   width: 'device-width',
 }
