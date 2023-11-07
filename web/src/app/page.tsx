@@ -9,12 +9,12 @@ import { Authenticate } from './api/auth'
 
 export default function Home() {
   const router = useRouter()
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     const access_token = localStorage.getItem("spreadsheet_access_token")
     if (access_token !== null) { // then check for validitiy of token
       return router.push("/spreadsheets")
     }
-  }
+  }, [router]);
 
   return (
     <div className="w-full h-screen sm:flex bg-slate-200">

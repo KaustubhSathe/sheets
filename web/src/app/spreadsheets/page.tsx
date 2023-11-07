@@ -9,32 +9,67 @@ import { PiPlusLight } from 'react-icons/pi'
 import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
 import { Viewport } from 'next'
+import { CreateSpreadSheet, GetSpreadSheet } from "../api/spreadsheet";
+import { useCallback, useEffect, useState } from "react";
+import { SpreadSheet } from "./components/SpreadSheetTable";
+import SpreadSheetTable from "./components/SpreadSheetTable";
 
 export const viewport: Viewport = {
   userScalable: false,
   width: 'device-width',
 }
 
+
+
 export default function Dashboard() {
   const router = useRouter()
-  if (typeof window !== 'undefined') {
+  const [spreadsheets, setSpreadSheets] = useState<SpreadSheet[]>([]);
+  const authenticate = useCallback(Authenticate, []);
+  const getspreadsheet = useCallback(GetSpreadSheet, []);
+
+  useEffect(() => {
     const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
     if (access_token === null) {
       return router.push("/")
-    }
+    } else {
+      authenticate(access_token)
+        .then(res => {
+          if (res.status === 200) {
+            localStorage.setItem("spreadsheet_access_token", access_token)
+          } else {
+            localStorage.removeItem("spreadsheet_access_token");
+            return router.push("/");
+          }
+        })
 
-    Authenticate(access_token)
+      getspreadsheet(access_token, "")
+        .then(res => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            console.log(res.status);
+          }
+        }).then(res => {
+          setSpreadSheets(res);
+        })
+    }
+    console.log("called");
+  }, [router, authenticate, getspreadsheet]);
+
+  const createSpreadSheet = () => {
+    const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
+
+    CreateSpreadSheet(access_token)
       .then(res => {
         if (res.status === 200) {
-          localStorage.setItem("spreadsheet_access_token", access_token)
+          return res.json();
         } else {
-          localStorage.removeItem("spreadsheet_access_token");
-          return router.push("/");
+          console.log(res.status);
         }
+      }).then((res: SpreadSheet) => {
+        router.push(`/spreadsheets/${res.SK.slice(12)}`)
       })
   }
-
-  
 
   return (
     <div className="m-0 p-0">
@@ -59,55 +94,10 @@ export default function Dashboard() {
         <div className="h-[250px] w-full bg-[#f1f3f4]">
         </div>
         <div className="w-[75%] ml-auto mr-auto">
-          <table className="w-full">
-            <thead className="font-semibold font-roboto text-[#212b3e]">
-              <tr>
-                <th className="text-left">
-                  SpreadSheet Title
-                </th>
-                <th className="text-center">
-                  Last Opened
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  Hello world
-                </td>
-                <td>
-                  Hello world
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Hello world
-                </td>
-                <td>
-                  Hello world
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Hello world
-                </td>
-                <td>
-                  Hello world
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Hello world
-                </td>
-                <td>
-                  Hello world
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <SpreadSheetTable spreadsheets={spreadsheets} />
         </div>
       </div>
-      <PiPlusLight className="fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full" />
+      <PiPlusLight onClick={createSpreadSheet} className="fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full" />
     </div>
   )
 }
