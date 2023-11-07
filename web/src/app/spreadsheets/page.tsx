@@ -13,6 +13,16 @@ import { CreateSpreadSheet, GetSpreadSheet } from "../api/spreadsheet";
 import { useCallback, useEffect, useState } from "react";
 import { SpreadSheet } from "./components/SpreadSheetTable";
 import SpreadSheetTable from "./components/SpreadSheetTable";
+<<<<<<< HEAD
+=======
+
+export const viewport: Viewport = {
+  userScalable: false,
+  width: 'device-width',
+}
+>>>>>>> main
+
+
 
 export default function Dashboard() {
   const router = useRouter()
