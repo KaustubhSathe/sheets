@@ -14,13 +14,6 @@ import { useCallback, useEffect, useState } from "react";
 import { SpreadSheet } from "./components/SpreadSheetTable";
 import SpreadSheetTable from "./components/SpreadSheetTable";
 
-export const viewport: Viewport = {
-  userScalable: false,
-  width: 'device-width',
-}
-
-
-
 export default function Dashboard() {
   const router = useRouter()
   const [spreadsheets, setSpreadSheets] = useState<SpreadSheet[]>([]);
@@ -97,7 +90,7 @@ export default function Dashboard() {
           <SpreadSheetTable spreadsheets={spreadsheets} />
         </div>
       </div>
-      <PiPlusLight onClick={createSpreadSheet} className="fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full" />
+      <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />
     </div>
   )
 }
