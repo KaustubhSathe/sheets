@@ -8,21 +8,10 @@ import { CgProfile } from 'react-icons/cg'
 import { PiPlusLight } from 'react-icons/pi'
 import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
-import { Viewport } from 'next'
 import { CreateSpreadSheet, GetSpreadSheet } from "../api/spreadsheet";
 import { useCallback, useEffect, useState } from "react";
 import { SpreadSheet } from "./components/SpreadSheetTable";
 import SpreadSheetTable from "./components/SpreadSheetTable";
-<<<<<<< HEAD
-=======
-
-export const viewport: Viewport = {
-  userScalable: false,
-  width: 'device-width',
-}
->>>>>>> main
-
-
 
 export default function Dashboard() {
   const router = useRouter()
