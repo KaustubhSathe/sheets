@@ -17,23 +17,12 @@ var redis *db.Redis
 // This will be a POST request with only access token as body param
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// First authenticate the request only after that create SpreadSheet
-	body := struct {
-		AccessToken string `json:"access_token"`
-	}{}
-	// First extract the access token from body
-	if err := utils.Parse(request.Body, &body); err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 422,
-			Body: utils.Stringify(map[string]interface{}{
-				"Reponse": "Missing Parameters",
-			}),
-		}, err
-	}
+	spreadsheet_access_token := request.Headers["spreadsheet_access_token"]
 	// Now fetch the user details from redis
 	if redis == nil {
 		redis = db.NewRedis(ctx)
 	}
-	user, err := redis.Get(ctx, redis.AuthKey(body.AccessToken))
+	user, err := redis.Get(ctx, redis.AuthKey(spreadsheet_access_token))
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 401,
@@ -73,7 +62,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body: spreadsheet.Stringify(),
+		Body:       spreadsheet.Stringify(),
 	}, nil
 }
 

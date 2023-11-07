@@ -128,11 +128,18 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 			},
 			MaxAge: awscdk.Duration_Minutes(aws.Float64(300)),
 			AllowMethods: &[]awscdkapigatewayv2alpha.CorsHttpMethod{
+				awscdkapigatewayv2alpha.CorsHttpMethod_DELETE,
+				awscdkapigatewayv2alpha.CorsHttpMethod_GET,
+				awscdkapigatewayv2alpha.CorsHttpMethod_PUT,
+				awscdkapigatewayv2alpha.CorsHttpMethod_POST,
+				awscdkapigatewayv2alpha.CorsHttpMethod_PATCH,
 				awscdkapigatewayv2alpha.CorsHttpMethod_ANY,
+				awscdkapigatewayv2alpha.CorsHttpMethod_OPTIONS,
 			},
 			AllowHeaders: &[]*string{
 				aws.String("Authorization"),
 				aws.String("*"),
+				aws.String("spreadsheet_access_token"),
 			},
 		},
 	})
