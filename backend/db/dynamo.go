@@ -100,31 +100,41 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 	return ss, nil
 }
 
-func (db *Dynamo) GetSpreadSheet(spreadsheetID string, userID int64) (*model.SpreadSheet, error) {
-	res, err := db.Client.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(config.SPREADSHEETTABLE),
-		Key: map[string]*dynamodb.AttributeValue{
-			"PK": {
+func (db *Dynamo) GetSpreadSheets(spreadsheetID string, userID int64) ([]*model.SpreadSheet, error) {
+	res, err := db.Client.Query(&dynamodb.QueryInput{
+		TableName:              aws.String(config.SPREADSHEETTABLE),
+		KeyConditionExpression: aws.String("#PK = :pk AND begins_with(#SK, :sk)"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":pk": {
 				S: aws.String(db.UserPK(userID)),
 			},
-			"SK": {
+			":sk": {
 				S: aws.String(db.SpreadSheetSK(spreadsheetID)),
 			},
+		},
+		ExpressionAttributeNames: map[string]*string{
+			"#PK": aws.String("PK"),
+			"#SK": aws.String("SK"),
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
-	if res.Item == nil {
+	if res.Items == nil {
 		return nil, nil
 	}
-	spreadsheet := model.SpreadSheet{}
-	err = dynamodbattribute.UnmarshalMap(res.Item, &spreadsheet)
-	if err != nil {
-		return nil, err
+	spreadsheets := []*model.SpreadSheet{}
+
+	for i := 0; i < len(res.Items); i++ {
+		spreadsheet := model.SpreadSheet{}
+		err = dynamodbattribute.UnmarshalMap(res.Items[i], &spreadsheet)
+		if err != nil {
+			return nil, err
+		}
+		spreadsheets = append(spreadsheets, &spreadsheet)
 	}
 
-	return &spreadsheet, nil
+	return spreadsheets, nil
 }
 
 func (db *Dynamo) UserPK(userID int64) string {

@@ -22,6 +22,7 @@ type Lambdas struct {
 	AuthenticateHandler      awscdklambdagoalpha.GoFunction
 	CreateSpreadSheetHandler awscdklambdagoalpha.GoFunction
 	GetSpreadSheetHandler    awscdklambdagoalpha.GoFunction
+	DeleteSpreadSheetHandler awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -97,11 +98,22 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Environment: envs,
 	})
 
+	deleteSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("deleteSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_GO_1_X(),
+		Entry:   jsii.String("./handlers/spreadsheets/delete"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:        requiredRoles,
+		Environment: envs,
+	})
+
 	return &Lambdas{
 		CallbackHandler:          callbackHandler,
 		AuthenticateHandler:      authenticateHandler,
 		CreateSpreadSheetHandler: createSpreadSheetHandler,
 		GetSpreadSheetHandler:    getSpreadSheetHandler,
+		DeleteSpreadSheetHandler: deleteSpreadSheetHandler,
 	}
 }
 
@@ -125,29 +137,39 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		},
 	})
 
-	// add route to HTTP API
+	// callback API
 	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
 		Path:        jsii.String("/api/auth/callback"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CallbackHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
+	// authenticate API
 	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
 		Path:        jsii.String("/api/auth/authenticate"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.AuthenticateHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
+	// Create Spreadsheet API
 	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
 		Path:        jsii.String("/api/spreadsheet"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CreateSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
+	// Get Spreadsheet API
 	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
-		Path: jsii.String("/api/spreadsheet"),
-		Methods: &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
+		Path:        jsii.String("/api/spreadsheet"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.GetSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Delete Spreadsheet API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/spreadsheet"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_DELETE},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.DeleteSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
 	return spreadsheetApi

@@ -29,10 +29,10 @@ export default function Home() {
           <span className="font-sans text-3xl font-semibold">Available On:</span>
         </div>
         <div className="flex align-middle justify-center gap-3">
-          <AiFillChrome className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
-          <AiFillAndroid className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
-          <AiFillApple className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
-          <AiOutlineDesktop className="w-[50px] h-[50px] hover:scale-[1.05] hover:cursor-pointer" />
+          <AiFillChrome className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
+          <AiFillAndroid className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
+          <AiFillApple className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
+          <AiOutlineDesktop className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
         </div>
         <div className='flex justify-center'>
           <span className="font-sans text-2xl font-normal">Check the code here: <a href="https://github.com/KaustubhSathe/spreadsheet" target='_blank' className='text-blue-500 hover:text-blue-700'>Github</a></span>

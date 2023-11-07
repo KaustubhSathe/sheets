@@ -34,10 +34,12 @@ export default function Dashboard() {
       })
   }
 
+  
+
   return (
     <div className="m-0 p-0">
       <div className="h-[64px] w-full bg-[#ffffff] flex justify-between">
-        <div className="flex mr-4">
+        <div className="ml-4 flex mr-4">
           <Link href="/spreadsheets" className='mb-auto mt-auto min-w-[60px] pl-[10px] pr-[10px] flex align-middle justify-center hover:cursor-pointer'>
             <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
           </Link>
@@ -55,6 +57,54 @@ export default function Dashboard() {
       </div>
       <div className="h-[calc(100vh-64px)] w-full">
         <div className="h-[250px] w-full bg-[#f1f3f4]">
+        </div>
+        <div className="w-[75%] ml-auto mr-auto">
+          <table className="w-full">
+            <thead className="font-semibold font-roboto text-[#212b3e]">
+              <tr>
+                <th className="text-left">
+                  SpreadSheet Title
+                </th>
+                <th className="text-center">
+                  Last Opened
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Hello world
+                </td>
+                <td>
+                  Hello world
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Hello world
+                </td>
+                <td>
+                  Hello world
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Hello world
+                </td>
+                <td>
+                  Hello world
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Hello world
+                </td>
+                <td>
+                  Hello world
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <PiPlusLight className="fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full" />

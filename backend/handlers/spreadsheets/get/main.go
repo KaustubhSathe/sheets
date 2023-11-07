@@ -49,24 +49,26 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	if res == "" {
 		// means fetch from DB
-		spreadsheet, err := dynamo.GetSpreadSheet(spreadsheet_id, int64(userInfo.User["id"].(float64)))
+		spreadsheets, err := dynamo.GetSpreadSheets(spreadsheet_id, int64(userInfo.User["id"].(float64)))
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
 			}, nil
 		}
 
-		// also set the spreadsheet object in redis
-		err = redis.Set(ctx, redis.SpreadSheetKey(spreadsheet_id), spreadsheet.Stringify())
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-			}, nil
+		for _, v := range spreadsheets {
+			// also set the spreadsheet object in redis
+			err = redis.Set(ctx, v.Base.SK, v.Stringify())
+			if err != nil {
+				return events.APIGatewayProxyResponse{
+					StatusCode: 500,
+				}, nil
+			}
 		}
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       spreadsheet.Stringify(),
+			Body:       model.StringifySpreadSheets(spreadsheets),
 		}, nil
 	}
 
