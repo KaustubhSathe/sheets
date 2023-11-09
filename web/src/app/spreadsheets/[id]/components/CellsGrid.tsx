@@ -1,7 +1,7 @@
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function getDownID(id: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)

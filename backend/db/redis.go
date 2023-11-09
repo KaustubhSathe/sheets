@@ -93,9 +93,9 @@ func (redis *Redis) Delete(ctx context.Context, key string) error {
 }
 
 func (redis *Redis) AuthKey(access_token string) string {
-	return fmt.Sprintf("%s#%s", "USER", access_token)
+	return fmt.Sprintf("USER#%s", access_token)
 }
 
 func (redis *Redis) SpreadSheetKey(spreadsheet_id string) string {
-	return fmt.Sprintf("%s#%s", "SPREADSHEET", spreadsheet_id)
+	return fmt.Sprintf("SPREADSHEET#%s", spreadsheet_id)
 }

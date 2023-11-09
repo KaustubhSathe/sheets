@@ -19,3 +19,15 @@ export async function CreateSpreadSheet(access_token: string) {
 
     return response;
 }
+
+
+export async function DeleteSpreadSheet(access_token: string, spreadsheet_id: string) {
+    const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet?spreadsheet_id=${spreadsheet_id}`, {
+        method: "DELETE",
+        headers: {
+            'spreadsheet_access_token': access_token,
+        },
+    })
+
+    return response;
+}
