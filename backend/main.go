@@ -18,11 +18,12 @@ import (
 )
 
 type Lambdas struct {
-	CallbackHandler          awscdklambdagoalpha.GoFunction
-	AuthenticateHandler      awscdklambdagoalpha.GoFunction
-	CreateSpreadSheetHandler awscdklambdagoalpha.GoFunction
-	GetSpreadSheetHandler    awscdklambdagoalpha.GoFunction
-	DeleteSpreadSheetHandler awscdklambdagoalpha.GoFunction
+	CallbackHandler               awscdklambdagoalpha.GoFunction
+	AuthenticateHandler           awscdklambdagoalpha.GoFunction
+	CreateSpreadSheetHandler      awscdklambdagoalpha.GoFunction
+	GetSpreadSheetHandler         awscdklambdagoalpha.GoFunction
+	DeleteSpreadSheetHandler      awscdklambdagoalpha.GoFunction
+	UpdateSpreadSheetTitleHandler awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -108,12 +109,23 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Environment: envs,
 	})
 
+	updateSpreadSheetTitleHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("updateSpreadSheetTitleHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_GO_1_X(),
+		Entry:   jsii.String("./handlers/spreadsheets/update_title"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:        requiredRoles,
+		Environment: envs,
+	})
+
 	return &Lambdas{
-		CallbackHandler:          callbackHandler,
-		AuthenticateHandler:      authenticateHandler,
-		CreateSpreadSheetHandler: createSpreadSheetHandler,
-		GetSpreadSheetHandler:    getSpreadSheetHandler,
-		DeleteSpreadSheetHandler: deleteSpreadSheetHandler,
+		CallbackHandler:               callbackHandler,
+		AuthenticateHandler:           authenticateHandler,
+		CreateSpreadSheetHandler:      createSpreadSheetHandler,
+		GetSpreadSheetHandler:         getSpreadSheetHandler,
+		DeleteSpreadSheetHandler:      deleteSpreadSheetHandler,
+		UpdateSpreadSheetTitleHandler: updateSpreadSheetTitleHandler,
 	}
 }
 
@@ -177,6 +189,13 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Path:        jsii.String("/api/spreadsheet"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_DELETE},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.DeleteSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Update SpreadsheetTitle API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/spreadsheet_title"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_PATCH},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateSpreadSheetTitleHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
 	return spreadsheetApi
