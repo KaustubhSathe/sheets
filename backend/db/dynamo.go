@@ -120,6 +120,31 @@ func (db *Dynamo) DeleteSpreadSheet(spreadsheetID string, user *model.User) (*mo
 	return nil, nil
 }
 
+func (db *Dynamo) UpdateSpreadSheetTitle(spreadsheetID string, user *model.User, newTitle string) error {
+	_, err := db.Client.UpdateItem(&dynamodb.UpdateItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.UserPK(user.ID)),
+			},
+			"SK": {
+				S: aws.String(db.SpreadSheetSK(spreadsheetID)),
+			},
+		},
+		UpdateExpression: aws.String("set SpreadSheetTitle = :spreadSheetTitle"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":spreadSheetTitle": {
+				S: aws.String(newTitle),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *Dynamo) GetSpreadSheets(spreadsheetID string, userID int64) ([]*model.SpreadSheet, error) {
 	res, err := db.Client.Query(&dynamodb.QueryInput{
 		TableName:              aws.String(config.SPREADSHEETTABLE),

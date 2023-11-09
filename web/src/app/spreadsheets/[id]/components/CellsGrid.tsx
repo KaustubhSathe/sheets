@@ -2,36 +2,7 @@ import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
 import { useCallback, useEffect, useState } from 'react';
-
-function getDownID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    return col + (parseInt(row) + 1).toString();
-}
-
-function getUpID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    return col + (parseInt(row) - 1).toString();
-}
-
-function getRightID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
-    return String.fromCharCode(colCode + 1) + row;
-}
-
-function getLeftID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
-    return String.fromCharCode(colCode - 1) + row;
-}
+import Cell from './Cell';
 
 export default function CellsGrid() {
     const dispatch = useDispatch()
@@ -137,6 +108,7 @@ export default function CellsGrid() {
                     id={"rowModifier" + (i + 1).toString()}
                     onMouseOver={(e) => {
                         e.currentTarget.style.width = '100vw'
+                        e.currentTarget.style.zIndex = '10000'
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                     }}
                     onMouseLeave={(e) => {
@@ -162,7 +134,7 @@ export default function CellsGrid() {
             <div
                 id={"column" + String.fromCharCode(65 + i)}
                 key={String.fromCharCode(65 + i)}
-                className="min-w-[66px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative"
+                className="min-w-[70px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative"
             >
                 <span>{String.fromCharCode(65 + i)}</span>
                 <div
@@ -197,47 +169,11 @@ export default function CellsGrid() {
         const x: Array<React.ReactNode> = [];
         for (let i = 0; i < rows; i++) {
             x.push(
-                <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px]`}>
-                    <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] outline-none break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1]"
-                        contentEditable={true}
-                        spellCheck={false}
-                        id={String.fromCharCode(65 + j) + (i + 1).toString()}
-                        onClick={(e) => {
-                            dispatch(setValue(e.currentTarget.id))
-                        }}
-                        onInput={(e) => {
-                            dispatch(setValueFormulaBar(e.currentTarget.outerText))
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === "ArrowDown") {
-                                const currentElementId = e.currentTarget.id
-                                document.getElementById(getDownID(currentElementId))?.focus()
-                            }
-
-                            if (e.key === "ArrowUp") {
-                                const currentElementId = e.currentTarget.id
-                                document.getElementById(getUpID(currentElementId))?.focus()
-                            }
-
-                            if (e.key === "ArrowRight") {
-                                const currentElementId = e.currentTarget.id
-                                document.getElementById(getRightID(currentElementId))?.focus()
-                            }
-
-                            if (e.key === "ArrowLeft") {
-                                const currentElementId = e.currentTarget.id
-                                document.getElementById(getLeftID(currentElementId))?.focus()
-                            }
-                        }}
-                        key={String.fromCharCode(65 + j) + (i + 1).toString()}
-                    ></div>
-                    <div className="absolute -z-10 bottom-[-3px] right-[-3px] w-[10px] h-[10px] rounded-full peer-focus:bg-[#1a73e8] peer-focus:hover:cursor-crosshair peer-focus:z-10">
-                    </div>
-                </div>
+                <Cell i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
             );
         }
         cells.push((
-            <div className="min-w-[66px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
+            <div className="min-w-[70px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
                 {x}
             </div>
         ));

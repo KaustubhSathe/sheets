@@ -31,3 +31,18 @@ export async function DeleteSpreadSheet(access_token: string, spreadsheet_id: st
 
     return response;
 }
+
+export async function UpdateSpreadSheetTitle(access_token: string, spreadsheet_id: string, newTitle: string) {
+    const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_title`, {
+        method: "PATCH",
+        headers: {
+            'spreadsheet_access_token': access_token,
+        },
+        body: JSON.stringify({
+            NewTitle: newTitle,
+            SpreadSheetID: spreadsheet_id,
+        }),
+    })
+
+    return response;
+}
