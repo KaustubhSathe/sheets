@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
 import { CreateSpreadSheet, GetSpreadSheet } from "../api/spreadsheet";
 import { useCallback, useEffect, useState } from "react";
-import { SpreadSheet } from "./components/SpreadSheetTable";
 import SpreadSheetTable from "./components/SpreadSheetTable";
+import { SpreadSheet } from "../types/SpreadSheet";
 
 export default function Dashboard() {
   const router = useRouter()
@@ -28,24 +28,22 @@ export default function Dashboard() {
         .then(res => {
           if (res.status === 200) {
             localStorage.setItem("spreadsheet_access_token", access_token)
+            getspreadsheet(access_token, "")
+              .then(res => {
+                if (res.status === 200) {
+                  return res.json();
+                } else {
+                  console.log(res.status);
+                }
+              }).then(res => {
+                setSpreadSheets(res);
+              })
           } else {
             localStorage.removeItem("spreadsheet_access_token");
             return router.push("/");
           }
         })
-
-      getspreadsheet(access_token, "")
-        .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            console.log(res.status);
-          }
-        }).then(res => {
-          setSpreadSheets(res);
-        })
     }
-    console.log("called");
   }, [router, authenticate, getspreadsheet]);
 
   const createSpreadSheet = () => {
@@ -86,7 +84,7 @@ export default function Dashboard() {
         <div className="h-[250px] w-full bg-[#f1f3f4]">
         </div>
         <div className="w-[75%] ml-auto mr-auto">
-          <SpreadSheetTable spreadsheets={spreadsheets} />
+          <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets}/>
         </div>
       </div>
       <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />

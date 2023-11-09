@@ -101,6 +101,25 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 	return ss, nil
 }
 
+func (db *Dynamo) DeleteSpreadSheet(spreadsheetID string, user *model.User) (*model.SpreadSheet, error) {
+	_, err := db.Client.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.UserPK(user.ID)),
+			},
+			"SK": {
+				S: aws.String(db.SpreadSheetSK(spreadsheetID)),
+			},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
 func (db *Dynamo) GetSpreadSheets(spreadsheetID string, userID int64) ([]*model.SpreadSheet, error) {
 	res, err := db.Client.Query(&dynamodb.QueryInput{
 		TableName:              aws.String(config.SPREADSHEETTABLE),

@@ -40,8 +40,18 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		dynamo = db.NewDynamo(ctx)
 	}
 
-	// Now delete the spreadsheet using spreadsheet ID from DB
+	// Now delete the spreadsheet using spreadsheet ID from redis first
 	err = redis.Delete(ctx, redis.SpreadSheetKey(spreadsheet_id))
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
+	// Now delete the spreadsheet using spreadsheet IF from dynamo DB
+	_, err = dynamo.DeleteSpreadSheet(spreadsheet_id, &model.User{
+		ID: int64(userInfo.User["id"].(float64)),
+	})
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
