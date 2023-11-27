@@ -42,7 +42,7 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 contentEditable
                 spellCheck={false}
                 id={String.fromCharCode(65 + j) + (i + 1).toString()}
-                onClick={(e) => {
+                onFocus={(e) => {
                     dispatch(setValue(e.currentTarget.id))
                     dispatch(setSelectedCell(e.currentTarget.id))
                 }}

@@ -13,12 +13,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SpreadSheetTable from "./components/SpreadSheetTable";
 import { SpreadSheet } from "../types/SpreadSheet";
 import Template from "./components/Template";
+import Loading from "./components/Loading";
 
 export default function Dashboard() {
   const router = useRouter()
   const [spreadsheets, setSpreadSheets] = useState<SpreadSheet[]>([]);
   const [profileVisible, setProfileVisible] = useState<boolean>(false);
   const [profileName, setProfileName] = useState<string>("");
+  const [createNewSpreadSheetLoader, setCreateNewSpreadSheetLoader] = useState<boolean>(false);
+
   const authenticate = useCallback(Authenticate, []);
   const getspreadsheet = useCallback(GetSpreadSheet, []);
 
@@ -70,7 +73,7 @@ export default function Dashboard() {
 
   const createSpreadSheet = () => {
     const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-
+    setCreateNewSpreadSheetLoader(true);
     CreateSpreadSheet(access_token)
       .then(res => {
         if (res.status === 200) {
@@ -84,55 +87,62 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="m-0 p-0">
-      <div className="relative h-[64px] w-full bg-[#ffffff] flex justify-between">
-        <div className="ml-4 flex mr-4">
-          <Link href="/spreadsheets" className='mb-auto mt-auto min-w-[60px] pl-[10px] pr-[10px] flex align-middle justify-center hover:cursor-pointer'>
-            <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
-          </Link>
-          <span className="mt-auto mb-auto inline-block font-sans font-semibold text-2xl text-[#5f6368]">Sheets</span>
-        </div>
-        <div className="mr-4 h-[48px] w-[60%] bg-[#f1f3f4] mt-auto mb-auto flex align-middle justify-start rounded-xl relative focus-within:bg-[#ffffff] focus-within:scale-[1.01] focus-within:shadow-sm focus-within:shadow-black">
-          <div className="left-[4px] top-[4px] absolute h-[40px] w-[40px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
-            <HiOutlineMagnifyingGlass className="w-[25px] h-[25px] mt-auto mb-auto" />
+    <>
+      {createNewSpreadSheetLoader && <>
+        <div className="absolute w-[100%] h-[100%] bg-black opacity-20 z-100 flex justify-center align-middle" >
+        </div >
+        <div className="absolute top-[50%] left-[50%] z-1000"><Loading /></div>
+      </>}
+      <div className="m-0 p-0">
+        <div className="relative h-[64px] w-full bg-[#ffffff] flex justify-between">
+          <div className="ml-4 flex mr-4">
+            <Link href="/spreadsheets" className='mb-auto mt-auto min-w-[60px] pl-[10px] pr-[10px] flex align-middle justify-center hover:cursor-pointer'>
+              <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
+            </Link>
+            <span className="mt-auto mb-auto inline-block font-sans font-semibold text-2xl text-[#5f6368]">Sheets</span>
           </div>
-          <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
-        </div>
-        <div ref={ref1} onClick={() => setProfileVisible(true)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
-          <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
-        </div>
-        {profileVisible && <div className="absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
-          <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
-            <span className="m-auto block font-bold">Hi, {profileName}!!</span>
+          <div className="mr-4 h-[48px] w-[60%] bg-[#f1f3f4] mt-auto mb-auto flex align-middle justify-start rounded-xl relative focus-within:bg-[#ffffff] focus-within:scale-[1.01] focus-within:shadow-sm focus-within:shadow-black">
+            <div className="left-[4px] top-[4px] absolute h-[40px] w-[40px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+              <HiOutlineMagnifyingGlass className="w-[25px] h-[25px] mt-auto mb-auto" />
+            </div>
+            <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
           </div>
-          <div className="ml-auto mr-auto bg-slate-400 w-[80%] h-[40px] rounded-2xl text-center hover:bg-slate-500 hover:cursor-pointer flex" onClick={() => {
-            localStorage.removeItem("spreadsheet_access_token");
-            router.push("/");
-          }}>
-            <span className="m-auto block font-bold">Log Out</span>
+          <div ref={ref1} onClick={() => setProfileVisible(true)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+            <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
           </div>
-        </div>}
+          {profileVisible && <div className="absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
+            <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
+              <span className="m-auto block font-bold">Hi, {profileName}!!</span>
+            </div>
+            <div className="ml-auto mr-auto bg-slate-400 w-[80%] h-[40px] rounded-2xl text-center hover:bg-slate-500 hover:cursor-pointer flex" onClick={() => {
+              localStorage.removeItem("spreadsheet_access_token");
+              router.push("/");
+            }}>
+              <span className="m-auto block font-bold">Log Out</span>
+            </div>
+          </div>}
+        </div>
+        <div className="h-[calc(100vh-64px)] w-full">
+          <div className="h-[250px] w-full bg-[#f1f3f4] flex flex-col justify-center align-middle">
+            <div className="h-[64px] w-[75%] flex justify-start ml-[14%]">
+              <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
+            </div>
+            <div className="w-[75%] flex justify-center align-middle gap-[40px] m-auto mt-0 mb-auto">
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+            </div>
+          </div>
+          <div className="w-[75%] ml-auto mr-auto">
+            <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
+          </div>
+        </div>
+        <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />
       </div>
-      <div className="h-[calc(100vh-64px)] w-full">
-        <div className="h-[250px] w-full bg-[#f1f3f4] flex flex-col justify-center align-middle">
-          <div className="h-[64px] w-[75%] flex justify-start ml-[14%]">
-            <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
-          </div>
-          <div className="w-[75%] flex justify-center align-middle gap-[40px] m-auto mt-0 mb-auto">
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-            <Template templateName="Blank spreadsheet" />
-          </div>
-        </div>
-        <div className="w-[75%] ml-auto mr-auto">
-          <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
-        </div>
-      </div>
-      <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />
-    </div>
+    </>
   )
 }
