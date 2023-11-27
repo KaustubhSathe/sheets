@@ -18,23 +18,24 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen sm:flex bg-slate-200">
-      <div className="h-full sm:w-[70%] flex flex-col align-middle justify-center gap-5 p-8">
-        <div className='flex justify-center'>
+      <div className="h-full sm:w-[70%] flex flex-col align-middle justify-center p-8">
+        <div className='flex justify-center mb-[8px]'>
           <span className="font-sans text-4xl font-semibold">Make data-driven decisions, in Work Sheets</span>
         </div>
-        <div className='flex justify-center'>
+        <div className='flex justify-center mb-[16px]'>
           <span className="font-sans text-xl font-normal">Create and collaborate on online spreadsheets in real-time and from any device.</span>
         </div>
-        <div className='flex justify-center'>
+        <video controls autoPlay muted className='w-[320px] h-[240px] sm:w-[70%] sm:h-[420px] mb-[16px] ml-auto mr-auto' src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
+        <div className='flex justify-center mb-[8px]'>
           <span className="font-sans text-3xl font-semibold">Available On:</span>
         </div>
-        <div className="flex align-middle justify-center gap-3">
+        <div className="flex align-middle justify-center gap-3 mb-[8px]">
           <AiFillChrome className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
           <AiFillAndroid className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
           <AiFillApple className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
           <AiOutlineDesktop className="w-[50px] h-[50px] hover:scale-[1.10] hover:cursor-pointer" />
         </div>
-        <div className='flex justify-center'>
+        <div className='flex justify-center mb-[8px]'>
           <span className="font-sans text-2xl font-normal">Check the code here: <a href="https://github.com/KaustubhSathe/spreadsheet" target='_blank' className='text-blue-500 hover:text-blue-700'>Github</a></span>
         </div>
         <div className='flex justify-center'>

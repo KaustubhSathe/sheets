@@ -9,15 +9,34 @@ import { PiPlusLight } from 'react-icons/pi'
 import { useRouter } from "next/navigation";
 import { Authenticate } from "../api/auth";
 import { CreateSpreadSheet, GetSpreadSheet } from "../api/spreadsheet";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SpreadSheetTable from "./components/SpreadSheetTable";
 import { SpreadSheet } from "../types/SpreadSheet";
+import Template from "./components/Template";
 
 export default function Dashboard() {
   const router = useRouter()
   const [spreadsheets, setSpreadSheets] = useState<SpreadSheet[]>([]);
+  const [profileVisible, setProfileVisible] = useState<boolean>(false);
+  const [profileName, setProfileName] = useState<string>("");
   const authenticate = useCallback(Authenticate, []);
   const getspreadsheet = useCallback(GetSpreadSheet, []);
+
+  const ref1 = useRef<HTMLDivElement>(null);
+
+  const click = useCallback((e: MouseEvent) => {
+    if (ref1.current && !ref1.current.contains(e.target as Node)) {
+      setProfileVisible(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("click", click);
+
+    return () => {
+      document.removeEventListener("click", click);
+    };
+  }, [click]);
 
   useEffect(() => {
     const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
@@ -25,9 +44,12 @@ export default function Dashboard() {
       return router.push("/")
     } else {
       authenticate(access_token)
-        .then(res => {
+        .then(async res => {
           if (res.status === 200) {
             localStorage.setItem("spreadsheet_access_token", access_token)
+            const userInfo = await res.json();
+            console.log(userInfo);
+            setProfileName(userInfo.login);
             getspreadsheet(access_token, "")
               .then(res => {
                 if (res.status === 200) {
@@ -63,7 +85,7 @@ export default function Dashboard() {
 
   return (
     <div className="m-0 p-0">
-      <div className="h-[64px] w-full bg-[#ffffff] flex justify-between">
+      <div className="relative h-[64px] w-full bg-[#ffffff] flex justify-between">
         <div className="ml-4 flex mr-4">
           <Link href="/spreadsheets" className='mb-auto mt-auto min-w-[60px] pl-[10px] pr-[10px] flex align-middle justify-center hover:cursor-pointer'>
             <Image title='Sheets Home' width={30} height={30} src={Sheet} alt="sheet-icon" />
@@ -76,15 +98,38 @@ export default function Dashboard() {
           </div>
           <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
         </div>
-        <div className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+        <div ref={ref1} onClick={() => setProfileVisible(true)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
           <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
         </div>
+        {profileVisible && <div className="absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
+          <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
+            <span className="m-auto block font-bold">Hi, {profileName}!!</span>
+          </div>
+          <div className="ml-auto mr-auto bg-slate-400 w-[80%] h-[40px] rounded-2xl text-center hover:bg-slate-500 hover:cursor-pointer flex" onClick={() => {
+            localStorage.removeItem("spreadsheet_access_token");
+            router.push("/");
+          }}>
+            <span className="m-auto block font-bold">Log Out</span>
+          </div>
+        </div>}
       </div>
       <div className="h-[calc(100vh-64px)] w-full">
-        <div className="h-[250px] w-full bg-[#f1f3f4]">
+        <div className="h-[250px] w-full bg-[#f1f3f4] flex flex-col justify-center align-middle">
+          <div className="h-[64px] w-[75%] flex justify-start ml-[14%]">
+            <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
+          </div>
+          <div className="w-[75%] flex justify-center align-middle gap-[40px] m-auto mt-0 mb-auto">
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+            <Template templateName="Blank spreadsheet" />
+          </div>
         </div>
         <div className="w-[75%] ml-auto mr-auto">
-          <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets}/>
+          <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
         </div>
       </div>
       <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />

@@ -1,6 +1,7 @@
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import SpreadSheetTile from "./SpreadSheetTile";
 import { Dispatch, SetStateAction } from "react";
+import Loading from "./Loading";
 
 export default function SpreadSheetTable({ spreadsheets, setSpreadSheets }: { spreadsheets: SpreadSheet[], setSpreadSheets: Dispatch<SetStateAction<SpreadSheet[]>> }) {
     return (
@@ -14,10 +15,12 @@ export default function SpreadSheetTable({ spreadsheets, setSpreadSheets }: { sp
                 </div>
             </div>
             {
-                spreadsheets.sort((a, b) => {
+                spreadsheets.length === 0 ? <div className="ml-auto mr-auto flex justify-center mt-[100px]">
+                    <Loading />
+                </div> : spreadsheets.sort((a, b) => {
                     return (new Date(b.LastOpened).getTime() - new Date(a.LastOpened).getTime());
                 }).map(ss => (
-                    <SpreadSheetTile key={ss.SK} spreadsheet={ss} spreadSheets={spreadsheets} setSpreadSheets={setSpreadSheets}/>
+                    <SpreadSheetTile key={ss.SK} spreadsheet={ss} spreadSheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
                 ))
             }
         </div>

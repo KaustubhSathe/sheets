@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/db"
+	"backend/db/model"
 	"backend/utils"
 	"context"
 
@@ -42,8 +43,17 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}, nil
 	}
 
+	userInfo := &model.UserInfo{}
+	err = utils.Parse(resp, &userInfo)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
+		Body:       utils.Stringify(userInfo.User),
 	}, nil
 }
 

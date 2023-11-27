@@ -87,7 +87,7 @@ export default function SpreadSheetTile({ spreadsheet, spreadSheets, setSpreadSh
                 {/* For greater than sm sizes */}
                 <div className="justify-center align-middle sm:block hidden mt-auto mb-auto">
                     <div className="ml-4 align-middle justify-center inline-block">
-                        <BsFillFileEarmarkSpreadsheetFill className="w-[20px] h-[20px] mt-auto mb-auto" />
+                        <BsFillFileEarmarkSpreadsheetFill style={{ color: '#0F9D58' }} className="w-[20px] h-[20px] mt-auto mb-auto" />
                     </div>
                     <div className="ml-4 align-middle justify-center inline-block">
                         <span className="mt-auto mb-auto font-roboto font-normal text-sm">{spreadSheetData.SpreadSheetTitle}</span>
