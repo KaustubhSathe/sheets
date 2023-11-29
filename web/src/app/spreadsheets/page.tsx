@@ -110,7 +110,7 @@ export default function Dashboard() {
           <div ref={ref1} onClick={() => setProfileVisible(true)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
             <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
           </div>
-          {profileVisible && <div className="absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
+          {profileVisible && <div className="shadow-black shadow-md absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
             <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
               <span className="m-auto block font-bold">Hi, {profileName}!!</span>
             </div>
