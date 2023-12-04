@@ -60,63 +60,69 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 
 	// Now create all lambda functions with previously created AmazonDynamoDBFullAccess role
 	callbackHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("callbackHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/auth/callback"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	authenticateHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("authenticateHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/auth/authenticate"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	createSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("createSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/spreadsheets/create"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	getSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("getSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/spreadsheets/get"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	deleteSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("deleteSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/spreadsheets/delete"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	updateSpreadSheetTitleHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("updateSpreadSheetTitleHandler"), &awscdklambdagoalpha.GoFunctionProps{
-		Runtime: awslambda.Runtime_GO_1_X(),
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
 		Entry:   jsii.String("./handlers/spreadsheets/update_title"),
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
 		Role:        requiredRoles,
 		Environment: envs,
+		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
 	return &Lambdas{
