@@ -1,8 +1,8 @@
 package db
 
 import (
-	"backend/config"
-	"backend/db/model"
+	"backend-go/config"
+	"backend-go/db/model"
 	"context"
 	"fmt"
 	"log"

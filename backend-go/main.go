@@ -27,9 +27,9 @@ type Lambdas struct {
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
-	awsdynamodb.NewTable(stack, jsii.String("spreadsheet_db"), &awsdynamodb.TableProps{
+	awsdynamodb.NewTable(stack, jsii.String("spreadsheet_db_go"), &awsdynamodb.TableProps{
 		BillingMode: awsdynamodb.BillingMode_PAY_PER_REQUEST,
-		TableName:   jsii.String("spreadsheet_db"),
+		TableName:   jsii.String("spreadsheet_db_go"),
 		PartitionKey: &awsdynamodb.Attribute{
 			Name: aws.String("PK"),
 			Type: awsdynamodb.AttributeType_STRING,
@@ -207,7 +207,7 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 	return spreadsheetApi
 }
 
-func NewSpreadSheetStack(scope constructs.Construct, id string, props *awscdk.StackProps) awscdk.Stack {
+func NewSpreadSheetGoStack(scope constructs.Construct, id string, props *awscdk.StackProps) awscdk.Stack {
 	stack := awscdk.NewStack(scope, &id, props)
 
 	// Now create a DynamoDB table
@@ -235,10 +235,10 @@ func main() {
 	}
 	app := awscdk.NewApp(nil)
 
-	NewSpreadSheetStack(app, "SpreadSheetStack", &awscdk.StackProps{
+	NewSpreadSheetGoStack(app, "SpreadSheetGoStack", &awscdk.StackProps{
 		Env:         env(),
-		StackName:   aws.String("spreadsheet-stack"),
-		Description: aws.String("AWS stack for spreadsheet application."),
+		StackName:   aws.String("spreadsheet-go-stack"),
+		Description: aws.String("AWS go stack for spreadsheet application."),
 	})
 
 	app.Synth(nil)

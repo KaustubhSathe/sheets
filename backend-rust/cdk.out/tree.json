@@ -1,0 +1,443 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "SpreadSheetRustStack": {
+        "id": "SpreadSheetRustStack",
+        "path": "SpreadSheetRustStack",
+        "children": {
+          "spreadsheet_db_rust": {
+            "id": "spreadsheet_db_rust",
+            "path": "SpreadSheetRustStack/spreadsheet_db_rust",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "SpreadSheetRustStack/spreadsheet_db_rust/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "PK",
+                        "attributeType": "S"
+                      },
+                      {
+                        "attributeName": "SK",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "billingMode": "PAY_PER_REQUEST",
+                    "keySchema": [
+                      {
+                        "attributeName": "PK",
+                        "keyType": "HASH"
+                      },
+                      {
+                        "attributeName": "SK",
+                        "keyType": "RANGE"
+                      }
+                    ],
+                    "tableName": "spreadsheet_db_rust"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.113.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "SpreadSheetRustStack/spreadsheet_db_rust/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.113.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.113.0"
+            }
+          },
+          "AmazonDynamoDBFullAccess": {
+            "id": "AmazonDynamoDBFullAccess",
+            "path": "SpreadSheetRustStack/AmazonDynamoDBFullAccess",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.113.0"
+            }
+          },
+          "AWSLambdaBasicExecutionRole": {
+            "id": "AWSLambdaBasicExecutionRole",
+            "path": "SpreadSheetRustStack/AWSLambdaBasicExecutionRole",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.113.0"
+            }
+          },
+          "requiredRoles": {
+            "id": "requiredRoles",
+            "path": "SpreadSheetRustStack/requiredRoles",
+            "children": {
+              "ImportrequiredRoles": {
+                "id": "ImportrequiredRoles",
+                "path": "SpreadSheetRustStack/requiredRoles/ImportrequiredRoles",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.113.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "SpreadSheetRustStack/requiredRoles/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+                      "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.113.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.113.0"
+            }
+          },
+          "getSpreadSheetHandler": {
+            "id": "getSpreadSheetHandler",
+            "path": "SpreadSheetRustStack/getSpreadSheetHandler",
+            "children": {
+              "Code": {
+                "id": "Code",
+                "path": "SpreadSheetRustStack/getSpreadSheetHandler/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "SpreadSheetRustStack/getSpreadSheetHandler/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.113.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "SpreadSheetRustStack/getSpreadSheetHandler/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.113.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.113.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "SpreadSheetRustStack/getSpreadSheetHandler/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "architectures": [
+                      "arm64"
+                    ],
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-473539126755-us-east-1",
+                      "s3Key": "316edfee5cb2707a5ce869b29ab8043b7b13291508f77c32bc045c678c47b8af.zip"
+                    },
+                    "environment": {
+                      "variables": {
+                        "DOMAIN": "https://spreadsheet-clone.vercel.app",
+                        "GITHUB_CLIENT_ID": "66089daaf1e92c19a356",
+                        "GITHUB_CLIENT_SECRET": "8c7bfd5397526ec6fa408144fbd61dbadeb529ad",
+                        "MOMENTO_AUTH_TOKEN": "eyJlbmRwb2ludCI6ImNlbGwtdXMtZWFzdC0xLTEucHJvZC5hLm1vbWVudG9ocS5jb20iLCJhcGlfa2V5IjoiZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKemRXSWlPaUptTWpBeE5UUTJOa0J3YVd4aGJta3VZbWwwY3kxd2FXeGhibWt1WVdNdWFXNGlMQ0oyWlhJaU9qRXNJbkFpT2lKRFFVRTlJbjAuN2didEZHRU0wMC12ejBXSmYwVnJkMHc4Q2d5a19RTTdGdl9nQnRXVV96QSJ9"
+                      }
+                    },
+                    "functionName": "getSpreadSheetHandler",
+                    "handler": "getSpreadSheetHandler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "requiredRoles97D50CF2",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "provided.al2"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.113.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.113.0"
+            }
+          },
+          "SpreadSheetHTTPApi": {
+            "id": "SpreadSheetHTTPApi",
+            "path": "SpreadSheetRustStack/SpreadSheetHTTPApi",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Api",
+                  "aws:cdk:cloudformation:props": {
+                    "corsConfiguration": {
+                      "allowCredentials": true,
+                      "allowHeaders": [
+                        "Authorization",
+                        "*",
+                        "spreadsheet_access_token"
+                      ],
+                      "allowMethods": [
+                        "DELETE",
+                        "GET",
+                        "PUT",
+                        "POST",
+                        "PATCH",
+                        "*",
+                        "OPTIONS"
+                      ],
+                      "allowOrigins": [
+                        "https://spreadsheet-clone.vercel.app",
+                        "http://localhost:3000"
+                      ],
+                      "maxAge": 18000
+                    },
+                    "name": "SpreadSheetHTTPApi",
+                    "protocolType": "HTTP"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigatewayv2.CfnApi",
+                  "version": "2.113.0"
+                }
+              },
+              "DefaultStage": {
+                "id": "DefaultStage",
+                "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/DefaultStage",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/DefaultStage/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "apiId": {
+                          "Ref": "SpreadSheetHTTPApi70B36392"
+                        },
+                        "autoDeploy": true,
+                        "stageName": "$default"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigatewayv2.CfnStage",
+                      "version": "2.113.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "@aws-cdk/aws-apigatewayv2-alpha.HttpStage",
+                  "version": "2.113.0-alpha.0"
+                }
+              },
+              "GET--api--spreadsheet": {
+                "id": "GET--api--spreadsheet",
+                "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet",
+                "children": {
+                  "SpreadSheetHttpLambdaIntegration": {
+                    "id": "SpreadSheetHttpLambdaIntegration",
+                    "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Integration",
+                          "aws:cdk:cloudformation:props": {
+                            "apiId": {
+                              "Ref": "SpreadSheetHTTPApi70B36392"
+                            },
+                            "integrationType": "AWS_PROXY",
+                            "integrationUri": {
+                              "Fn::GetAtt": [
+                                "getSpreadSheetHandlerF4523B1C",
+                                "Arn"
+                              ]
+                            },
+                            "payloadFormatVersion": "2.0"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigatewayv2.CfnIntegration",
+                          "version": "2.113.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "@aws-cdk/aws-apigatewayv2-alpha.HttpIntegration",
+                      "version": "2.113.0-alpha.0"
+                    }
+                  },
+                  "SpreadSheetHttpLambdaIntegration-Permission": {
+                    "id": "SpreadSheetHttpLambdaIntegration-Permission",
+                    "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration-Permission",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                      "aws:cdk:cloudformation:props": {
+                        "action": "lambda:InvokeFunction",
+                        "functionName": {
+                          "Fn::GetAtt": [
+                            "getSpreadSheetHandlerF4523B1C",
+                            "Arn"
+                          ]
+                        },
+                        "principal": "apigateway.amazonaws.com",
+                        "sourceArn": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "arn:aws:execute-api:us-east-1:473539126755:",
+                              {
+                                "Ref": "SpreadSheetHTTPApi70B36392"
+                              },
+                              "/*/*/api/spreadsheet"
+                            ]
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                      "version": "2.113.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGatewayV2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "apiId": {
+                          "Ref": "SpreadSheetHTTPApi70B36392"
+                        },
+                        "authorizationType": "NONE",
+                        "routeKey": "GET /api/spreadsheet",
+                        "target": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "integrations/",
+                              {
+                                "Ref": "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegration1F6F3DE5"
+                              }
+                            ]
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigatewayv2.CfnRoute",
+                      "version": "2.113.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "@aws-cdk/aws-apigatewayv2-alpha.HttpRoute",
+                  "version": "2.113.0-alpha.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-apigatewayv2-alpha.HttpApi",
+              "version": "2.113.0-alpha.0"
+            }
+          },
+          "SpreadSheetApiEndpoint": {
+            "id": "SpreadSheetApiEndpoint",
+            "path": "SpreadSheetRustStack/SpreadSheetApiEndpoint",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.113.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "SpreadSheetRustStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "SpreadSheetRustStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.113.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.3.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "SpreadSheetRustStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.113.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "SpreadSheetRustStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.113.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.113.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.3.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.113.0"
+    }
+  }
+}

@@ -11,9 +11,9 @@ import (
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 
-	"backend/db"
-	"backend/db/model"
-	"backend/utils"
+	"backend-go/db"
+	"backend-go/db/model"
+	"backend-go/utils"
 )
 
 var cli *gentleman.Client = gentleman.New()

@@ -1,0 +1,269 @@
+{
+ "Description": "AWS rust stack for spreadsheet application.",
+ "Resources": {
+  "spreadsheetdbrust386A6319": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "spreadsheet_db_rust"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/spreadsheet_db_rust/Resource"
+   }
+  },
+  "requiredRoles97D50CF2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/requiredRoles/Resource"
+   }
+  },
+  "getSpreadSheetHandlerF4523B1C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-473539126755-us-east-1",
+     "S3Key": "316edfee5cb2707a5ce869b29ab8043b7b13291508f77c32bc045c678c47b8af.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DOMAIN": "https://spreadsheet-clone.vercel.app",
+      "GITHUB_CLIENT_ID": "66089daaf1e92c19a356",
+      "GITHUB_CLIENT_SECRET": "8c7bfd5397526ec6fa408144fbd61dbadeb529ad",
+      "MOMENTO_AUTH_TOKEN": "eyJlbmRwb2ludCI6ImNlbGwtdXMtZWFzdC0xLTEucHJvZC5hLm1vbWVudG9ocS5jb20iLCJhcGlfa2V5IjoiZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKemRXSWlPaUptTWpBeE5UUTJOa0J3YVd4aGJta3VZbWwwY3kxd2FXeGhibWt1WVdNdWFXNGlMQ0oyWlhJaU9qRXNJbkFpT2lKRFFVRTlJbjAuN2didEZHRU0wMC12ejBXSmYwVnJkMHc4Q2d5a19RTTdGdl9nQnRXVV96QSJ9"
+     }
+    },
+    "FunctionName": "getSpreadSheetHandler",
+    "Handler": "getSpreadSheetHandler",
+    "Role": {
+     "Fn::GetAtt": [
+      "requiredRoles97D50CF2",
+      "Arn"
+     ]
+    },
+    "Runtime": "provided.al2"
+   },
+   "DependsOn": [
+    "requiredRoles97D50CF2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/getSpreadSheetHandler/Resource",
+    "aws:asset:path": "asset.316edfee5cb2707a5ce869b29ab8043b7b13291508f77c32bc045c678c47b8af.zip",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SpreadSheetHTTPApi70B36392": {
+   "Type": "AWS::ApiGatewayV2::Api",
+   "Properties": {
+    "CorsConfiguration": {
+     "AllowCredentials": true,
+     "AllowHeaders": [
+      "Authorization",
+      "*",
+      "spreadsheet_access_token"
+     ],
+     "AllowMethods": [
+      "DELETE",
+      "GET",
+      "PUT",
+      "POST",
+      "PATCH",
+      "*",
+      "OPTIONS"
+     ],
+     "AllowOrigins": [
+      "https://spreadsheet-clone.vercel.app",
+      "http://localhost:3000"
+     ],
+     "MaxAge": 18000
+    },
+    "Name": "SpreadSheetHTTPApi",
+    "ProtocolType": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/SpreadSheetHTTPApi/Resource"
+   }
+  },
+  "SpreadSheetHTTPApiDefaultStageF431F4AC": {
+   "Type": "AWS::ApiGatewayV2::Stage",
+   "Properties": {
+    "ApiId": {
+     "Ref": "SpreadSheetHTTPApi70B36392"
+    },
+    "AutoDeploy": true,
+    "StageName": "$default"
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/SpreadSheetHTTPApi/DefaultStage/Resource"
+   }
+  },
+  "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegration1F6F3DE5": {
+   "Type": "AWS::ApiGatewayV2::Integration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "SpreadSheetHTTPApi70B36392"
+    },
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": {
+     "Fn::GetAtt": [
+      "getSpreadSheetHandlerF4523B1C",
+      "Arn"
+     ]
+    },
+    "PayloadFormatVersion": "2.0"
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration/Resource"
+   }
+  },
+  "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegrationPermission9783562E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "getSpreadSheetHandlerF4523B1C",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:473539126755:",
+       {
+        "Ref": "SpreadSheetHTTPApi70B36392"
+       },
+       "/*/*/api/spreadsheet"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration-Permission"
+   }
+  },
+  "SpreadSheetHTTPApiGETapispreadsheetF8565941": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "SpreadSheetHTTPApi70B36392"
+    },
+    "AuthorizationType": "NONE",
+    "RouteKey": "GET /api/spreadsheet",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegration1F6F3DE5"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PzW6DMBCEn4W7Wf6inptEqtpTK9J7tIBDXMBG7LoosvzulQ2VcpqR/WlmtoSiqMDlCa6Utt2QjqoBd2FsB4ErXV330DiZrgH3jc0oxfmmo/FC4QSuNttbUC9GnJoOwb1Z3bIyOvw8+y+5TIpIGe0FVVckkkxwDCKogpNtB8knJClwVj2yXPHxW4I73/RxViHhwtjHwg/Nsl/wP7k2lqX3opZk7NJKEUMDrXQfgE/Ls+WI7ogXeYrjfEfIk9f9/Czoc/dOuHfmOUwIum0ILrZG9zTHe9GbAsoCDtmqdGdWynDqXg7JDymVLlazmiTUm/4BN0rsJIEBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "SpreadSheetRustStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "SpreadSheetApiEndpoint": {
+   "Description": "HTTP API Endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "SpreadSheetHTTPApi70B36392",
+     "ApiEndpoint"
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

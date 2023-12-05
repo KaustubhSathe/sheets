@@ -1,9 +1,9 @@
 package main
 
 import (
-	"backend/db"
-	"backend/db/model"
-	"backend/utils"
+	"backend-go/db"
+	"backend-go/db/model"
+	"backend-go/utils"
 	"context"
 	"fmt"
 

@@ -1,0 +1,128 @@
+{
+  "version": "35.0.0",
+  "artifacts": {
+    "SpreadSheetRustStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "SpreadSheetRustStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "SpreadSheetRustStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://473539126755/us-east-1",
+      "properties": {
+        "templateFile": "SpreadSheetRustStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::473539126755:role/cdk-hnb659fds-deploy-role-473539126755-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::473539126755:role/cdk-hnb659fds-cfn-exec-role-473539126755-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-473539126755-us-east-1/0ef41304b32c129910aa96891318228065337e167781baecc805501e0fbf1ce6.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "SpreadSheetRustStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::473539126755:role/cdk-hnb659fds-lookup-role-473539126755-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "spreadsheet-rust-stack"
+      },
+      "dependencies": [
+        "SpreadSheetRustStack.assets"
+      ],
+      "metadata": {
+        "/SpreadSheetRustStack/spreadsheet_db_rust": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "spreadsheetdbrust386A6319"
+            }
+          }
+        ],
+        "/SpreadSheetRustStack/spreadsheet_db_rust/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "spreadsheetdbrust386A6319"
+          }
+        ],
+        "/SpreadSheetRustStack/requiredRoles/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "requiredRoles97D50CF2"
+          }
+        ],
+        "/SpreadSheetRustStack/getSpreadSheetHandler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "getSpreadSheetHandlerF4523B1C"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetHTTPApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetHTTPApi70B36392"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetHTTPApi/DefaultStage/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetHTTPApiDefaultStageF431F4AC"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegration1F6F3DE5"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/SpreadSheetHttpLambdaIntegration-Permission": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetHTTPApiGETapispreadsheetSpreadSheetHttpLambdaIntegrationPermission9783562E"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetHTTPApi/GET--api--spreadsheet/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetHTTPApiGETapispreadsheetF8565941"
+          }
+        ],
+        "/SpreadSheetRustStack/SpreadSheetApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SpreadSheetApiEndpoint"
+          }
+        ],
+        "/SpreadSheetRustStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/SpreadSheetRustStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/SpreadSheetRustStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "SpreadSheetRustStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
