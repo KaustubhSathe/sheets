@@ -247,6 +247,6 @@ func main() {
 func env() *awscdk.Environment {
 	return &awscdk.Environment{
 		Account: aws.String("473539126755"),
-		Region:  aws.String("us-east-1"),
+		Region:  aws.String("ap-south-1"),
 	}
 }
