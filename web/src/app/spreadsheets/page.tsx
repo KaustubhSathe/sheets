@@ -122,12 +122,13 @@ export default function Dashboard() {
             </div>
           </div>}
         </div>
+
         <div className="h-[calc(100vh-64px)] w-full">
           <div className="h-[250px] w-full bg-[#f1f3f4] flex flex-col justify-center align-middle">
             <div className="h-[64px] w-[75%] flex justify-start ml-[14%]">
               <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
             </div>
-            <div className="w-[75%] flex justify-center align-middle gap-[40px] m-auto mt-0 mb-auto">
+            <div className="w-[75%] flex justify-start align-middle m-auto mt-0 mb-auto overflow-x-scroll">
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />

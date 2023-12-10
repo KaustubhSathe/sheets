@@ -164,15 +164,15 @@
                       "arm64"
                     ],
                     "code": {
-                      "s3Bucket": "cdk-hnb659fds-assets-473539126755-us-east-1",
-                      "s3Key": "316edfee5cb2707a5ce869b29ab8043b7b13291508f77c32bc045c678c47b8af.zip"
+                      "s3Bucket": "cdk-hnb659fds-assets-473539126755-ap-south-1",
+                      "s3Key": "06c6a68e5b4707e8572f7ef6f428add57d8e91b4b90ac25a1a01e23180d2f9eb.zip"
                     },
                     "environment": {
                       "variables": {
                         "DOMAIN": "https://spreadsheet-clone.vercel.app",
                         "GITHUB_CLIENT_ID": "66089daaf1e92c19a356",
                         "GITHUB_CLIENT_SECRET": "8c7bfd5397526ec6fa408144fbd61dbadeb529ad",
-                        "MOMENTO_AUTH_TOKEN": "eyJlbmRwb2ludCI6ImNlbGwtdXMtZWFzdC0xLTEucHJvZC5hLm1vbWVudG9ocS5jb20iLCJhcGlfa2V5IjoiZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKemRXSWlPaUptTWpBeE5UUTJOa0J3YVd4aGJta3VZbWwwY3kxd2FXeGhibWt1WVdNdWFXNGlMQ0oyWlhJaU9qRXNJbkFpT2lKRFFVRTlJbjAuN2didEZHRU0wMC12ejBXSmYwVnJkMHc4Q2d5a19RTTdGdl9nQnRXVV96QSJ9"
+                        "MOMENTO_AUTH_TOKEN": "eyJlbmRwb2ludCI6ImNlbGwtMS1hcC1zb3V0aC0xLTEucHJvZC5hLm1vbWVudG9ocS5jb20iLCJhcGlfa2V5IjoiZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKemRXSWlPaUptTWpBeE5UUTJOa0J3YVd4aGJta3VZbWwwY3kxd2FXeGhibWt1WVdNdWFXNGlMQ0oyWlhJaU9qRXNJbkFpT2lKRFFVRTlJbjAuZjNnNjNyMGdlRVhlOXVrZnBoMV81QUhhRVhpc2V1YmlZU21nM3d1ODZ1VSJ9"
                       }
                     },
                     "functionName": "getSpreadSheetHandler",
@@ -322,7 +322,7 @@
                           "Fn::Join": [
                             "",
                             [
-                              "arn:aws:execute-api:us-east-1:473539126755:",
+                              "arn:aws:execute-api:ap-south-1:473539126755:",
                               {
                                 "Ref": "SpreadSheetHTTPApi70B36392"
                               },

@@ -91,7 +91,7 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Role:         requiredRoles,
 		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
-		Code:         awslambda.AssetCode_FromAsset(jsii.String("./target/lambda/spreadsheet-get/bootstrap.zip"), &awss3assets.AssetOptions{}),
+		Code:         awslambda.AssetCode_FromAsset(jsii.String("./target/lambda/spreadsheet_get/bootstrap.zip"), &awss3assets.AssetOptions{}),
 		Handler:      aws.String("getSpreadSheetHandler"),
 		FunctionName: aws.String("getSpreadSheetHandler"),
 	})
@@ -240,6 +240,6 @@ func main() {
 func env() *awscdk.Environment {
 	return &awscdk.Environment{
 		Account: aws.String("473539126755"),
-		Region:  aws.String("us-east-1"),
+		Region:  aws.String("ap-south-1"),
 	}
 }

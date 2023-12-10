@@ -12,7 +12,7 @@ import (
 	"github.com/momentohq/client-sdk-go/responses"
 )
 
-const CACHE_NAME = "spreadsheet_cache"
+const CACHE_NAME = "spreadsheet_cache_go"
 
 type Redis struct {
 	Client *momento.CacheClient
