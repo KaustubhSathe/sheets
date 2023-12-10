@@ -46,7 +46,7 @@ export default function SpreadSheetTile({ spreadsheet, spreadSheets, setSpreadSh
                 {/* For mobile sizes */}
                 <div className="mt-auto mb-auto flex justify-center align-middle sm:hidden">
                     <div className="ml-3 flex align-middle justify-center">
-                        <BsFillFileEarmarkSpreadsheetFill className="w-[20px] h-[20px] mt-auto mb-auto" />
+                        <BsFillFileEarmarkSpreadsheetFill style={{ color: '#0F9D58' }} className="w-[20px] h-[20px] mt-auto mb-auto" />
                     </div>
                     <div className="mt-auto mb-auto">
                         <div className="ml-4 flex align-middle justify-center">

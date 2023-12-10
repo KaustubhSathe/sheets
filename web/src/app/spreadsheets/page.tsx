@@ -107,10 +107,10 @@ export default function Dashboard() {
             </div>
             <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
           </div>
-          <div ref={ref1} onClick={() => setProfileVisible(true)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
+          <div ref={ref1} onClick={() => setProfileVisible(!profileVisible)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
             <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
           </div>
-          {profileVisible && <div className="shadow-black shadow-md absolute right-[16px] bottom-[-195px] bg-[#E9EEF6] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
+          {profileVisible && <div className="shadow-black shadow-md absolute right-[16px] bottom-[-200px] sm:bottom-[-195px] bg-[#E9EEF6] w-[200px] h-[200px] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
             <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
               <span className="m-auto block font-bold">Hi, {profileName}!!</span>
             </div>
@@ -128,7 +128,7 @@ export default function Dashboard() {
             <div className="h-[64px] w-[75%] flex justify-start ml-[14%]">
               <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
             </div>
-            <div className="w-[75%] flex justify-start align-middle m-auto mt-0 mb-auto overflow-x-scroll">
+            <div className="w-[75%] flex justify-start align-middle m-auto mt-0 mb-auto overflow-x-scroll sm:overflow-hidden">
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
