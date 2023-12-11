@@ -76,7 +76,7 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             ></div>
-            <div className="absolute -z-10 bottom-[-3px] right-[-3px] w-[10px] h-[10px] rounded-full bg-[#1a73e8] peer-focus:hover:cursor-crosshair peer-focus:z-10">
+            <div className="absolute bottom-[-3px] right-[-3px] w-[10px] h-[10px] rounded-full peer-focus:bg-[#1a73e8] peer-focus:hover:cursor-crosshair peer-focus:z-10">
             </div>
         </div>
     );
