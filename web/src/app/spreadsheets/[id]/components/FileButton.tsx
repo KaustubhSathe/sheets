@@ -65,7 +65,8 @@ export default function FileButton({ text }: { text: string }) {
                         </div>
                     </div>
                     <hr className="mt-1" />
-                    <Image src={Cloud} width={250} alt="Your SVG" className="mt-52 ml-auto mr-auto" />
+                    <div className="p-16">
+                    <Image src={Cloud} width={250} alt="Your SVG" className="ml-auto mr-auto" />
                     <div onClick={async () => {
                         const [fileHandle] = await window.showOpenFilePicker({
                             excludeAcceptAllOption: true,
@@ -94,6 +95,7 @@ export default function FileButton({ text }: { text: string }) {
                         <span className="font-roboto text-white font-medium mt-auto mb-auto">Browse</span>
                     </div>
                     <span className="ml-auto mr-auto block text-center mt-1 text-xl font-roboto text-[#80868B]">or drag a csv file here</span>
+                    </div>
                 </div>
             </>}
             <div className="inline-block relative">
@@ -107,7 +109,9 @@ export default function FileButton({ text }: { text: string }) {
                         <IoMdFolderOpen className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Open</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div onClick={() => {
+                        
+                    }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Make a copy</span>
                     </div>

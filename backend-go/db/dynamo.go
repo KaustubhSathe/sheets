@@ -101,6 +101,44 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 	return ss, nil
 }
 
+func (db *Dynamo) CopySpreadSheet(spreadsheetCopy *model.SpreadSheet, user *model.User) (*model.SpreadSheet, error) {
+	ss := &model.SpreadSheet{
+		Base: model.Base{
+			PK:        db.UserPK(user.ID),
+			SK:        spreadsheetCopy.SK,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		UserName:         user.UserName,
+		UserID:           user.ID,
+		SpreadSheetTitle: spreadsheetCopy.SpreadSheetTitle,
+		Favorited:        spreadsheetCopy.Favorited,
+		States:           spreadsheetCopy.States,
+		LastOpened:       time.Now(),
+	}
+	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Client.BatchWriteItem(&dynamodb.BatchWriteItemInput{
+		RequestItems: map[string][]*dynamodb.WriteRequest{
+			config.SPREADSHEETTABLE: {
+				{
+					PutRequest: &dynamodb.PutRequest{
+						Item: spreadsheet,
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return ss, nil
+}
+
 func (db *Dynamo) DeleteSpreadSheet(spreadsheetID string, user *model.User) (*model.SpreadSheet, error) {
 	_, err := db.Client.DeleteItem(&dynamodb.DeleteItemInput{
 		TableName: aws.String(config.SPREADSHEETTABLE),

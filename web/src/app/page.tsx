@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen sm:flex bg-slate-200">
-      <div className="h-full sm:w-[70%] flex flex-col align-middle justify-center p-8">
+      <div className="h-full sm:w-[70%] flex flex-col align-middle justify-center p-20">
         <div className='flex justify-center mb-[8px]'>
           <span className="font-sans text-4xl font-semibold">Make data-driven decisions, in Work Sheets</span>
         </div>

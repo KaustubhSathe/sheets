@@ -14,7 +14,7 @@ import (
 var dynamo *db.Dynamo
 var redis *db.Redis
 
-// This will be a POST request with only access token as body param
+// This will be a POST request
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// First authenticate the request only after that create SpreadSheet
 	spreadsheet_access_token := request.Headers["spreadsheet_access_token"]
