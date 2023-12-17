@@ -12,7 +12,7 @@ type SpreadSheet struct {
 	UserID           int64
 	SpreadSheetTitle string
 	Favorited        bool
-	CSVs             []string // Will contain pointer to S3 objects
+	States           []string // Will contain pointer to S3 objects, index indicates the sheet number
 	LastOpened       time.Time
 }
 

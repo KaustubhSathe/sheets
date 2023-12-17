@@ -75,7 +75,7 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		UserID:           user.ID,
 		SpreadSheetTitle: "Untitled spreadsheet",
 		Favorited:        false,
-		CSVs:             []string{},
+		States:           []string{},
 		LastOpened:       time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)

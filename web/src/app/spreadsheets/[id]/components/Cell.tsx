@@ -38,7 +38,7 @@ export default function Cell({ i, j }: { i: number, j: number }) {
 
     return (
         <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px]`}>
-            <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-hidden overflow-y-hidden pl-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
+            <div className="peer focus:border-[#1a73e8] focus:border-[3px] overflow-x-clip overflow-y-clip pl-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 contentEditable
                 spellCheck={false}
                 id={String.fromCharCode(65 + j) + (i + 1).toString()}

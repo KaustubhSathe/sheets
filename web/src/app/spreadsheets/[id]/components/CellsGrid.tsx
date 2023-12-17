@@ -11,6 +11,8 @@ export default function CellsGrid() {
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
 
+    
+
     const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
         let element = document.getElementById("column" + activeCol)
         if (element) {
@@ -134,7 +136,7 @@ export default function CellsGrid() {
             <div
                 id={"column" + String.fromCharCode(65 + i)}
                 key={String.fromCharCode(65 + i)}
-                className="min-w-[70px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative"
+                className="min-w-[80px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative"
             >
                 <span>{String.fromCharCode(65 + i)}</span>
                 <div
@@ -173,7 +175,7 @@ export default function CellsGrid() {
             );
         }
         cells.push((
-            <div className="min-w-[70px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
+            <div className="min-w-[80px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
                 {x}
             </div>
         ));

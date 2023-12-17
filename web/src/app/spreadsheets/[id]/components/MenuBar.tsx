@@ -3,10 +3,15 @@ import Sheet from '../../../../../public/sheets.svg'
 import Image from 'next/image'
 import { AiOutlineStar, AiOutlineMenu } from 'react-icons/ai'
 import { FaClockRotateLeft } from 'react-icons/fa6'
-import MenuButton from './MenuButton';
 import { MdOutlineInsertComment, MdShare } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import FileButton from './FileButton'
+import EditButton from './EditButton'
+import ViewButton from './ViewButton'
+import InsertButton from './InsertButton'
+import FormatButton from './FormatButton'
+import HelpButton from './HelpButton'
 
 export default function MenuBar() {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
@@ -27,23 +32,21 @@ export default function MenuBar() {
     }, [click]);
 
     return (
-        <div className="bg-[#F9FBFD] h-[60px] w-full max-h-[60px] flex justify-between overflow-hidden sm:overflow-visible">
+        <div className="bg-[#F9FBFD] h-[60px] w-full max-h-[60px] flex justify-between overflow-hidden sm:overflow-visible" id='menubar'>
             <div className='sm:min-w-[450px] h-full flex'>
                 <Link href="/spreadsheets" className='w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer'>
                     <Image title='Sheets Home' width={27} height={27} src={Sheet} alt="sheet-icon" />
                 </Link>
                 <div className='p-[8px] w-full flex sm:inline'>
-                    <input type='text' width={173} height={20} className='pl-[7px] mt-auto mb-auto' placeholder='Untitled SpreadSheet' />
+                    <input type='text' width={173} height={20} className='pl-[7px] mt-auto mb-auto' placeholder='Untitled SpreadSheet' id="titleInput"/>
                     <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                     <div className='mt-[2px] w-full hidden sm:block'>
-                        <MenuButton text={'File'} />
-                        <MenuButton text={'Edit'} />
-                        <MenuButton text={'View'} />
-                        <MenuButton text={'Insert'} />
-                        <MenuButton text={'Format'} />
-                        <MenuButton text={'Data'} />
-                        <MenuButton text={'Tools'} />
-                        <MenuButton text={'Help'} />
+                        <FileButton text={'File'} />
+                        <EditButton text={'Edit'} />
+                        <ViewButton text={'View'} />
+                        <InsertButton text={'Insert'} />
+                        <FormatButton text={'Format'} />
+                        <HelpButton text={'Help'} />
                     </div>
                 </div>
             </div>

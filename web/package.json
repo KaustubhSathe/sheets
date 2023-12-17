@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
+    "@types/papaparse": "^5.3.14",
     "next": "14.0.0",
+    "papaparse": "^5.4.1",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
@@ -21,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/wicg-file-system-access": "^2023.10.4",
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "13.5.5",

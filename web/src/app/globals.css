@@ -36,3 +36,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: grey;
 }
+
+
+#toolsbar::-webkit-scrollbar {
+  height: 0;
+  background: transparent;
+}
+
+#menubar::-webkit-scrollbar {
+  height: 0;
+  background: transparent;
+}

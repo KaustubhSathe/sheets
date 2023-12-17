@@ -4,7 +4,7 @@ import { BiBold, BiItalic, BiStrikethrough, BiFontColor, BiColorFill } from 'rea
 
 export default function ToolsBar() {
     return (
-        <div className="bg-[#EDF2FA] h-[40px] flex overflow-x-scroll overflow-y-hidden">
+        <div className="bg-[#EDF2FA] h-[40px] flex overflow-x-scroll overflow-y-hidden" id='toolsbar'>
             <div className="relative h-[100%]">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <AiOutlineSearch className="mt-auto mb-auto mr-[8px] w-[20px] h-[20px]" />
