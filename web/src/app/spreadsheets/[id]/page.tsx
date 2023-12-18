@@ -8,12 +8,13 @@ import ToolsBar from "./components/ToolsBar";
 import { Provider } from 'react-redux'
 import store from '../../lib/redux/store'
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetSpreadSheet } from "@/app/api/spreadsheet";
+import { SpreadSheet } from "@/app/types/SpreadSheet";
 
 export default function Spreadsheet() {
     const router = useRouter();
-    let spreadsheet = useRef<(() => void) | null>(null);
+    const [spreadsheet, setSpreadSheet] = useState<SpreadSheet>();
 
     useEffect(() => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
@@ -28,14 +29,13 @@ export default function Spreadsheet() {
                     return res.json();
                 }
             }).then(res => {
-                spreadsheet.current = res;
-                console.log(res);
+                setSpreadSheet(res);
             })
     }, [router]);
 
     return (
         <Provider store={store}>
-            <MenuBar />
+            <MenuBar spreadsheet={spreadsheet} />
             <ToolsBar />
             <FormulaBar />
             <CellsGrid />

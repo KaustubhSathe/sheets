@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import nameBoxReducer from './nameBoxSlice'
 import formulaBarReducer from './formulaBarSlice'
 import selectedCellReducer from './selectedCellSlice'
+import spreadsheetsReducer from './spreadsheetsSlice'
 
 export type NameBoxReducer = {
   nameBox: {
@@ -20,5 +21,6 @@ export default configureStore({
     nameBox: nameBoxReducer,
     formulaBar: formulaBarReducer,
     selectedCell: selectedCellReducer,
+    spreadsheets: spreadsheetsReducer,
   },
 })

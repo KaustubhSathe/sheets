@@ -12,10 +12,16 @@ import ViewButton from './ViewButton'
 import InsertButton from './InsertButton'
 import FormatButton from './FormatButton'
 import HelpButton from './HelpButton'
+import { SpreadSheet } from '@/app/types/SpreadSheet'
+import debounce from 'debounce'
+import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
+import { useRouter } from 'next/navigation'
 
-export default function MenuBar() {
+export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet }) {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+    const [spreadSheetTitle, setSpreadSheetTitle] = useState<string>(spreadsheet?.SpreadSheetTitle);
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
@@ -26,10 +32,12 @@ export default function MenuBar() {
     useEffect(() => {
         document.addEventListener("click", click);
 
+        setSpreadSheetTitle(spreadsheet?.SpreadSheetTitle);
+
         return () => {
             document.removeEventListener("click", click);
         };
-    }, [click]);
+    }, [click, spreadsheet]);
 
     return (
         <div className="bg-[#F9FBFD] h-[60px] w-full max-h-[60px] flex justify-between overflow-hidden sm:overflow-visible" id='menubar'>
@@ -38,10 +46,21 @@ export default function MenuBar() {
                     <Image title='Sheets Home' width={27} height={27} src={Sheet} alt="sheet-icon" />
                 </Link>
                 <div className='p-[8px] w-full flex sm:inline'>
-                    <input type='text' width={173} height={20} className='pl-[7px] mt-auto mb-auto' placeholder='Untitled SpreadSheet' id="titleInput"/>
+                    <input type='text' width={173} height={20} className='pl-[7px] mt-auto mb-auto' placeholder='Untitled SpreadSheet' id="titleInput" onKeyUp={debounce((e) => {
+                        const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
+                        if (access_token === null) {
+                            return router.push("/")
+                        }
+                        UpdateSpreadSheetTitle(access_token, spreadsheet?.SK.slice(12), e.target.value)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    setSpreadSheetTitle(e.target.value)
+                                }
+                            })
+                    }, 500)} value={spreadSheetTitle} onChange={(e) => setSpreadSheetTitle(e.target.value)} />
                     <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                     <div className='mt-[2px] w-full hidden sm:block'>
-                        <FileButton text={'File'} />
+                        <FileButton text={'File'} spreadsheet={spreadsheet} />
                         <EditButton text={'Edit'} />
                         <ViewButton text={'View'} />
                         <InsertButton text={'Insert'} />

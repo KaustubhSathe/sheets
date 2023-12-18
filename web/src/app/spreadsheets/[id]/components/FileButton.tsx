@@ -7,7 +7,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdHistory } from "react-icons/md";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiFillPrinter } from "react-icons/ai";
-import { CreateSpreadSheet, DeleteSpreadSheet } from "@/app/api/spreadsheet";
+import { CopySpreadSheet, CreateSpreadSheet, DeleteSpreadSheet } from "@/app/api/spreadsheet";
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import { RxCross1 } from "react-icons/rx";
 import Cloud from '../../../../../public/grey-cloud-2.svg'
@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 
-export default function FileButton({ text }: { text: string }) {
+export default function FileButton({ text, spreadsheet }: { text: string, spreadsheet: { current: SpreadSheet } }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -49,6 +49,20 @@ export default function FileButton({ text }: { text: string }) {
             })
     }
 
+    const copySpreadSheet = () => {
+        const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
+        CopySpreadSheet(access_token, spreadsheet.current.SpreadSheetTitle, spreadsheet.current.Favorited, spreadsheet.current.States)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    console.log(res.status);
+                }
+            }).then((res: SpreadSheet) => {
+                window.open(`/spreadsheets/${res.SK.slice(12)}`, '_blank');
+            })
+    }
+
     return (
         <>
             {openDialog && <>
@@ -65,36 +79,36 @@ export default function FileButton({ text }: { text: string }) {
                         </div>
                     </div>
                     <hr className="mt-1" />
-                    <div className="p-16">
-                    <Image src={Cloud} width={250} alt="Your SVG" className="ml-auto mr-auto" />
-                    <div onClick={async () => {
-                        const [fileHandle] = await window.showOpenFilePicker({
-                            excludeAcceptAllOption: true,
-                            multiple: false,
-                            types: [
-                                {
-                                    description: "Images",
-                                    accept: {
-                                        "text/csv": [".csv"],
+                    <div className="flex flex-col justify-center align-middle w-full h-full">
+                        <Image src={Cloud} width={250} alt="Your SVG" className="ml-auto mr-auto" />
+                        <div onClick={async () => {
+                            const [fileHandle] = await window.showOpenFilePicker({
+                                excludeAcceptAllOption: true,
+                                multiple: false,
+                                types: [
+                                    {
+                                        description: "Images",
+                                        accept: {
+                                            "text/csv": [".csv"],
+                                        },
                                     },
-                                },
-                            ]
-                        });
+                                ]
+                            });
 
-                        const fileData = await fileHandle.getFile();
-                        console.log(fileData);
+                            const fileData = await fileHandle.getFile();
+                            console.log(fileData);
 
-                        Papa.parse(fileData, {
-                            header: true,
-                            skipEmptyLines: true,
-                            complete: (results) => {
-                                console.log(results.data)
-                            }
-                        })
-                    }} className="ml-auto mr-auto w-[100px] h-[50px] bg-[#1A73E8] mt-4 rounded-md flex justify-center hover:cursor-pointer hover:bg-blue-600 hover:scale-[1.01] hover:shadow-sm hover:shadow-black">
-                        <span className="font-roboto text-white font-medium mt-auto mb-auto">Browse</span>
-                    </div>
-                    <span className="ml-auto mr-auto block text-center mt-1 text-xl font-roboto text-[#80868B]">or drag a csv file here</span>
+                            Papa.parse(fileData, {
+                                header: true,
+                                skipEmptyLines: true,
+                                complete: (results) => {
+                                    console.log(results.data)
+                                }
+                            })
+                        }} className="ml-auto mr-auto w-[100px] h-[50px] bg-[#1A73E8] mt-4 rounded-md flex justify-center hover:cursor-pointer hover:bg-blue-600 hover:scale-[1.01] hover:shadow-sm hover:shadow-black">
+                            <span className="font-roboto text-white font-medium mt-auto mb-auto">Browse</span>
+                        </div>
+                        <span className="ml-auto mr-auto block text-center mt-1 text-xl font-roboto text-[#80868B]">or drag a csv file here</span>
                     </div>
                 </div>
             </>}
@@ -109,9 +123,7 @@ export default function FileButton({ text }: { text: string }) {
                         <IoMdFolderOpen className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Open</span>
                     </div>
-                    <div onClick={() => {
-                        
-                    }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div onClick={copySpreadSheet} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Make a copy</span>
                     </div>

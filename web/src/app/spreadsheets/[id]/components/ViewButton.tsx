@@ -29,12 +29,16 @@ export default function ViewButton({ text }: { text: string }) {
                     <BiShow className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Show</span>
                 </div>
-                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
+                    document.body.setAttribute("style", "zoom: 1.5;")
+                }}>
                     <FiZoomIn className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Zoom</span>
                 </div>
-                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
-                    <BiFullscreen className="w-6 h-6 ml-2 mt-auto mb-auto"/>
+                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
+                    document.body.requestFullscreen()
+                }}>
+                    <BiFullscreen className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Fullscreen</span>
                 </div>
             </div>

@@ -8,6 +8,6 @@ export type SpreadSheet = {
     UserID: number,
     SpreadSheetTitle: string,
     Favorited: boolean,
-    CSVs: string[],
+    States: string[],
     LastOpened: Date
 }

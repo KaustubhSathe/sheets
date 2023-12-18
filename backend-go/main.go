@@ -24,6 +24,7 @@ type Lambdas struct {
 	GetSpreadSheetHandler         awscdklambdagoalpha.GoFunction
 	DeleteSpreadSheetHandler      awscdklambdagoalpha.GoFunction
 	UpdateSpreadSheetTitleHandler awscdklambdagoalpha.GoFunction
+	CopySpreadSheetHandler        awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -65,8 +66,8 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -76,8 +77,8 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -87,8 +88,19 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
+	copySpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("copySpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/spreadsheets/copy"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -98,8 +110,8 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -109,8 +121,8 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -120,8 +132,8 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Bundling: &awscdklambdagoalpha.BundlingOptions{
 			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
 		},
-		Role:        requiredRoles,
-		Environment: envs,
+		Role:         requiredRoles,
+		Environment:  envs,
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
@@ -132,6 +144,7 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		GetSpreadSheetHandler:         getSpreadSheetHandler,
 		DeleteSpreadSheetHandler:      deleteSpreadSheetHandler,
 		UpdateSpreadSheetTitleHandler: updateSpreadSheetTitleHandler,
+		CopySpreadSheetHandler:        copySpreadSheetHandler,
 	}
 }
 
@@ -181,6 +194,13 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Path:        jsii.String("/api/spreadsheet"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CreateSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Copy Spreadsheet API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/spreadsheet_copy"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CopySpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
 	// Get Spreadsheet API

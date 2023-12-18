@@ -1,7 +1,7 @@
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
 
 export default function CellsGrid() {
@@ -10,8 +10,9 @@ export default function CellsGrid() {
     const [columns, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
-
-    
+    const selectStart = useRef<string>("A1");
+    const isMouseDown = useRef<boolean>(false);
+    const selectEnd = useRef<string>("A1");
 
     const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
         let element = document.getElementById("column" + activeCol)
@@ -83,6 +84,38 @@ export default function CellsGrid() {
     }, [activeCol, activeRow, removeListeners]);
 
     useEffect(() => {
+        document.getElementById("cellgrid")?.addEventListener("mousedown", (e) => {
+            for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
+                for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                    const id = String.fromCharCode(j) + i.toString();
+                    document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
+                }
+            }
+            selectStart.current = e.target.id
+            selectEnd.current = e.target.id
+            isMouseDown.current = true;
+        })
+        document.getElementById("cellgrid")?.addEventListener("mouseover", (e) => {
+            if (isMouseDown.current) {
+                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                        const id = String.fromCharCode(j) + i.toString();
+                        document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
+                    }
+                }
+                selectEnd.current = e.target.id;
+                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                        const id = String.fromCharCode(j) + i.toString();
+                        document.getElementById(id)?.setAttribute("style", "background: #E6EFFD;");
+                    }
+                }
+            }
+        })
+        document.getElementById("cellgrid")?.addEventListener("mouseup", (e) => {
+            isMouseDown.current = false;
+        })
+
         if (activeCol !== null) {
             window.addEventListener("mousemove", mouseMoveHorizontal);
             window.addEventListener("mouseup", mouseUp);

@@ -5,6 +5,7 @@ import (
 	"backend-go/db/model"
 	"backend-go/utils"
 	"context"
+	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -40,9 +41,29 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		dynamo = db.NewDynamo(ctx)
 	}
 
-	// Now create a SpreadSheet object in DB
+	// Now parse body
+	body := struct {
+		SpreadSheetTitle string   `json:"SpreadSheetTitle"`
+		Favorited        bool     `json:"Favorited"`
+		States           []string `json:"States"`
+	}{}
+	err = json.Unmarshal([]byte(request.Body), &body)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
+	// Now create a copy of SpreadSheet object in DB
 	spreadSheetID := uuid.NewString()
-	spreadsheet, err := dynamo.CreateSpreadSheet(spreadSheetID, &model.User{
+	spreadsheet, err := dynamo.CopySpreadSheet(&model.SpreadSheet{
+		Base: model.Base{
+			SK: dynamo.SpreadSheetSK(spreadSheetID),
+		},
+		SpreadSheetTitle: body.SpreadSheetTitle,
+		Favorited:        body.Favorited,
+		States:           body.States,
+	}, &model.User{
 		ID:       int64(userInfo.User["id"].(float64)),
 		UserName: userInfo.User["login"].(string),
 	})
