@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 
-export default function FileButton({ text, spreadsheet }: { text: string, spreadsheet: { current: SpreadSheet } }) {
+export default function FileButton({ text, spreadsheet }: { text: string, spreadsheet:  SpreadSheet | undefined }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export default function FileButton({ text, spreadsheet }: { text: string, spread
 
     const copySpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        CopySpreadSheet(access_token, spreadsheet.current.SpreadSheetTitle, spreadsheet.current.Favorited, spreadsheet.current.States)
+        CopySpreadSheet(access_token, spreadsheet?.SpreadSheetTitle, spreadsheet?.Favorited, spreadsheet?.States)
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
@@ -132,7 +132,8 @@ export default function FileButton({ text, spreadsheet }: { text: string, spread
                         <span className="inline-block mt-auto mb-auto">Share as csv</span>
                     </div>
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
-                        window.location = "mailto:f2015466p@alumni.bits-pilani.ac.in";
+                        const win: Window = window;
+                        win.location = "mailto:f2015466p@alumni.bits-pilani.ac.in";
                     }}>
                         <AiOutlineMail className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Email</span>

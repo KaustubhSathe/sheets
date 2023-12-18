@@ -20,7 +20,7 @@ export async function CreateSpreadSheet(access_token: string) {
     return response;
 }
 
-export async function CopySpreadSheet(access_token: string, spreadSheetTitle: string, favorited: boolean, states: String[]) {
+export async function CopySpreadSheet(access_token: string, spreadSheetTitle: string | undefined, favorited: boolean | undefined, states: String[] | undefined) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_copy`, {
         method: "POST",
         headers: {
@@ -49,7 +49,7 @@ export async function DeleteSpreadSheet(access_token: string, spreadsheet_id: st
     return response;
 }
 
-export async function UpdateSpreadSheetTitle(access_token: string, spreadsheet_id: string, newTitle: string) {
+export async function UpdateSpreadSheetTitle(access_token: string, spreadsheet_id: string | undefined, newTitle: string) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_title`, {
         method: "PATCH",
         headers: {

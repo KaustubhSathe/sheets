@@ -91,8 +91,10 @@ export default function CellsGrid() {
                     document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
                 }
             }
-            selectStart.current = e.target.id
-            selectEnd.current = e.target.id
+            if (e.target && (e.target as HTMLDivElement).id) {
+                selectStart.current = (e.target as HTMLDivElement).id
+                selectEnd.current = (e.target as HTMLDivElement).id
+            }
             isMouseDown.current = true;
         })
         document.getElementById("cellgrid")?.addEventListener("mouseover", (e) => {
@@ -103,7 +105,9 @@ export default function CellsGrid() {
                         document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
                     }
                 }
-                selectEnd.current = e.target.id;
+                if (e.target && (e.target as HTMLDivElement).id) {
+                    selectEnd.current = (e.target as HTMLDivElement).id;
+                }
                 for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                     for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();

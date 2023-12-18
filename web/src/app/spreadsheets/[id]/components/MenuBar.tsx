@@ -17,11 +17,11 @@ import debounce from 'debounce'
 import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
 import { useRouter } from 'next/navigation'
 
-export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet }) {
+export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet | undefined }) {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const router = useRouter();
-    const [spreadSheetTitle, setSpreadSheetTitle] = useState<string>(spreadsheet?.SpreadSheetTitle);
+    const [spreadSheetTitle, setSpreadSheetTitle] = useState<string | undefined>(spreadsheet?.SpreadSheetTitle);
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
