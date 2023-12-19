@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { BsFillFileEarmarkSpreadsheetFill } from "react-icons/bs";
 import { IoMdFolderOpen, IoMdCopy, IoMdShare } from "react-icons/io";
 import { AiOutlineMail } from "react-icons/ai";
@@ -15,10 +15,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 
-export default function FileButton({ text, spreadsheet }: { text: string, spreadsheet:  SpreadSheet | undefined }) {
+export default function FileButton({ text, spreadsheet, setVersionHistory }: { text: string, spreadsheet: SpreadSheet | undefined, setVersionHistory: Dispatch<SetStateAction<boolean>> }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const [detailsDialog, setDetailsDialog] = useState<boolean>(false);
     const router = useRouter();
 
     const click = useCallback((e: MouseEvent) => {
@@ -112,6 +113,25 @@ export default function FileButton({ text, spreadsheet }: { text: string, spread
                     </div>
                 </div>
             </>}
+            {detailsDialog && <>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" >
+                </div >
+                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
+                    <div className="flex justify-between">
+                        <div className="flex gap-3">
+                            <span className="text-2xl">Document Details</span>
+                        </div>
+                        <div className="w-[40px] h-[40px] flex justify-center hover:cursor-pointer hover:bg-slate-200 hover:rounded-full" onClick={() => setDetailsDialog(false)}>
+                            <RxCross1 className="w-[24px] h-[24px] mt-auto mb-auto" />
+                        </div>
+                    </div>
+                    <div>
+                        <span className="block mb-4">Owner: {spreadsheet?.UserName}</span>
+                        <span className="block mb-4">Modified: {spreadsheet?.UpdatedAt.toString()}</span>
+                        <span className="block">Created: {spreadsheet?.CreatedAt.toString()}</span>
+                    </div>
+                </div>
+            </>}
             <div className="inline-block relative">
                 <span ref={ref1} onClick={() => setDropDownVisible(!dropDownVisible)} className="text-center inline-block w-auto h-[24px] pr-[7px] pl-[7px] br-[1px] bl-[1px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-md font-['Open_Sans']">{text}</span>
                 {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white">
@@ -157,11 +177,11 @@ export default function FileButton({ text, spreadsheet }: { text: string, spread
                         <RiDeleteBin6Line className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Move to bin</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setVersionHistory(true)}>
                         <MdHistory className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Version History</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setDetailsDialog(!openDialog)} >
                         <IoIosInformationCircleOutline className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Details</span>
                     </div>
