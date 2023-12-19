@@ -22,7 +22,6 @@ export default function FormulaBar() {
 
             <input type="text" className="pt-[4px] pb-[4px] pl-[4px] pr-[8px] mt-[5px] mb-[5px] ml-[8px] mr-[8px] text-sm text-gray-900 border border-slate-300 rounded-lg w-[100%] outline-none" value={formulaBarValue} onChange={(e) => {
                 dispatch(setValueFormulaBar(e.target.value))
-                console.log(selectedCell)
                 const selectedCellText = document.getElementById(selectedCell);
                 if (selectedCellText) {
                     selectedCellText.innerText = e.target.value

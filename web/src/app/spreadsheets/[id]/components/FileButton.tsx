@@ -21,6 +21,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [detailsDialog, setDetailsDialog] = useState<boolean>(false);
     const router = useRouter();
+    const ctrlDown = useRef<boolean>(false);
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
@@ -30,6 +31,22 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
 
     useEffect(() => {
         document.addEventListener("click", click);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey) {
+                ctrlDown.current = true;
+            }
+            if (ctrlDown && e.key === 'o') {
+                e.preventDefault();
+                setOpenDialog(true)
+            }
+        });
+
+        document.addEventListener("keyup", (e) => {
+            if (e.ctrlKey) {
+                ctrlDown.current = false;
+            }
+        });
 
         return () => {
             document.removeEventListener("click", click);
@@ -43,7 +60,6 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                 if (res.status === 200) {
                     return res.json();
                 } else {
-                    console.log(res.status);
                 }
             }).then((res: SpreadSheet) => {
                 window.open(`/spreadsheets/${res.SK.slice(12)}`, '_blank');
@@ -57,7 +73,6 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                 if (res.status === 200) {
                     return res.json();
                 } else {
-                    console.log(res.status);
                 }
             }).then((res: SpreadSheet) => {
                 window.open(`/spreadsheets/${res.SK.slice(12)}`, '_blank');
@@ -97,13 +112,12 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                             });
 
                             const fileData = await fileHandle.getFile();
-                            console.log(fileData);
+
 
                             Papa.parse(fileData, {
                                 header: true,
                                 skipEmptyLines: true,
                                 complete: (results) => {
-                                    console.log(results.data)
                                 }
                             })
                         }} className="ml-auto mr-auto w-[100px] h-[50px] bg-[#1A73E8] mt-4 rounded-md flex justify-center hover:cursor-pointer hover:bg-blue-600 hover:scale-[1.01] hover:shadow-sm hover:shadow-black">
@@ -142,6 +156,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setOpenDialog(!openDialog)}>
                         <IoMdFolderOpen className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Open</span>
+                        <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+O</span>
                     </div>
                     <div onClick={copySpreadSheet} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
@@ -149,7 +164,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                     </div>
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <IoMdShare className="w-6 h-6 ml-2 mt-auto mb-auto" />
-                        <span className="inline-block mt-auto mb-auto">Share as csv</span>
+                        <span className="inline-block mt-auto mb-auto">Share</span>
                     </div>
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
                         const win: Window = window;

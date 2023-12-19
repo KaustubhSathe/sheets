@@ -88,7 +88,18 @@ export default function CellsGrid() {
             for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                 for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
                     const id = String.fromCharCode(j) + i.toString();
-                    document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
+                    let elem = document.getElementById(id);
+                    if (elem) {
+                        elem.style.backgroundColor = "#FFFFFF";
+                    }
+                    elem = document.getElementById("row" + (i).toString())
+                    if (elem) {
+                        elem.style.backgroundColor = "#FFFFFF";
+                    }
+                    elem = document.getElementById("column" + String.fromCharCode(j));
+                    if (elem) {
+                        elem.style.backgroundColor = "#FFFFFF";
+                    }
                 }
             }
             if (e.target && (e.target as HTMLDivElement).id) {
@@ -102,7 +113,18 @@ export default function CellsGrid() {
                 for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                     for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();
-                        document.getElementById(id)?.setAttribute("style", "background: #FFFFFF;");
+                        let elem = document.getElementById(id);
+                        if (elem) {
+                            elem.style.backgroundColor = "#FFFFFF";
+                        }
+                        elem = document.getElementById("row" + (i).toString())
+                        if (elem) {
+                            elem.style.backgroundColor = "#FFFFFF";
+                        }
+                        elem = document.getElementById("column" + String.fromCharCode(j));
+                        if (elem) {
+                            elem.style.backgroundColor = "#FFFFFF";
+                        }
                     }
                 }
                 if (e.target && (e.target as HTMLDivElement).id) {
@@ -111,7 +133,18 @@ export default function CellsGrid() {
                 for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                     for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();
-                        document.getElementById(id)?.setAttribute("style", "background: #E6EFFD;");
+                        let elem = document.getElementById(id);
+                        if (elem) {
+                            elem.style.backgroundColor = "#E6EFFD";
+                        }
+                        elem = document.getElementById("row" + (i).toString())
+                        if (elem) {
+                            elem.style.backgroundColor = "#D3E3FD";
+                        }
+                        elem = document.getElementById("column" + String.fromCharCode(j));
+                        if (elem) {
+                            elem.style.backgroundColor = "#D3E3FD";
+                        }
                     }
                 }
             }
@@ -156,7 +189,6 @@ export default function CellsGrid() {
                     }}
                     onMouseDown={(e) => {
                         e.currentTarget.style.width = "100vw"
-                        console.log("mouse down" + (i + 1).toString())
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveRow((i + 1).toString())
                     }}
@@ -194,7 +226,6 @@ export default function CellsGrid() {
                         e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveCol(String.fromCharCode(65 + i))
-                        console.log("mouse down" + String.fromCharCode(65 + i))
                     }}
                     className={`block absolute h-full cursor-col-resize w-[3px] right-[-1.5px] top-0 z-30`}
                 >

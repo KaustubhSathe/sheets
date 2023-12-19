@@ -51,14 +51,13 @@ export default function Dashboard() {
           if (res.status === 200) {
             localStorage.setItem("spreadsheet_access_token", access_token)
             const userInfo = await res.json();
-            console.log(userInfo);
+
             setProfileName(userInfo.login);
             getspreadsheet(access_token, "")
               .then(res => {
                 if (res.status === 200) {
                   return res.json();
                 } else {
-                  console.log(res.status);
                 }
               }).then(res => {
                 setSpreadSheets(res);
@@ -79,7 +78,6 @@ export default function Dashboard() {
         if (res.status === 200) {
           return res.json();
         } else {
-          console.log(res.status);
         }
       }).then((res: SpreadSheet) => {
         router.push(`/spreadsheets/${res.SK.slice(12)}`)
