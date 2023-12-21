@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 
-export default function FileButton({ text, spreadsheet, setVersionHistory }: { text: string, spreadsheet: SpreadSheet | undefined, setVersionHistory: Dispatch<SetStateAction<boolean>> }) {
+export default function FileButton({ text, spreadsheet, setVersionHistory, setShareDialog }: { text: string, spreadsheet: SpreadSheet | undefined, setVersionHistory: Dispatch<SetStateAction<boolean>>, setShareDialog: Dispatch<SetStateAction<boolean>> }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -162,7 +162,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory }: { t
                         <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Make a copy</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setShareDialog(true)}>
                         <IoMdShare className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Share</span>
                     </div>

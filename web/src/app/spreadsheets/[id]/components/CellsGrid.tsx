@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
 
-export default function CellsGrid() {
+export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formulaBarVisible: boolean, toolBarVisible: boolean }) {
     const dispatch = useDispatch()
     const [rows, setRowsValue] = useState<number>(100)
     const [columns, setColumnsValue] = useState<number>(26)
@@ -105,8 +105,21 @@ export default function CellsGrid() {
             if (e.target && (e.target as HTMLDivElement).id) {
                 selectStart.current = (e.target as HTMLDivElement).id
                 selectEnd.current = (e.target as HTMLDivElement).id
+
+                if (selectEnd.current === selectStart.current) {
+                    dispatch(setValue(selectStart.current))
+                } else {
+                    dispatch(setValue(String.fromCharCode(Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString() + ":" + String.fromCharCode(Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString()))
+                }
             }
             isMouseDown.current = true;
+
+            document.getElementById("cellgrid")?.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                const { clientX: mouseX, clientY: mouseY } = e;
+
+                console.log("hello world")
+            })
         })
         document.getElementById("cellgrid")?.addEventListener("mouseover", (e) => {
             if (isMouseDown.current) {
@@ -129,6 +142,12 @@ export default function CellsGrid() {
                 }
                 if (e.target && (e.target as HTMLDivElement).id) {
                     selectEnd.current = (e.target as HTMLDivElement).id;
+
+                    if (selectEnd.current === selectStart.current) {
+                        dispatch(setValue(selectStart.current))
+                    } else {
+                        dispatch(setValue(String.fromCharCode(Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString() + ":" + String.fromCharCode(Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString()))
+                    }
                 }
                 for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                     for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
@@ -250,7 +269,7 @@ export default function CellsGrid() {
     }
 
     return (
-        <div id="cellgrid" className="bg-[#FFFFFF] h-[calc(100vh-60px-40px-35px-37px)] relative overflow-scroll p-0 m-0 hover:cursor-cell">
+        <div id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
             <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
             <div className="h-[30px] ml-[46px] flex bg-inherit">
                 {

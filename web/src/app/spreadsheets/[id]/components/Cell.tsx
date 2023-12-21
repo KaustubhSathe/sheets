@@ -1,4 +1,3 @@
-import { setValue } from "@/app/lib/redux/nameBoxSlice";
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
 import { useDispatch } from "react-redux";
@@ -43,7 +42,6 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 spellCheck={false}
                 id={String.fromCharCode(65 + j) + (i + 1).toString()}
                 onFocus={(e) => {
-                    dispatch(setValue(e.currentTarget.id))
                     dispatch(setSelectedCell(e.currentTarget.id))
                 }}
                 onInput={(e) => {

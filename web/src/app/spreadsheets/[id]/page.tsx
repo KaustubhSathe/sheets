@@ -15,6 +15,9 @@ import { SpreadSheet } from "@/app/types/SpreadSheet";
 export default function Spreadsheet() {
     const router = useRouter();
     const [spreadsheet, setSpreadSheet] = useState<SpreadSheet>();
+    const [formulaBarVisible, setFormulaBarVisible] = useState<boolean>(true);
+    const [toolBarVisible, setToolBarVisible] = useState<boolean>(true);
+    
 
     useEffect(() => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
@@ -35,10 +38,10 @@ export default function Spreadsheet() {
 
     return (
         <Provider store={store}>
-            <MenuBar spreadsheet={spreadsheet} />
-            <ToolsBar />
-            <FormulaBar />
-            <CellsGrid />
+            <MenuBar spreadsheet={spreadsheet} formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
+            {toolBarVisible && <ToolsBar />}
+            {formulaBarVisible && <FormulaBar />}
+            <CellsGrid formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} />
             <SheetsBar />
         </Provider>
     )

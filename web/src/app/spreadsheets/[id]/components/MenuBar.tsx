@@ -5,7 +5,7 @@ import { AiOutlineStar, AiOutlineMenu } from 'react-icons/ai'
 import { FaClockRotateLeft } from 'react-icons/fa6'
 import { MdOutlineInsertComment, MdShare } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import FileButton from './FileButton'
 import EditButton from './EditButton'
 import ViewButton from './ViewButton'
@@ -17,16 +17,22 @@ import debounce from 'debounce'
 import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
 import { useRouter } from 'next/navigation'
 
-export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet | undefined }) {
+export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible, setToolBarVisible, setFormulaBarVisible }: { spreadsheet: SpreadSheet | undefined, toolBarVisible: boolean, formulaBarVisible: boolean, setToolBarVisible: Dispatch<SetStateAction<boolean>>, setFormulaBarVisible: Dispatch<SetStateAction<boolean>> }) {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
+    const ref2 = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const [spreadSheetTitle, setSpreadSheetTitle] = useState<string | undefined>(spreadsheet?.SpreadSheetTitle);
     const [versionHistory, setVersionHistory] = useState<boolean>(false);
+    const [shareDialog, setShareDialog] = useState<boolean>(false);
+    const [profileVisible, setProfileVisible] = useState<boolean>(false);
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
             setMenuDropDownVisible(false);
+        }
+        if (ref2.current && !ref2.current.contains(e.target as Node)) {
+            setProfileVisible(false);
         }
     }, []);
 
@@ -56,6 +62,13 @@ export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet | un
                     </div>
                 </div>
             </>}
+            {shareDialog && <>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setShareDialog(false)}>
+                </div >
+                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
+                    share logic
+                </div>
+            </>}
             <div className="bg-[#F9FBFD] h-[60px] w-full max-h-[60px] flex justify-between overflow-hidden sm:overflow-visible" id='menubar'>
                 <div className='sm:min-w-[450px] h-full flex'>
                     <Link href="/spreadsheets" className='w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer'>
@@ -76,16 +89,16 @@ export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet | un
                         }, 500)} value={spreadSheetTitle} onChange={(e) => setSpreadSheetTitle(e.target.value)} />
                         <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                         <div className='mt-[2px] w-full hidden sm:block'>
-                            <FileButton text={'File'} spreadsheet={spreadsheet} setVersionHistory={setVersionHistory} />
+                            <FileButton text={'File'} spreadsheet={spreadsheet} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
                             <EditButton text={'Edit'} />
-                            <ViewButton text={'View'} />
+                            <ViewButton text={'View'} toolBarVisible={toolBarVisible} formulaBarVisible={formulaBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
                             <InsertButton text={'Insert'} />
                             <FormatButton text={'Format'} />
                             <HelpButton text={'Help'} />
                         </div>
                     </div>
                 </div>
-                <div className='sm:flex justify-end hidden'>
+                <div className='sm:flex justify-end hidden relative'>
                     <div onClick={() => setVersionHistory(!versionHistory)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:cursor-pointer hover:bg-slate-200 flex align-middle justify-center">
                         <FaClockRotateLeft className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </div>
@@ -93,13 +106,24 @@ export default function MenuBar({ spreadsheet }: { spreadsheet: SpreadSheet | un
                     <Link href="#" className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <MdOutlineInsertComment className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </Link>
-                    <Link href="#" className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
+                    <div onClick={() => setShareDialog(true)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <MdShare className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
-                    </Link>
+                    </div>
 
-                    <Link href="#" className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
+                    <div ref={ref2} onClick={() => setProfileVisible(!profileVisible)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <CgProfile className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
-                    </Link>
+                    </div>
+                    {profileVisible && <div className="z-50 shadow-black shadow-md absolute right-[16px] bottom-[-200px] sm:bottom-[-195px] bg-[#E9EEF6] w-[200px] h-[200px] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
+                        <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
+                            <span className="m-auto block font-bold">Hi!!</span>
+                        </div>
+                        <div className="ml-auto mr-auto bg-slate-400 w-[80%] h-[40px] rounded-2xl text-center hover:bg-slate-500 hover:cursor-pointer flex" onClick={() => {
+                            localStorage.removeItem("spreadsheet_access_token");
+                            router.push("/");
+                        }}>
+                            <span className="m-auto block font-bold">Log Out</span>
+                        </div>
+                    </div>}
                 </div>
                 <div ref={ref1} onClick={() => setMenuDropDownVisible(!menuDropDownVisible)} className='mt-auto mb-auto mr-4 w-[40px] h-[40px] hover:bg-slate-400 hover:rounded-full hover:cursor-pointer sm:hidden flex justify-center relative'>
                     <AiOutlineMenu className='w-[32px] h-[32px] mb-auto mt-auto' />
