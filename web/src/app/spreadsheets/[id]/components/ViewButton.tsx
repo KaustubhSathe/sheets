@@ -62,6 +62,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                     </div>
                     {dropDownVisible && zoom && <div className="absolute right-[-100px] top-0 w-[100px] bg-white">
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '0.5'
                             setZoomValue(0.5)
                         }}>
@@ -69,6 +70,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">50%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '0.75'
                             setZoomValue(0.75)
                         }}>
@@ -76,6 +78,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">75%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '0.9'
                             setZoomValue(0.9)
                         }}>
@@ -83,6 +86,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">90%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '1'
                             setZoomValue(1)
                         }}>
@@ -90,6 +94,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">100%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '1.25'
                             setZoomValue(1.25)
                         }}>
@@ -97,6 +102,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">125%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '1.5'
                             setZoomValue(1.5)
                         }}>
@@ -104,6 +110,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">150%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '1.75'
                             setZoomValue(1.75)
                         }}>
@@ -111,6 +118,7 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">175%</span>
                         </div>
                         <div className="flex gap-2 justify-center hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => {
+                            // @ts-ignore
                             document.body.style.zoom = '2'
                             setZoomValue(2)
                         }}>
