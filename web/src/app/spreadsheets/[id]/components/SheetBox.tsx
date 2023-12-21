@@ -44,8 +44,8 @@ export default function SheetsBox({ selected, index, onClick, deleteSheet }: { s
                 <div className="flex gap-2 justify-start bg-white hover:bg-slate-100 hover:cursor-pointer w-[150px] h-[30px] pl-2">
                     <span className="inline-block mt-auto mb-auto font-semibold">Duplicate</span>
                 </div>
-                <div className="flex gap-2 justify-start bg-white hover:bg-slate-100 hover:cursor-pointer w-[150px] h-[30px] pl-2" onClick={() => {
-                    deleteSheet();
+                <div className="flex gap-2 justify-start bg-white hover:bg-slate-100 hover:cursor-pointer w-[150px] h-[30px] pl-2" onClick={(e) => {
+                    deleteSheet(e);
                     setDropDown(false)
                 }}>
                     <span className="inline-block mt-auto mb-auto font-semibold">Delete</span>
