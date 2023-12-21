@@ -154,7 +154,7 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		CorsPreflight: &awscdkapigatewayv2alpha.CorsPreflightOptions{
 			AllowCredentials: aws.Bool(true),
 			AllowOrigins: &[]*string{
-				aws.String("https://spreadsheet-clone.vercel.app"),
+				aws.String("https://work-sheets.vercel.app"),
 				aws.String("http://localhost:3000"),
 			},
 			MaxAge: awscdk.Duration_Minutes(aws.Float64(300)),
