@@ -1,18 +1,17 @@
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
 
-export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formulaBarVisible: boolean, toolBarVisible: boolean }) {
+export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd }: { formulaBarVisible: boolean, toolBarVisible: boolean, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null> }) {
     const dispatch = useDispatch()
     const [rows, setRowsValue] = useState<number>(100)
     const [columns, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
-    const selectStart = useRef<string>("A1");
     const isMouseDown = useRef<boolean>(false);
-    const selectEnd = useRef<string>("A1");
+    const ctrlDown = useRef<boolean>(false);
 
     const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
         let element = document.getElementById("column" + activeCol)
@@ -84,6 +83,101 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formu
     }, [activeCol, activeRow, removeListeners]);
 
     useEffect(() => {
+        let elem = document.getElementById(selectStart.current);
+        if (elem) {
+            elem.style.borderWidth = '3px';
+            elem.style.borderColor = '#1a73e8';
+            dispatch(setValue(selectStart.current))
+        }
+
+        document.addEventListener("keyup", (e) => {
+            if (e.ctrlKey) {
+                ctrlDown.current = false;
+            }
+        })
+
+        document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey) {
+                ctrlDown.current = true;
+            }
+
+            if (ctrlDown.current && e.key === "c") {
+                e.preventDefault();
+                copyStart.current = selectStart.current;
+                copyEnd.current = selectEnd.current;
+                cutStart.current = null;
+                cutEnd.current = null;
+            }
+
+            if (ctrlDown.current && e.key === "x") {
+                e.preventDefault();
+                cutStart.current = selectStart.current;
+                cutEnd.current = selectEnd.current;
+                copyStart.current = null;
+                copyEnd.current = null;
+            }
+
+
+            if (ctrlDown.current && e.key === "v") {
+                e.preventDefault();
+                if (copyStart.current !== null && copyEnd.current !== null) {
+                    const width = Math.max(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) - Math.min(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) + 1;
+                    const length = Math.max(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) - Math.min(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) + 1;
+                    for (let j = 0; j < width; j++) {
+                        for (let i = 0; i < length; i++) {
+                            const x0 = parseInt(copyStart.current.substring(1)) + i;
+                            const y0 = copyStart.current.charCodeAt(0) + j;
+                            const x1 = parseInt(selectStart.current.substring(1)) + i;
+                            const y1 = selectStart.current.charCodeAt(0) + j;
+                            const id0 = String.fromCharCode(y0) + x0.toString();
+                            const id1 = String.fromCharCode(y1) + x1.toString();
+                            let elem0 = document.getElementById(id0);
+                            let elem1 = document.getElementById(id1);
+                            if (elem1 && elem0) {
+                                elem1.innerText = elem0.innerText
+                            }
+                        }
+                    }
+                }
+
+                if (cutStart.current !== null && cutEnd.current !== null) {
+                    const width = Math.max(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) - Math.min(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) + 1;
+                    const length = Math.max(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) - Math.min(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) + 1;
+                    for (let j = 0; j < width; j++) {
+                        for (let i = 0; i < length; i++) {
+                            const x0 = parseInt(cutStart.current.substring(1)) + i;
+                            const y0 = cutStart.current.charCodeAt(0) + j;
+                            const x1 = parseInt(selectStart.current.substring(1)) + i;
+                            const y1 = selectStart.current.charCodeAt(0) + j;
+                            const id0 = String.fromCharCode(y0) + x0.toString();
+                            const id1 = String.fromCharCode(y1) + x1.toString();
+                            let elem0 = document.getElementById(id0);
+                            let elem1 = document.getElementById(id1);
+                            if (elem1 && elem0) {
+                                elem1.innerText = elem0.innerText
+                                elem0.innerText = ""
+                            }
+                        }
+                    }
+
+                    cutStart.current = null;
+                    cutEnd.current = null;
+                }
+            }
+
+            if (e.key === "Delete") {
+                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                        const id = String.fromCharCode(j) + i.toString();
+                        let elem = document.getElementById(id);
+                        if (elem) {
+                            elem.innerText = ""
+                        }
+                    }
+                }
+            }
+        });
+
         document.getElementById("cellgrid")?.addEventListener("mousedown", (e) => {
             for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
                 for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
@@ -91,6 +185,12 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formu
                     let elem = document.getElementById(id);
                     if (elem) {
                         elem.style.backgroundColor = "#FFFFFF";
+                        elem.style.borderBottomWidth = '1px';
+                        elem.style.borderRightWidth = '1px';
+                        elem.style.borderTopWidth = '0px'
+                        elem.style.borderLeftWidth = '0px'
+                        elem.style.borderStyle = 'solid';
+                        elem.style.borderColor = '#E1E1E1'
                     }
                     elem = document.getElementById("row" + (i).toString())
                     if (elem) {
@@ -111,6 +211,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formu
                 } else {
                     dispatch(setValue(String.fromCharCode(Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString() + ":" + String.fromCharCode(Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString()))
                 }
+                (e.target as HTMLDivElement).style.borderWidth = '3px';
+                (e.target as HTMLDivElement).style.borderColor = '#1a73e8';
             }
             isMouseDown.current = true;
 
@@ -185,7 +287,7 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible }: { formu
         return () => {
             removeListeners();
         };
-    }, [activeCol, activeRow, rows, mouseMoveHorizontal, mouseMoveVertical, mouseUp, removeListeners]);
+    }, [activeCol, activeRow, rows, mouseMoveHorizontal, mouseMoveVertical, mouseUp, removeListeners, dispatch]);
 
     const rowsNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < rows; i++) {

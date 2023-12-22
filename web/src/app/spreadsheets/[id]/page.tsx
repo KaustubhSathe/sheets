@@ -17,7 +17,12 @@ export default function Spreadsheet() {
     const [spreadsheet, setSpreadSheet] = useState<SpreadSheet>();
     const [formulaBarVisible, setFormulaBarVisible] = useState<boolean>(true);
     const [toolBarVisible, setToolBarVisible] = useState<boolean>(true);
-    
+    const selectStart = useRef<string>("A1");
+    const selectEnd = useRef<string>("A1");
+    const copyStart = useRef<string | null>(null);
+    const copyEnd = useRef<string | null>(null);
+    const cutStart = useRef<string | null>(null);
+    const cutEnd = useRef<string | null>(null);
 
     useEffect(() => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
@@ -38,10 +43,10 @@ export default function Spreadsheet() {
 
     return (
         <Provider store={store}>
-            <MenuBar spreadsheet={spreadsheet} formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
+            <MenuBar selectStart={selectStart} selectEnd={selectEnd} copyStart={copyStart} copyEnd={copyEnd} cutStart={cutStart} cutEnd={cutEnd} spreadsheet={spreadsheet} formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
             {toolBarVisible && <ToolsBar />}
             {formulaBarVisible && <FormulaBar />}
-            <CellsGrid formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} />
+            <CellsGrid selectStart={selectStart} selectEnd={selectEnd} copyStart={copyStart} copyEnd={copyEnd} cutStart={cutStart} cutEnd={cutEnd} formulaBarVisible={formulaBarVisible} toolBarVisible={toolBarVisible} />
             <SheetsBar />
         </Provider>
     )

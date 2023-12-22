@@ -5,7 +5,7 @@ import { AiOutlineStar, AiOutlineMenu } from 'react-icons/ai'
 import { FaClockRotateLeft } from 'react-icons/fa6'
 import { MdOutlineInsertComment, MdShare } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import FileButton from './FileButton'
 import EditButton from './EditButton'
 import ViewButton from './ViewButton'
@@ -17,8 +17,9 @@ import debounce from 'debounce'
 import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
 import { useRouter } from 'next/navigation'
 
-export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible, setToolBarVisible, setFormulaBarVisible }: { spreadsheet: SpreadSheet | undefined, toolBarVisible: boolean, formulaBarVisible: boolean, setToolBarVisible: Dispatch<SetStateAction<boolean>>, setFormulaBarVisible: Dispatch<SetStateAction<boolean>> }) {
+export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible, setToolBarVisible, setFormulaBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd }: { spreadsheet: SpreadSheet | undefined, toolBarVisible: boolean, formulaBarVisible: boolean, setToolBarVisible: Dispatch<SetStateAction<boolean>>, setFormulaBarVisible: Dispatch<SetStateAction<boolean>>, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null> }) {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
+    const [menuDropDownSelected, setMenuDropDownSelected] = useState<string>("");
     const ref1 = useRef<HTMLDivElement>(null);
     const ref2 = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -90,7 +91,7 @@ export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible
                         <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                         <div className='mt-[2px] w-full hidden sm:block'>
                             <FileButton text={'File'} spreadsheet={spreadsheet} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
-                            <EditButton text={'Edit'} />
+                            <EditButton text={'Edit'} selectStart={selectStart} selectEnd={selectEnd} copyStart={copyStart} copyEnd={copyEnd} cutStart={cutStart} cutEnd={cutEnd}/>
                             <ViewButton text={'View'} toolBarVisible={toolBarVisible} formulaBarVisible={formulaBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
                             <InsertButton text={'Insert'} />
                             <FormatButton text={'Format'} />
@@ -106,11 +107,11 @@ export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible
                     <Link href="#" className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <MdOutlineInsertComment className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </Link>
-                    <div onClick={() => setShareDialog(true)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
+                    <div onClick={() => setShareDialog(true)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:cursor-pointer hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <MdShare className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </div>
 
-                    <div ref={ref2} onClick={() => setProfileVisible(!profileVisible)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
+                    <div ref={ref2} onClick={() => setProfileVisible(!profileVisible)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:cursor-pointer hover:bg-slate-200 flex align-middle justify-center">
                         <CgProfile className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </div>
                     {profileVisible && <div className="z-50 shadow-black shadow-md absolute right-[16px] bottom-[-200px] sm:bottom-[-195px] bg-[#E9EEF6] w-[200px] h-[200px] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
