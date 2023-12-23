@@ -6,6 +6,7 @@ export default function SheetsBox({ selected, index, onClick, deleteSheet }: { s
     const [dropdown, setDropDown] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [name, setName] = useState<string>(`Sheet ${index}`);
+    const [editing, setEditing] = useState<boolean>(false);
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
@@ -23,12 +24,25 @@ export default function SheetsBox({ selected, index, onClick, deleteSheet }: { s
 
     return (
         <div ref={ref1} onClick={onClick} className={`relative ${selected ? 'bg-[#E1E9F7]' : 'bg-inherit'} flex align-middle ${selected ? '' : 'hover:bg-slate-200 hover:cursor-pointer'}`}>
-            <input id={`sheet${index}`} onChange={(e) => {
-                if (selected) {
-                    setName(e.currentTarget.value)
-                    e.currentTarget.style.width = ((e.currentTarget.value.length + 1) * 8) + 'px'
-                }
-            }} className={`w-[60px] bg-inherit outline-blue-600 mr-[8px] ml-[8px] inline-block h-[25px] mt-auto mb-auto ${selected ? 'text-[#2F59D0] font-bold' : ''}`} value={name} />
+            <div className={`bg-inherit hover:cursor-pointer outline-blue-600 mr-[8px] ml-[8px] inline-block h-[25px] mt-auto mb-auto ${selected ? 'text-[#2F59D0] font-bold' : ''}`} onDoubleClick={() => setEditing(true)}>
+                {editing ? (
+                    <input
+                        className={`bg-inherit outline-blue-600 mr-[8px] ml-[8px] inline-block h-[25px] mt-auto mb-auto ${selected ? 'text-[#2F59D0] font-bold' : ''}`}
+                        id={`sheet${index}`}
+                        type="text"
+                        value={name}
+                        onChange={(e) => {
+                            if (editing && selected) {
+                                setName(e.currentTarget.value)
+                                e.currentTarget.style.width = ((e.currentTarget.value.length + 1) * 8) + 'px'
+                            }
+                        }}
+                        onBlur={() => setEditing(false)}
+                    />
+                ) : (
+                    <span>{name}</span>
+                )}
+            </div>
             <GoTriangleDown onClick={() => {
                 if (selected) {
                     setDropDown(true)

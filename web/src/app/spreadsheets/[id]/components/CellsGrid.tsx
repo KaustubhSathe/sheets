@@ -202,7 +202,7 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     }
                 }
             }
-            if (e.target && (e.target as HTMLDivElement).id) {
+            if (e.target && (e.target as HTMLDivElement).id && /^[A-Z]\d+$/.test((e.target as HTMLDivElement).id)) {
                 selectStart.current = (e.target as HTMLDivElement).id
                 selectEnd.current = (e.target as HTMLDivElement).id
 

@@ -207,6 +207,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
                     }}>
                         <AiFillPrinter className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Print</span>
+                        <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+P</span>
                     </div>
                 </div>
                 }
