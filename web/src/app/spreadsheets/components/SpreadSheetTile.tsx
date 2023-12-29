@@ -13,7 +13,7 @@ export default function SpreadSheetTile({ spreadsheet, spreadSheets, setSpreadSh
     const [optionVisible1, setOptionVisible1] = useState<boolean>(false);
     const [optionVisible2, setOptionVisible2] = useState<boolean>(false);
     const [renameModalVisible, setRenameModalVisible] = useState<boolean>(false);
-    const [renameModalText, setRenameModalText] = useState<string| undefined>(spreadsheet?.SpreadSheetTitle);
+    const [renameModalText, setRenameModalText] = useState<string>(spreadsheet?.SpreadSheetTitle);
     const [spreadSheetData, setSpreadSheetData] = useState<SpreadSheet>(spreadsheet);
     const router = useRouter();
 
