@@ -68,7 +68,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
 
     const copySpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        CopySpreadSheet(access_token, spreadsheet?.SpreadSheetTitle, spreadsheet?.Favorited, spreadsheet?.States)
+        CopySpreadSheet(access_token, spreadsheet?.SpreadSheetTitle, spreadsheet?.Favorited, spreadsheet?.Sheets)
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
