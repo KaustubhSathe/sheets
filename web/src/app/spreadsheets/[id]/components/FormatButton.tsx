@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { PiTextBBold } from "react-icons/pi";
 import { MdOutlineFormatAlignLeft, MdOutlineFormatSize, MdOutlineFormatClear, MdArrowRight } from "react-icons/md";
 import { BiBold, BiItalic, BiUnderline, BiStrikethrough } from "react-icons/bi";
+import { FaAlignLeft, FaAlignCenter, FaAlignRight } from "react-icons/fa";
+import { MdOutlineVerticalAlignTop, MdOutlineVerticalAlignCenter, MdVerticalAlignBottom } from "react-icons/md";
+
 
 export default function FormatButton({ text }: { text: string }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
@@ -69,31 +72,82 @@ export default function FormatButton({ text }: { text: string }) {
                     </div>
                     {dropDownVisible && alignmentDropDown && <div className="absolute right-[-200px] top-0 w-[200px] bg-white">
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Left</span>
+                            <FaAlignLeft className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Left</span>
                         </div>
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Center</span>
+                            <FaAlignCenter className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Center</span>
                         </div>
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Right</span>
+                            <FaAlignRight className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Right</span>
                         </div>
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Top</span>
+                            <MdOutlineVerticalAlignTop className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Top</span>
                         </div>
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Middle</span>
+                            <MdOutlineVerticalAlignCenter className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Middle</span>
                         </div>
                         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
-                            <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Bottom</span>
+                            <MdVerticalAlignBottom className="w-4 h-4 ml-1 mt-auto mb-auto" />
+                            <span className="inline-block mt-auto mb-auto font-normal">Bottom</span>
                         </div>
                     </div>}
                 </div>
-                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
-                    <MdOutlineFormatSize className="w-6 h-6 ml-2 mt-auto mb-auto" />
-                    <span className="inline-block mt-auto mb-auto">Font Size</span>
-                    <MdArrowRight className="block mt-auto mb-auto ml-auto mr-1 h-8 w-8 text-gray-500" />
+                <div className="relative">
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onMouseOver={() => {
+                        setTextDropDown(false)
+                        setAlignmentDropDown(false)
+                        setFontDropDown(true)
+                    }}>
+                        <MdOutlineFormatSize className="w-6 h-6 ml-2 mt-auto mb-auto" />
+                        <span className="inline-block mt-auto mb-auto">Font Size</span>
+                        <MdArrowRight className="block mt-auto mb-auto ml-auto mr-1 h-8 w-8 text-gray-500" />
+                    </div>
+                    {dropDownVisible && fontDropDown && <div className="absolute right-[-60px] top-0 w-[60px] bg-white">
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">6</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">7</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">8</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">9</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">10</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">11</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">12</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">14</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">18</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">24</span>
+                        </div>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4">
+                            <span className="inline-block mt-auto mb-auto font-normal">36</span>
+                        </div>
+                    </div>}
                 </div>
-                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onMouseOver={() => {
+                    setTextDropDown(false)
+                    setAlignmentDropDown(false)
+                    setFontDropDown(false)
+                }}>
                     <MdOutlineFormatClear className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Clear Formatting</span>
                 </div>

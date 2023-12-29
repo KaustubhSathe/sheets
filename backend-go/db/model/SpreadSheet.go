@@ -12,8 +12,24 @@ type SpreadSheet struct {
 	UserID           int64
 	SpreadSheetTitle string
 	Favorited        bool
-	States           []string // Will contain pointer to S3 objects, index indicates the sheet number
+	Sheets           []Sheet // Will contain pointer to S3 objects, index indicates the sheet number
 	LastOpened       time.Time
+}
+
+type Sheet struct {
+	SheetName string
+	State     map[string]State
+}
+
+type State struct {
+	Bold            bool
+	Italic          bool
+	StrikeThrough   bool
+	Underline       bool
+	FontColor       string
+	BackGroundColor string
+	FontType        string
+	TextContent     string
 }
 
 func (in *SpreadSheet) Stringify() string {

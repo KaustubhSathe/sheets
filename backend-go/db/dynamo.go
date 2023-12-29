@@ -75,8 +75,13 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		UserID:           user.ID,
 		SpreadSheetTitle: "Untitled spreadsheet",
 		Favorited:        false,
-		States:           []string{},
-		LastOpened:       time.Now(),
+		Sheets: []model.Sheet{
+			{
+				SheetName: "Sheet 1",
+				State:     make(map[string]model.State),
+			},
+		},
+		LastOpened: time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
 	if err != nil {
@@ -113,7 +118,7 @@ func (db *Dynamo) CopySpreadSheet(spreadsheetCopy *model.SpreadSheet, user *mode
 		UserID:           user.ID,
 		SpreadSheetTitle: spreadsheetCopy.SpreadSheetTitle,
 		Favorited:        spreadsheetCopy.Favorited,
-		States:           spreadsheetCopy.States,
+		Sheets:           spreadsheetCopy.Sheets,
 		LastOpened:       time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
@@ -159,6 +164,31 @@ func (db *Dynamo) DeleteSpreadSheet(spreadsheetID string, user *model.User) (*mo
 }
 
 func (db *Dynamo) UpdateSpreadSheetTitle(spreadsheetID string, user *model.User, newTitle string) error {
+	_, err := db.Client.UpdateItem(&dynamodb.UpdateItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.UserPK(user.ID)),
+			},
+			"SK": {
+				S: aws.String(db.SpreadSheetSK(spreadsheetID)),
+			},
+		},
+		UpdateExpression: aws.String("set SpreadSheetTitle = :spreadSheetTitle"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":spreadSheetTitle": {
+				S: aws.String(newTitle),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *Dynamo) UpdateSpreadSheets(spreadsheetID string, user *model.User, newTitle string) error {
 	_, err := db.Client.UpdateItem(&dynamodb.UpdateItemInput{
 		TableName: aws.String(config.SPREADSHEETTABLE),
 		Key: map[string]*dynamodb.AttributeValue{

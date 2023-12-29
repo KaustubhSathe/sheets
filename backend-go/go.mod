@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-cdk-go/awscdkapigatewayv2integrationsalpha/v2 v2.103.1-alpha.0
 	github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2 v2.103.1-alpha.0
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/aws/aws-sdk-go v1.46.5
+	github.com/aws/aws-sdk-go v1.49.12
 	github.com/aws/constructs-go/constructs/v10 v10.2.70
 	github.com/aws/jsii-runtime-go v1.89.0
 	github.com/google/uuid v1.4.0

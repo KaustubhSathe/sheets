@@ -8,6 +8,22 @@ export type SpreadSheet = {
     UserID: number,
     SpreadSheetTitle: string,
     Favorited: boolean,
-    States: string[],
+    Sheets: Sheet[],
     LastOpened: Date
+}
+
+export type Sheet = {
+    SheetName: string,
+    State: Map<string, State>
+}
+
+export type State = {
+    Bold: boolean,
+    Italic: boolean,
+    StrikeThrough: boolean,
+    Underline: boolean,
+    FontColor: string,
+    BackGroundColor: string,
+    FontType: string,
+    TextContent: string,
 }

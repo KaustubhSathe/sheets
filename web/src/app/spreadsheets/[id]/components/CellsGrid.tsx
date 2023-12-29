@@ -1,10 +1,43 @@
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { useDispatch } from 'react-redux'
-import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
+import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
+import { SpreadSheet } from '@/app/types/SpreadSheet';
 
-export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd }: { formulaBarVisible: boolean, toolBarVisible: boolean, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null> }) {
+function getDownID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    return col + (parseInt(row) + 1).toString();
+}
+
+function getUpID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    return col + (parseInt(row) - 1).toString();
+}
+
+function getRightID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
+    return String.fromCharCode(colCode + 1) + row;
+}
+
+function getLeftID(id: string): string {
+    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
+    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
+    row = row ? row : "0"
+    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
+    return String.fromCharCode(colCode - 1) + row;
+}
+
+
+export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd, spreadsheet, setSpreadSheet }: { formulaBarVisible: boolean, toolBarVisible: boolean, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null>, spreadsheet: SpreadSheet, setSpreadSheet: Dispatch<SetStateAction<SpreadSheet>> }) {
     const dispatch = useDispatch()
     const [rows, setRowsValue] = useState<number>(100)
     const [columns, setColumnsValue] = useState<number>(26)
@@ -97,6 +130,98 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         })
 
         document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowDown" && e.target && (e.target as HTMLDivElement).id) {
+                const currentElementId = (e.target as HTMLDivElement).id
+                let elem = document.getElementById(currentElementId);
+                if (elem) {
+                    elem.style.backgroundColor = "#FFFFFF";
+                    elem.style.borderBottomWidth = '1px';
+                    elem.style.borderRightWidth = '1px';
+                    elem.style.borderTopWidth = '0px'
+                    elem.style.borderLeftWidth = '0px'
+                    elem.style.borderStyle = 'solid';
+                    elem.style.borderColor = '#E1E1E1'
+                }
+                elem = document.getElementById(getDownID(currentElementId))
+                if (elem) {
+                    elem.style.borderWidth = '3px';
+                    elem.style.borderColor = '#1a73e8';
+                    elem.focus();
+                    selectStart.current = elem.id
+                    selectEnd.current = elem.id
+                }
+                dispatch(setSelectedCell(getDownID(currentElementId)))
+            }
+
+            if (e.key === "ArrowUp" && e.target && (e.target as HTMLDivElement).id) {
+                const currentElementId = (e.target as HTMLDivElement).id
+                let elem = document.getElementById(currentElementId);
+                if (elem) {
+                    elem.style.backgroundColor = "#FFFFFF";
+                    elem.style.borderBottomWidth = '1px';
+                    elem.style.borderRightWidth = '1px';
+                    elem.style.borderTopWidth = '0px'
+                    elem.style.borderLeftWidth = '0px'
+                    elem.style.borderStyle = 'solid';
+                    elem.style.borderColor = '#E1E1E1'
+                }
+                elem = document.getElementById(getUpID(currentElementId))
+                if (elem) {
+                    elem.style.borderWidth = '3px';
+                    elem.style.borderColor = '#1a73e8';
+                    elem.focus();
+                    selectStart.current = elem.id
+                    selectEnd.current = elem.id
+                }
+                dispatch(setSelectedCell(getUpID(currentElementId)))
+            }
+
+            if (e.key === "ArrowRight" && e.target && (e.target as HTMLDivElement).id) {
+                const currentElementId = (e.target as HTMLDivElement).id
+                let elem = document.getElementById(currentElementId);
+                if (elem) {
+                    elem.style.backgroundColor = "#FFFFFF";
+                    elem.style.borderBottomWidth = '1px';
+                    elem.style.borderRightWidth = '1px';
+                    elem.style.borderTopWidth = '0px'
+                    elem.style.borderLeftWidth = '0px'
+                    elem.style.borderStyle = 'solid';
+                    elem.style.borderColor = '#E1E1E1'
+                }
+                elem = document.getElementById(getRightID(currentElementId))
+                if (elem) {
+                    elem.style.borderWidth = '3px';
+                    elem.style.borderColor = '#1a73e8';
+                    elem.focus();
+                    selectStart.current = elem.id
+                    selectEnd.current = elem.id
+                }
+                dispatch(setSelectedCell(getRightID(currentElementId)))
+            }
+
+            if (e.key === "ArrowLeft" && e.target && (e.target as HTMLDivElement).id) {
+                const currentElementId = (e.target as HTMLDivElement).id
+                let elem = document.getElementById(currentElementId);
+                if (elem) {
+                    elem.style.backgroundColor = "#FFFFFF";
+                    elem.style.borderBottomWidth = '1px';
+                    elem.style.borderRightWidth = '1px';
+                    elem.style.borderTopWidth = '0px'
+                    elem.style.borderLeftWidth = '0px'
+                    elem.style.borderStyle = 'solid';
+                    elem.style.borderColor = '#E1E1E1'
+                }
+                elem = document.getElementById(getLeftID(currentElementId))
+                if (elem) {
+                    elem.style.borderWidth = '3px';
+                    elem.style.borderColor = '#1a73e8';
+                    elem.focus();
+                    selectStart.current = elem.id
+                    selectEnd.current = elem.id
+                }
+                dispatch(setSelectedCell(getLeftID(currentElementId)))
+            }
+
             if (e.ctrlKey) {
                 ctrlDown.current = true;
             }
@@ -296,7 +421,7 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                 id={"row" + (i + 1).toString()}
                 key={(i + 1).toString()}
                 className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans relative">
-                <span>{i + 1}</span>
+                <span className='mt-auto mb-auto'>{i + 1}</span>
                 <div
                     id={"rowModifier" + (i + 1).toString()}
                     onMouseOver={(e) => {
@@ -326,9 +451,9 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
             <div
                 id={"column" + String.fromCharCode(65 + i)}
                 key={String.fromCharCode(65 + i)}
-                className="min-w-[80px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative"
+                className="min-w-[80px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative flex justify-center"
             >
-                <span>{String.fromCharCode(65 + i)}</span>
+                <span className='mt-auto mb-auto'>{String.fromCharCode(65 + i)}</span>
                 <div
                     id={"colModifier" + String.fromCharCode(65 + i)}
                     onMouseOver={(e) => {
@@ -360,7 +485,7 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         const x: Array<React.ReactNode> = [];
         for (let i = 0; i < rows; i++) {
             x.push(
-                <Cell i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
+                <Cell spreadsheet={spreadsheet} setSpreadSheet={setSpreadSheet} i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
             );
         }
         cells.push((

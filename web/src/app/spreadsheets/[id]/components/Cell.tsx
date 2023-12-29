@@ -1,38 +1,11 @@
+import { SpreadSheet, State } from '@/app/types/SpreadSheet';
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
 import { useDispatch } from "react-redux";
+import { Dispatch, SetStateAction } from 'react';
 
-function getDownID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    return col + (parseInt(row) + 1).toString();
-}
 
-function getUpID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    return col + (parseInt(row) - 1).toString();
-}
-
-function getRightID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
-    return String.fromCharCode(colCode + 1) + row;
-}
-
-function getLeftID(id: string): string {
-    let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
-    let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
-    row = row ? row : "0"
-    const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
-    return String.fromCharCode(colCode - 1) + row;
-}
-
-export default function Cell({ i, j }: { i: number, j: number }) {
+export default function Cell({ i, j, spreadsheet, setSpreadSheet }: { i: number, j: number, spreadsheet: SpreadSheet, setSpreadSheet: Dispatch<SetStateAction<SpreadSheet>> }) {
     const dispatch = useDispatch()
 
     return (
@@ -46,31 +19,35 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 }}
                 onInput={(e) => {
                     dispatch(setValueFormulaBar(e.currentTarget.innerText))
-                }}
-                onKeyDown={(e) => {
-                    if (e.key === "ArrowDown") {
-                        const currentElementId = e.currentTarget.id
-                        document.getElementById(getDownID(currentElementId))?.focus()
-                        dispatch(setSelectedCell(getDownID(currentElementId)))
+                    const id = String.fromCharCode(65 + j) + (i + 1).toString()
+                    console.log(spreadsheet)
+                    const newss: SpreadSheet = {
+                        CreatedAt: spreadsheet.CreatedAt,
+                        DeletedAt: spreadsheet.DeletedAt,
+                        Favorited: spreadsheet.Favorited,
+                        LastOpened: spreadsheet.LastOpened,
+                        PK: spreadsheet.PK,
+                        Sheets: [{
+                            SheetName: spreadsheet.Sheets[0].SheetName,
+                            State: new Map<string, State>(spreadsheet.Sheets[0].State)
+                        }],
+                        SK: spreadsheet.SK,
+                        SpreadSheetTitle: spreadsheet.SpreadSheetTitle,
+                        UpdatedAt: spreadsheet.UpdatedAt,
+                        UserID: spreadsheet.UserID,
+                        UserName: spreadsheet.UserName,
                     }
-
-                    if (e.key === "ArrowUp") {
-                        const currentElementId = e.currentTarget.id
-                        document.getElementById(getUpID(currentElementId))?.focus()
-                        dispatch(setSelectedCell(getUpID(currentElementId)))
-                    }
-
-                    if (e.key === "ArrowRight") {
-                        const currentElementId = e.currentTarget.id
-                        document.getElementById(getRightID(currentElementId))?.focus()
-                        dispatch(setSelectedCell(getRightID(currentElementId)))
-                    }
-
-                    if (e.key === "ArrowLeft") {
-                        const currentElementId = e.currentTarget.id
-                        document.getElementById(getLeftID(currentElementId))?.focus()
-                        dispatch(setSelectedCell(getLeftID(currentElementId)))
-                    }
+                    newss?.Sheets[0].State.set(id, {
+                        BackGroundColor: "blue",
+                        Bold: false,
+                        FontColor: "blue",
+                        FontType: "helvetica",
+                        Italic: false,
+                        StrikeThrough: false,
+                        TextContent: e.currentTarget.innerText,
+                        Underline: false
+                    })
+                    setSpreadSheet(newss)
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             ></div>

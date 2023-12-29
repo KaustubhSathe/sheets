@@ -13,7 +13,7 @@ export default function SpreadSheetTile({ spreadsheet, spreadSheets, setSpreadSh
     const [optionVisible1, setOptionVisible1] = useState<boolean>(false);
     const [optionVisible2, setOptionVisible2] = useState<boolean>(false);
     const [renameModalVisible, setRenameModalVisible] = useState<boolean>(false);
-    const [renameModalText, setRenameModalText] = useState<string>(spreadsheet.SpreadSheetTitle);
+    const [renameModalText, setRenameModalText] = useState<string| undefined>(spreadsheet?.SpreadSheetTitle);
     const [spreadSheetData, setSpreadSheetData] = useState<SpreadSheet>(spreadsheet);
     const router = useRouter();
 
@@ -90,12 +90,12 @@ export default function SpreadSheetTile({ spreadsheet, spreadSheets, setSpreadSh
                         <BsFillFileEarmarkSpreadsheetFill style={{ color: '#0F9D58' }} className="w-[20px] h-[20px] mt-auto mb-auto" />
                     </div>
                     <div className="ml-4 align-middle justify-center inline-block">
-                        <span className="mt-auto mb-auto font-roboto font-normal text-sm">{spreadSheetData.SpreadSheetTitle}</span>
+                        <span className="mt-auto mb-auto font-roboto font-normal text-sm">{spreadSheetData?.SpreadSheetTitle}</span>
                     </div>
                 </div>
                 <div className="sm:flex sm:align-middle sm:justify-between sm:w-[50%] hidden">
                     <div className="text-center mt-auto w-full h-full mb-auto align-middle flex justify-center">
-                        <span className="mt-auto mb-auto text-[#786F6D] text-xs">{new Date(spreadsheet.LastOpened).toLocaleString()}</span>
+                        <span className="mt-auto mb-auto text-[#786F6D] text-xs">{new Date(spreadsheet?.LastOpened).toLocaleString()}</span>
                     </div>
                     <div className="relative mr-2 mt-auto mb-auto">
                         <div ref={ref2} onClick={(e) => {

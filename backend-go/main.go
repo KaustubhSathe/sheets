@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awss3"
 	"github.com/aws/aws-cdk-go/awscdkapigatewayv2alpha/v2"
 	"github.com/aws/aws-cdk-go/awscdkapigatewayv2integrationsalpha/v2"
 	"github.com/aws/aws-cdk-go/awscdklambdagoalpha/v2"
@@ -24,6 +25,7 @@ type Lambdas struct {
 	GetSpreadSheetHandler         awscdklambdagoalpha.GoFunction
 	DeleteSpreadSheetHandler      awscdklambdagoalpha.GoFunction
 	UpdateSpreadSheetTitleHandler awscdklambdagoalpha.GoFunction
+	UpdateSheetsHandler           awscdklambdagoalpha.GoFunction
 	CopySpreadSheetHandler        awscdklambdagoalpha.GoFunction
 }
 
@@ -39,6 +41,7 @@ func CreateDynamoTable(stack awscdk.Stack) {
 			Name: aws.String("SK"),
 			Type: awsdynamodb.AttributeType_STRING,
 		},
+		RemovalPolicy: awscdk.RemovalPolicy_DESTROY,
 	})
 }
 
@@ -137,6 +140,17 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
+	updateSheetsHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("updateSheetsHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/spreadsheets/update_sheets"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
 	return &Lambdas{
 		CallbackHandler:               callbackHandler,
 		AuthenticateHandler:           authenticateHandler,
@@ -145,7 +159,19 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		DeleteSpreadSheetHandler:      deleteSpreadSheetHandler,
 		UpdateSpreadSheetTitleHandler: updateSpreadSheetTitleHandler,
 		CopySpreadSheetHandler:        copySpreadSheetHandler,
+		UpdateSheetsHandler:           updateSheetsHandler,
 	}
+}
+
+func CreateS3Bucket(stack awscdk.Stack) {
+	_ = awss3.NewBucket(stack, jsii.String("spreadsheet-bucket"), &awss3.BucketProps{
+		BlockPublicAccess: awss3.BlockPublicAccess_BLOCK_ALL(),
+		EnforceSSL:        aws.Bool(true),
+		Versioned:         aws.Bool(false),
+		Encryption:        awss3.BucketEncryption_S3_MANAGED,
+		RemovalPolicy:     awscdk.RemovalPolicy_DESTROY,
+		AutoDeleteObjects: aws.Bool(true),
+	})
 }
 
 func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha.HttpApi {
@@ -224,6 +250,13 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateSpreadSheetTitleHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
+	// Update spreadsheet sheets API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/spreadsheet_sheets"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_PATCH},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateSheetsHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
 	return spreadsheetApi
 }
 
@@ -232,6 +265,10 @@ func NewSpreadSheetGoStack(scope constructs.Construct, id string, props *awscdk.
 
 	// Now create a DynamoDB table
 	CreateDynamoTable(stack)
+
+	// Also create a S3 bucket to store sheets state in json files
+	// Object name will be USER#<USER_ID>SPREADSHEET#<SPREADSHEET_ID>.json ----> Sheet[] will be an array json
+	CreateS3Bucket(stack)
 
 	// Now create all lambdas
 	lambdas := CreateLambdas(stack)
