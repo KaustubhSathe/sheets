@@ -5,6 +5,7 @@ import (
 	"backend-go/db"
 	"backend-go/db/model"
 	"backend-go/utils"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -48,8 +49,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	// Now parse body
 	body := struct {
-		Sheets        string `json:"Sheets"`
-		SpreadSheetID string `json:"SpreadSheetID"`
+		Sheets        []model.Sheet `json:"Sheets"`
+		SpreadSheetID string        `json:"SpreadSheetID"`
 	}{}
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -67,10 +68,25 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	// Now delete the old sheet.json from s3 and add the new one which is present in request body
-	_, _ = s3Client.DeleteObject(&s3.DeleteObjectInput{
-		Bucket: aws.String(config.SPREADSHEET_BUCKET),
-		Key:    aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), body.SpreadSheetID)),
+	sheets, err := json.Marshal(body.Sheets)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
+	_, err = s3Client.PutObject(&s3.PutObjectInput{
+		Bucket:      aws.String(config.SPREADSHEET_BUCKET),
+		Key:         aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), body.SpreadSheetID)),
+		ContentType: aws.String("application/json"),
+		Body:        bytes.NewReader(sheets),
 	})
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,

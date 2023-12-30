@@ -17,8 +17,9 @@ type SpreadSheet struct {
 }
 
 type Sheet struct {
-	SheetName string
-	State     map[string]State
+	SheetName  string
+	SheetIndex int32
+	State      map[string]State
 }
 
 type State struct {

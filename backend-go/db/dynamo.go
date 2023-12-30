@@ -75,13 +75,8 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		UserID:           user.ID,
 		SpreadSheetTitle: "Untitled spreadsheet",
 		Favorited:        false,
-		Sheets: []model.Sheet{
-			{
-				SheetName: "Sheet 1",
-				State:     make(map[string]model.State),
-			},
-		},
-		LastOpened: time.Now(),
+		Sheets:           []model.Sheet{},
+		LastOpened:       time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
 	if err != nil {

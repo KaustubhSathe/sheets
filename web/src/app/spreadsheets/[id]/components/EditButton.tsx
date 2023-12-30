@@ -3,8 +3,9 @@ import { BiUndo, BiRedo } from "react-icons/bi";
 import { MdOutlineContentCut } from "react-icons/md";
 import { IoMdCopy } from "react-icons/io";
 import { MdOutlineContentPaste } from "react-icons/md";
+import globals from "@/app/lib/globals/globals";
 
-export default function EditButton({ text, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd }: { text: string, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null> }) {
+export default function EditButton({ text }: { text: string }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
 
@@ -37,35 +38,35 @@ export default function EditButton({ text, selectStart, selectEnd, copyStart, co
                     <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+Y</span>
                 </div>
                 <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
-                    cutStart.current = selectStart.current;
-                    cutEnd.current = selectEnd.current;
-                    copyStart.current = null;
-                    copyEnd.current = null;
+                    globals.cutStart = globals.selectStart;
+                    globals.cutEnd = globals.selectEnd;
+                    globals.copyStart = null;
+                    globals.copyEnd = null;
                 }}>
                     <MdOutlineContentCut className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Cut</span>
                     <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+X</span>
                 </div>
                 <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
-                    copyStart.current = selectStart.current;
-                    copyEnd.current = selectEnd.current;
-                    cutStart.current = null;
-                    cutEnd.current = null;
+                    globals.copyStart = globals.selectStart;
+                    globals.copyEnd = globals.selectEnd;
+                    globals.cutStart = null;
+                    globals.cutEnd = null;
                 }}>
                     <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
                     <span className="inline-block mt-auto mb-auto">Copy</span>
                     <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+C</span>
                 </div>
                 <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
-                    if (copyStart.current !== null && copyEnd.current !== null) {
-                        const width = Math.max(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) - Math.min(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) + 1;
-                        const length = Math.max(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) - Math.min(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) + 1;
+                    if (globals.copyStart !== null && globals.copyEnd !== null) {
+                        const width = Math.max(globals.copyStart.charCodeAt(0), globals.copyEnd.charCodeAt(0)) - Math.min(globals.copyStart.charCodeAt(0), globals.copyEnd.charCodeAt(0)) + 1;
+                        const length = Math.max(parseInt(globals.copyStart.substring(1)), parseInt(globals.copyEnd.substring(1))) - Math.min(parseInt(globals.copyStart.substring(1)), parseInt(globals.copyEnd.substring(1))) + 1;
                         for (let j = 0; j < width; j++) {
                             for (let i = 0; i < length; i++) {
-                                const x0 = parseInt(copyStart.current.substring(1)) + i;
-                                const y0 = copyStart.current.charCodeAt(0) + j;
-                                const x1 = parseInt(selectStart.current.substring(1)) + i;
-                                const y1 = selectStart.current.charCodeAt(0) + j;
+                                const x0 = parseInt(globals.copyStart.substring(1)) + i;
+                                const y0 = globals.copyStart.charCodeAt(0) + j;
+                                const x1 = parseInt(globals.selectStart.substring(1)) + i;
+                                const y1 = globals.selectStart.charCodeAt(0) + j;
                                 const id0 = String.fromCharCode(y0) + x0.toString();
                                 const id1 = String.fromCharCode(y1) + x1.toString();
                                 let elem0 = document.getElementById(id0);
@@ -77,15 +78,15 @@ export default function EditButton({ text, selectStart, selectEnd, copyStart, co
                         }
                     }
 
-                    if (cutStart.current !== null && cutEnd.current !== null) {
-                        const width = Math.max(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) - Math.min(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) + 1;
-                        const length = Math.max(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) - Math.min(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) + 1;
+                    if (globals.cutStart !== null && globals.cutEnd !== null) {
+                        const width = Math.max(globals.cutStart.charCodeAt(0), globals.cutEnd.charCodeAt(0)) - Math.min(globals.cutStart.charCodeAt(0), globals.cutEnd.charCodeAt(0)) + 1;
+                        const length = Math.max(parseInt(globals.cutStart.substring(1)), parseInt(globals.cutEnd.substring(1))) - Math.min(parseInt(globals.cutStart.substring(1)), parseInt(globals.cutEnd.substring(1))) + 1;
                         for (let j = 0; j < width; j++) {
                             for (let i = 0; i < length; i++) {
-                                const x0 = parseInt(cutStart.current.substring(1)) + i;
-                                const y0 = cutStart.current.charCodeAt(0) + j;
-                                const x1 = parseInt(selectStart.current.substring(1)) + i;
-                                const y1 = selectStart.current.charCodeAt(0) + j;
+                                const x0 = parseInt(globals.cutStart.substring(1)) + i;
+                                const y0 = globals.cutStart.charCodeAt(0) + j;
+                                const x1 = parseInt(globals.selectStart.substring(1)) + i;
+                                const y1 = globals.selectStart.charCodeAt(0) + j;
                                 const id0 = String.fromCharCode(y0) + x0.toString();
                                 const id1 = String.fromCharCode(y1) + x1.toString();
                                 let elem0 = document.getElementById(id0);
@@ -97,8 +98,8 @@ export default function EditButton({ text, selectStart, selectEnd, copyStart, co
                             }
                         }
 
-                        cutStart.current = null;
-                        cutEnd.current = null;
+                        globals.cutStart = null;
+                        globals.cutEnd = null;
                     }
                 }}>
                     <MdOutlineContentPaste className="w-6 h-6 ml-2 mt-auto mb-auto" />

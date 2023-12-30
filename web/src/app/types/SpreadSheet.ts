@@ -14,7 +14,10 @@ export type SpreadSheet = {
 
 export type Sheet = {
     SheetName: string,
-    State: Map<string, State>
+    SheetIndex: number,
+    State: {
+        [key: string]: State
+    }
 }
 
 export type State = {

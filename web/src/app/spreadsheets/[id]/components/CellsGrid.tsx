@@ -1,10 +1,11 @@
-import { setValue } from '../../../lib/redux/nameBoxSlice'
-import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
-import { useDispatch } from 'react-redux'
-import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { setValue as setNameBoxValue } from '../../../lib/redux/nameBoxSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
-import { SpreadSheet } from '@/app/types/SpreadSheet';
+import { RootState } from '@/app/lib/redux/store';
+import globals from '@/app/lib/globals/globals';
+import { useRouter } from 'next/navigation';
 
 function getDownID(id: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
@@ -37,8 +38,10 @@ function getLeftID(id: string): string {
 }
 
 
-export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd, spreadsheet, setSpreadSheet }: { formulaBarVisible: boolean, toolBarVisible: boolean, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null>, spreadsheet: SpreadSheet, setSpreadSheet: Dispatch<SetStateAction<SpreadSheet>> }) {
+export default function CellsGrid() {
     const dispatch = useDispatch()
+    const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
+    const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
     const [rows, setRowsValue] = useState<number>(100)
     const [columns, setColumnsValue] = useState<number>(26)
     const [activeCol, setActiveCol] = useState<string | null>(null);
@@ -91,6 +94,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         window.removeEventListener("mousemove", mouseMoveHorizontal);
         window.removeEventListener("mousemove", mouseMoveVertical);
         window.removeEventListener("mouseup", removeListeners);
+
+
     }, [mouseMoveHorizontal, mouseMoveVertical]);
 
     const mouseUp = useCallback((e: MouseEvent) => {
@@ -116,11 +121,11 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
     }, [activeCol, activeRow, removeListeners]);
 
     useEffect(() => {
-        let elem = document.getElementById(selectStart.current);
+        let elem = document.getElementById(globals.selectStart);
         if (elem) {
             elem.style.borderWidth = '3px';
             elem.style.borderColor = '#1a73e8';
-            dispatch(setValue(selectStart.current))
+            dispatch(setNameBoxValue(globals.selectStart))
         }
 
         document.addEventListener("keyup", (e) => {
@@ -147,8 +152,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     elem.style.borderWidth = '3px';
                     elem.style.borderColor = '#1a73e8';
                     elem.focus();
-                    selectStart.current = elem.id
-                    selectEnd.current = elem.id
+                    globals.selectStart = elem.id
+                    globals.selectEnd = elem.id
                 }
                 dispatch(setSelectedCell(getDownID(currentElementId)))
             }
@@ -170,8 +175,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     elem.style.borderWidth = '3px';
                     elem.style.borderColor = '#1a73e8';
                     elem.focus();
-                    selectStart.current = elem.id
-                    selectEnd.current = elem.id
+                    globals.selectStart = elem.id
+                    globals.selectEnd = elem.id
                 }
                 dispatch(setSelectedCell(getUpID(currentElementId)))
             }
@@ -193,8 +198,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     elem.style.borderWidth = '3px';
                     elem.style.borderColor = '#1a73e8';
                     elem.focus();
-                    selectStart.current = elem.id
-                    selectEnd.current = elem.id
+                    globals.selectStart = elem.id
+                    globals.selectEnd = elem.id
                 }
                 dispatch(setSelectedCell(getRightID(currentElementId)))
             }
@@ -216,8 +221,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     elem.style.borderWidth = '3px';
                     elem.style.borderColor = '#1a73e8';
                     elem.focus();
-                    selectStart.current = elem.id
-                    selectEnd.current = elem.id
+                    globals.selectStart = elem.id
+                    globals.selectEnd = elem.id
                 }
                 dispatch(setSelectedCell(getLeftID(currentElementId)))
             }
@@ -228,32 +233,32 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
 
             if (ctrlDown.current && e.key === "c") {
                 e.preventDefault();
-                copyStart.current = selectStart.current;
-                copyEnd.current = selectEnd.current;
-                cutStart.current = null;
-                cutEnd.current = null;
+                globals.copyStart = globals.selectStart;
+                globals.copyEnd = globals.selectEnd;
+                globals.cutStart = null;
+                globals.cutEnd = null;
             }
 
             if (ctrlDown.current && e.key === "x") {
                 e.preventDefault();
-                cutStart.current = selectStart.current;
-                cutEnd.current = selectEnd.current;
-                copyStart.current = null;
-                copyEnd.current = null;
+                globals.cutStart = globals.selectStart;
+                globals.cutEnd = globals.selectEnd;
+                globals.copyStart = null;
+                globals.copyEnd = null;
             }
 
 
             if (ctrlDown.current && e.key === "v") {
                 e.preventDefault();
-                if (copyStart.current !== null && copyEnd.current !== null) {
-                    const width = Math.max(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) - Math.min(copyStart.current.charCodeAt(0), copyEnd.current.charCodeAt(0)) + 1;
-                    const length = Math.max(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) - Math.min(parseInt(copyStart.current.substring(1)), parseInt(copyEnd.current.substring(1))) + 1;
+                if (globals.copyStart !== null && globals.copyEnd !== null) {
+                    const width = Math.max(globals.copyStart.charCodeAt(0), globals.copyEnd.charCodeAt(0)) - Math.min(globals.copyStart.charCodeAt(0), globals.copyEnd.charCodeAt(0)) + 1;
+                    const length = Math.max(parseInt(globals.copyStart.substring(1)), parseInt(globals.copyEnd.substring(1))) - Math.min(parseInt(globals.copyStart.substring(1)), parseInt(globals.copyEnd.substring(1))) + 1;
                     for (let j = 0; j < width; j++) {
                         for (let i = 0; i < length; i++) {
-                            const x0 = parseInt(copyStart.current.substring(1)) + i;
-                            const y0 = copyStart.current.charCodeAt(0) + j;
-                            const x1 = parseInt(selectStart.current.substring(1)) + i;
-                            const y1 = selectStart.current.charCodeAt(0) + j;
+                            const x0 = parseInt(globals.copyStart.substring(1)) + i;
+                            const y0 = globals.copyStart.charCodeAt(0) + j;
+                            const x1 = parseInt(globals.selectStart.substring(1)) + i;
+                            const y1 = globals.selectStart.charCodeAt(0) + j;
                             const id0 = String.fromCharCode(y0) + x0.toString();
                             const id1 = String.fromCharCode(y1) + x1.toString();
                             let elem0 = document.getElementById(id0);
@@ -265,15 +270,15 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     }
                 }
 
-                if (cutStart.current !== null && cutEnd.current !== null) {
-                    const width = Math.max(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) - Math.min(cutStart.current.charCodeAt(0), cutEnd.current.charCodeAt(0)) + 1;
-                    const length = Math.max(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) - Math.min(parseInt(cutStart.current.substring(1)), parseInt(cutEnd.current.substring(1))) + 1;
+                if (globals.cutStart !== null && globals.cutEnd !== null) {
+                    const width = Math.max(globals.cutStart.charCodeAt(0), globals.cutEnd.charCodeAt(0)) - Math.min(globals.cutStart.charCodeAt(0), globals.cutEnd.charCodeAt(0)) + 1;
+                    const length = Math.max(parseInt(globals.cutStart.substring(1)), parseInt(globals.cutEnd.substring(1))) - Math.min(parseInt(globals.cutStart.substring(1)), parseInt(globals.cutEnd.substring(1))) + 1;
                     for (let j = 0; j < width; j++) {
                         for (let i = 0; i < length; i++) {
-                            const x0 = parseInt(cutStart.current.substring(1)) + i;
-                            const y0 = cutStart.current.charCodeAt(0) + j;
-                            const x1 = parseInt(selectStart.current.substring(1)) + i;
-                            const y1 = selectStart.current.charCodeAt(0) + j;
+                            const x0 = parseInt(globals.cutStart.substring(1)) + i;
+                            const y0 = globals.cutStart.charCodeAt(0) + j;
+                            const x1 = parseInt(globals.selectStart.substring(1)) + i;
+                            const y1 = globals.selectStart.charCodeAt(0) + j;
                             const id0 = String.fromCharCode(y0) + x0.toString();
                             const id1 = String.fromCharCode(y1) + x1.toString();
                             let elem0 = document.getElementById(id0);
@@ -285,14 +290,14 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                         }
                     }
 
-                    cutStart.current = null;
-                    cutEnd.current = null;
+                    globals.cutStart = null;
+                    globals.cutEnd = null;
                 }
             }
 
             if (e.key === "Delete") {
-                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
-                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();
                         let elem = document.getElementById(id);
                         if (elem) {
@@ -304,8 +309,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         });
 
         document.getElementById("cellgrid")?.addEventListener("mousedown", (e) => {
-            for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
-                for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+            for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
                     const id = String.fromCharCode(j) + i.toString();
                     let elem = document.getElementById(id);
                     if (elem) {
@@ -328,13 +333,13 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                 }
             }
             if (e.target && (e.target as HTMLDivElement).id && /^[A-Z]\d+$/.test((e.target as HTMLDivElement).id)) {
-                selectStart.current = (e.target as HTMLDivElement).id
-                selectEnd.current = (e.target as HTMLDivElement).id
+                globals.selectStart = (e.target as HTMLDivElement).id
+                globals.selectEnd = (e.target as HTMLDivElement).id
 
-                if (selectEnd.current === selectStart.current) {
-                    dispatch(setValue(selectStart.current))
+                if (globals.selectEnd === globals.selectStart) {
+                    dispatch(setNameBoxValue(globals.selectStart))
                 } else {
-                    dispatch(setValue(String.fromCharCode(Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString() + ":" + String.fromCharCode(Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString()))
+                    dispatch(setNameBoxValue(String.fromCharCode(Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0))) + Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))).toString() + ":" + String.fromCharCode(Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0))) + Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))).toString()))
                 }
                 (e.target as HTMLDivElement).style.borderWidth = '3px';
                 (e.target as HTMLDivElement).style.borderColor = '#1a73e8';
@@ -350,8 +355,8 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         })
         document.getElementById("cellgrid")?.addEventListener("mouseover", (e) => {
             if (isMouseDown.current) {
-                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
-                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();
                         let elem = document.getElementById(id);
                         if (elem) {
@@ -368,16 +373,16 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
                     }
                 }
                 if (e.target && (e.target as HTMLDivElement).id) {
-                    selectEnd.current = (e.target as HTMLDivElement).id;
+                    globals.selectEnd = (e.target as HTMLDivElement).id;
 
-                    if (selectEnd.current === selectStart.current) {
-                        dispatch(setValue(selectStart.current))
+                    if (globals.selectEnd === globals.selectStart) {
+                        dispatch(setNameBoxValue(globals.selectStart))
                     } else {
-                        dispatch(setValue(String.fromCharCode(Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString() + ":" + String.fromCharCode(Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0))) + Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))).toString()))
+                        dispatch(setNameBoxValue(String.fromCharCode(Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0))) + Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))).toString() + ":" + String.fromCharCode(Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0))) + Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))).toString()))
                     }
                 }
-                for (let j = Math.min(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j <= Math.max(selectStart.current.charCodeAt(0), selectEnd.current.charCodeAt(0)); j++) {
-                    for (let i = Math.min(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i <= Math.max(parseInt(selectStart.current.substring(1)), parseInt(selectEnd.current.substring(1))); i++) {
+                for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
                         const id = String.fromCharCode(j) + i.toString();
                         let elem = document.getElementById(id);
                         if (elem) {
@@ -485,7 +490,7 @@ export default function CellsGrid({ formulaBarVisible, toolBarVisible, selectSta
         const x: Array<React.ReactNode> = [];
         for (let i = 0; i < rows; i++) {
             x.push(
-                <Cell spreadsheet={spreadsheet} setSpreadSheet={setSpreadSheet} i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
+                <Cell i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
             );
         }
         cells.push((

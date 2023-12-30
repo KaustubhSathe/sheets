@@ -12,14 +12,15 @@ import ViewButton from './ViewButton'
 import InsertButton from './InsertButton'
 import FormatButton from './FormatButton'
 import HelpButton from './HelpButton'
-import { SpreadSheet } from '@/app/types/SpreadSheet'
 import debounce from 'debounce'
 import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
 import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/app/lib/redux/store'
 
-export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible, setToolBarVisible, setFormulaBarVisible, selectStart, selectEnd, copyStart, copyEnd, cutStart, cutEnd }: { spreadsheet: SpreadSheet | undefined, toolBarVisible: boolean, formulaBarVisible: boolean, setToolBarVisible: Dispatch<SetStateAction<boolean>>, setFormulaBarVisible: Dispatch<SetStateAction<boolean>>, selectStart: MutableRefObject<string>, selectEnd: MutableRefObject<string>, copyStart: MutableRefObject<string | null>, copyEnd: MutableRefObject<string | null>, cutStart: MutableRefObject<string | null>, cutEnd: MutableRefObject<string | null> }) {
+export default function MenuBar() {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
-    const [menuDropDownSelected, setMenuDropDownSelected] = useState<string>("");
+    const spreadsheet = useSelector((state: RootState) => state.spreadsheet).value;
     const ref1 = useRef<HTMLDivElement>(null);
     const ref2 = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -91,8 +92,8 @@ export default function MenuBar({ spreadsheet, toolBarVisible, formulaBarVisible
                         <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                         <div className='mt-[2px] w-full hidden sm:block'>
                             <FileButton text={'File'} spreadsheet={spreadsheet} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
-                            <EditButton text={'Edit'} selectStart={selectStart} selectEnd={selectEnd} copyStart={copyStart} copyEnd={copyEnd} cutStart={cutStart} cutEnd={cutEnd}/>
-                            <ViewButton text={'View'} toolBarVisible={toolBarVisible} formulaBarVisible={formulaBarVisible} setFormulaBarVisible={setFormulaBarVisible} setToolBarVisible={setToolBarVisible} />
+                            <EditButton text={'Edit'} />
+                            <ViewButton text={'View'} />
                             <InsertButton text={'Insert'} />
                             <FormatButton text={'Format'} />
                             <HelpButton text={'Help'} />

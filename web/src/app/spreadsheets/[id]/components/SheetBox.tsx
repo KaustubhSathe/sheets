@@ -1,9 +1,16 @@
 import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react";
-import { BsFillFileEarmarkSpreadsheetFill } from "react-icons/bs";
 import { GoTriangleDown } from "react-icons/go";
+import { setValue as setSpreadSheet } from '../../../lib/redux/spreadsheetSlice'
+import { setValue as setSelectedSheet } from '../../../lib/redux/selectedSheetSlice'
+import { RootState } from "@/app/lib/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function SheetsBox({ selected, index, onClick, deleteSheet }: { selected: boolean, index: number, onClick: MouseEventHandler<HTMLDivElement>, deleteSheet: MouseEventHandler<HTMLDivElement> }) {
+export default function SheetsBox({ index, onClick }: { index: number, onClick: MouseEventHandler<HTMLDivElement> }) {
     const [dropdown, setDropDown] = useState<boolean>(false);
+    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
+    const selected = selectedSheet === index;
+    const spreadsheet = useSelector((state: RootState) => state.spreadsheet).value;
+    const dispatch = useDispatch();
     const ref1 = useRef<HTMLDivElement>(null);
     const [name, setName] = useState<string>(`Sheet ${index}`);
     const [editing, setEditing] = useState<boolean>(false);
@@ -59,7 +66,11 @@ export default function SheetsBox({ selected, index, onClick, deleteSheet }: { s
                     <span className="inline-block mt-auto mb-auto font-semibold">Duplicate</span>
                 </div>
                 <div className="flex gap-2 justify-start bg-white hover:bg-slate-100 hover:cursor-pointer w-[150px] h-[30px] pl-2" onClick={(e) => {
-                    deleteSheet(e);
+                    dispatch(setSelectedSheet(1))
+                    dispatch(setSpreadSheet({
+                        ...spreadsheet,
+                        Sheets: spreadsheet.Sheets.filter(x => x.SheetIndex !== index)
+                    }))
                     setDropDown(false)
                 }}>
                     <span className="inline-block mt-auto mb-auto font-semibold">Delete</span>

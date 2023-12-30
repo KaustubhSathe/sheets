@@ -1,10 +1,17 @@
+import { RootState } from "@/app/lib/redux/store";
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { BiShow, BiFullscreen } from "react-icons/bi";
 import { FiZoomIn } from "react-icons/fi";
 import { MdArrowRight } from "react-icons/md";
 import { MdCheck } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { setValue as setToolBarVisible } from "../../../lib/redux/toolBarVisibleSlice"
+import { setValue as setFormulaBarVisible } from "../../../lib/redux/formulaBarVisibleSlice"
 
-export default function ViewButton({ text, toolBarVisible, formulaBarVisible, setToolBarVisible, setFormulaBarVisible }: { text: string, toolBarVisible: boolean, formulaBarVisible: boolean, setToolBarVisible: Dispatch<SetStateAction<boolean>>, setFormulaBarVisible: Dispatch<SetStateAction<boolean>> }) {
+export default function ViewButton({ text }: { text: string }) {
+    const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
+    const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
+    const dispatch = useDispatch();
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const [show, setShow] = useState<boolean>(false);
@@ -41,11 +48,11 @@ export default function ViewButton({ text, toolBarVisible, formulaBarVisible, se
                         <MdArrowRight className="block mt-auto mb-auto ml-auto mr-1 h-8 w-8 text-gray-500" />
                     </div>
                     {dropDownVisible && show && <div className="absolute right-[-200px] top-0 w-[200px] bg-white">
-                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => setFormulaBarVisible(!formulaBarVisible)}>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => dispatch(setFormulaBarVisible(!formulaBarVisible))}>
                             {formulaBarVisible && <MdCheck className="inline-block mt-auto mb-auto font-semibold" />}
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Formula Bar</span>
                         </div>
-                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => setToolBarVisible(!toolBarVisible)}>
+                        <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] pl-4" onClick={() => dispatch(setToolBarVisible(!toolBarVisible))}>
                             {toolBarVisible && <MdCheck className="inline-block mt-auto mb-auto font-semibold" />}
                             <span className="inline-block mt-auto mb-auto font-semibold text-slate-500">Tool Bar</span>
                         </div>

@@ -5,6 +5,7 @@ import { AiOutlineMail } from "react-icons/ai";
 import { MdOutlineFileDownload, MdDriveFileRenameOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdHistory } from "react-icons/md";
+import { IoIosSave } from "react-icons/io";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiFillPrinter } from "react-icons/ai";
 import { CopySpreadSheet, CreateSpreadSheet, DeleteSpreadSheet } from "@/app/api/spreadsheet";
@@ -159,6 +160,11 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
                         <IoMdFolderOpen className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Open</span>
                         <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+O</span>
+                    </div>
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setOpenDialog(!openDialog)}>
+                        <IoIosSave className="w-6 h-6 ml-2 mt-auto mb-auto" />
+                        <span className="inline-block mt-auto mb-auto">Save</span>
+                        <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+S</span>
                     </div>
                     <div onClick={copySpreadSheet} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <IoMdCopy className="w-6 h-6 ml-2 mt-auto mb-auto" />
