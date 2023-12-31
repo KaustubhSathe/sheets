@@ -65,3 +65,19 @@ export async function UpdateSpreadSheetTitle(access_token: string, spreadsheet_i
 
     return response;
 }
+
+
+export async function UpdateSheets(access_token: string,  body: {
+    Sheets: Sheet[],
+    SpreadSheetID: string,
+}) {
+    const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_sheets`, {
+        method: "PATCH",
+        headers: {
+            'spreadsheet_access_token': access_token,
+        },
+        body: JSON.stringify(body),
+    })
+
+    return response;
+}

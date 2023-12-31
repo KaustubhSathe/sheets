@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const selectedSheetSlice = createSlice({
   name: 'selectedSheet',
   initialState: {
-    value: 1,
+    value: 0,
   },
   reducers: {
     setValue: (state, action) => {

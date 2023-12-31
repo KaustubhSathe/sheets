@@ -10,9 +10,10 @@ import { RootState } from '../../lib/redux/store'
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { GetSpreadSheet } from "@/app/api/spreadsheet";
-import { setValue as setSpreadSheet } from '../../lib/redux/spreadsheetSlice';
+import { setValue as setSpreadSheetMetaData } from '../../lib/redux/spreadSheetMetaDataSlice';
 import React from "react";
 import { SpreadSheet } from "@/app/types/SpreadSheet";
+import globals from "@/app/lib/globals/globals";
 
 export default function Spreadsheet() {
     const router = useRouter();
@@ -20,6 +21,7 @@ export default function Spreadsheet() {
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
     const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
+    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const pathname = usePathname();
 
     useEffect(() => {
@@ -35,18 +37,43 @@ export default function Spreadsheet() {
                     return res.json();
                 }
             }).then((res: SpreadSheet) => {
-                dispatch(setSpreadSheet(res));
-                if (res && res.Sheets && res.Sheets[selectedSheet - 1] && res.Sheets[selectedSheet - 1].State) {
-                    for (let key in res.Sheets[selectedSheet - 1].State) {
-                        const val = res.Sheets[selectedSheet - 1].State[key]
-                        let elem = document.getElementById(key) as HTMLDivElement
-                        if (elem) {
-                            elem.innerText = val.TextContent
+                globals.spreadsheet = res;
+                dispatch(setSpreadSheetMetaData({
+                    SpreadSheetID: res.SK.slice(12),
+                    CreatedAt: res.CreatedAt,
+                    Favorited: res.Favorited,
+                    UpdatedAt: res.UpdatedAt,
+                    UserName: res.UserName,
+                    SpreadSheetTitle: res.SpreadSheetTitle,
+                    SheetsData: res.Sheets.map(x => {
+                        return {
+                            SheetIndex: x.SheetIndex,
+                            SheetName: x.SheetName,
+                        }
+                    })
+                }));
+                if (res && res.Sheets && res.Sheets[selectedSheet] && res.Sheets[selectedSheet].State) {
+                    for (let j = 0; j < columns; j++) {
+                        for (let i = 0; i < rows; i++) {
+                            const key = String.fromCharCode(65 + j) + (i + 1).toString();
+                                let elem = document.getElementById(key) as HTMLDivElement
+                                if (!globals.spreadsheet.Sheets[selectedSheet].State[key]) {
+                                    globals.spreadsheet.Sheets[selectedSheet].State[key] = {
+                                        BackGroundColor: "#FFFFFF",
+                                        FontColor: "Black",
+                                        FontFamily: "Roboto",
+                                        FontStyle: "underline",
+                                        FontWeight: "bold",
+                                        TextContent: "",
+                                        TextDecoration: "underline",
+                                    }
+                                }
+                                elem.innerText = globals.spreadsheet.Sheets[selectedSheet].State[key].TextContent
                         }
                     }
                 }
             })
-    }, [router, dispatch, selectedSheet]);
+    }, [router, dispatch, selectedSheet, columns, rows]);
 
     return (
         <>

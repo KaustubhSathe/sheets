@@ -42,8 +42,7 @@ export default function CellsGrid() {
     const dispatch = useDispatch()
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
-    const [rows, setRowsValue] = useState<number>(100)
-    const [columns, setColumnsValue] = useState<number>(26)
+    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
     const isMouseDown = useRef<boolean>(false);

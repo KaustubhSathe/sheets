@@ -5,7 +5,7 @@ import { AiOutlineStar, AiOutlineMenu } from 'react-icons/ai'
 import { FaClockRotateLeft } from 'react-icons/fa6'
 import { MdOutlineInsertComment, MdShare } from 'react-icons/md'
 import { CgProfile } from 'react-icons/cg'
-import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import FileButton from './FileButton'
 import EditButton from './EditButton'
 import ViewButton from './ViewButton'
@@ -20,11 +20,11 @@ import { RootState } from '@/app/lib/redux/store'
 
 export default function MenuBar() {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
-    const spreadsheet = useSelector((state: RootState) => state.spreadsheet).value;
+    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
     const ref1 = useRef<HTMLDivElement>(null);
     const ref2 = useRef<HTMLDivElement>(null);
     const router = useRouter();
-    const [spreadSheetTitle, setSpreadSheetTitle] = useState<string | undefined>(spreadsheet?.SpreadSheetTitle);
+    const [spreadSheetTitle, setSpreadSheetTitle] = useState<string | undefined>(spreadSheetMetaData?.SpreadSheetTitle);
     const [versionHistory, setVersionHistory] = useState<boolean>(false);
     const [shareDialog, setShareDialog] = useState<boolean>(false);
     const [profileVisible, setProfileVisible] = useState<boolean>(false);
@@ -41,12 +41,12 @@ export default function MenuBar() {
     useEffect(() => {
         document.addEventListener("click", click);
 
-        setSpreadSheetTitle(spreadsheet?.SpreadSheetTitle);
+        setSpreadSheetTitle(spreadSheetMetaData?.SpreadSheetTitle);
 
         return () => {
             document.removeEventListener("click", click);
         };
-    }, [click, spreadsheet]);
+    }, [click, spreadSheetMetaData]);
 
     return (
         <>
@@ -82,7 +82,7 @@ export default function MenuBar() {
                             if (access_token === null) {
                                 return router.push("/")
                             }
-                            UpdateSpreadSheetTitle(access_token, spreadsheet?.SK.slice(12), e.target.value)
+                            UpdateSpreadSheetTitle(access_token, spreadSheetMetaData.SpreadSheetID, e.target.value)
                                 .then(res => {
                                     if (res.status === 200) {
                                         setSpreadSheetTitle(e.target.value)
@@ -91,7 +91,7 @@ export default function MenuBar() {
                         }, 500)} value={spreadSheetTitle} onChange={(e) => setSpreadSheetTitle(e.target.value)} />
                         <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
                         <div className='mt-[2px] w-full hidden sm:block'>
-                            <FileButton text={'File'} spreadsheet={spreadsheet} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
+                            <FileButton text={'File'} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
                             <EditButton text={'Edit'} />
                             <ViewButton text={'View'} />
                             <InsertButton text={'Insert'} />

@@ -3,10 +3,11 @@ import nameBoxReducer from './nameBoxSlice'
 import formulaBarReducer from './formulaBarSlice'
 import selectedCellReducer from './selectedCellSlice'
 import spreadsheetsReducer from './spreadsheetsSlice'
-import spreadsheetReducer from './spreadsheetSlice'
+import spreadSheetMetaDataReducer from './spreadSheetMetaDataSlice'
 import formulaBarVisibleReducer from './formulaBarVisibleSlice'
 import toolBarVisibleReducer from './toolBarVisibleSlice'
 import selectedSheetReducer from './selectedSheetSlice'
+import totalRCReducer from './totalRCSlice'
 
 const store = configureStore({
   reducer: {
@@ -14,10 +15,11 @@ const store = configureStore({
     formulaBar: formulaBarReducer,
     selectedCell: selectedCellReducer,
     spreadsheets: spreadsheetsReducer,
-    spreadsheet: spreadsheetReducer,
+    spreadSheetMetaData: spreadSheetMetaDataReducer,
     formulaBarVisible: formulaBarVisibleReducer,
     toolBarVisible: toolBarVisibleReducer,
     selectedSheet: selectedSheetReducer,
+    totalRC: totalRCReducer,
   },
 })
 

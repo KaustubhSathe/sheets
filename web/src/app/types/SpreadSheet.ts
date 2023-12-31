@@ -21,12 +21,11 @@ export type Sheet = {
 }
 
 export type State = {
-    Bold: boolean,
-    Italic: boolean,
-    StrikeThrough: boolean,
-    Underline: boolean,
+    FontWeight: string,
+    FontStyle: string,
+    TextDecoration: string,
     FontColor: string,
     BackGroundColor: string,
-    FontType: string,
+    FontFamily: string,
     TextContent: string,
 }

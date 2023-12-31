@@ -72,7 +72,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		Bucket:      aws.String(config.SPREADSHEET_BUCKET),
 		Key:         aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), spreadSheetID)),
 		ContentType: aws.String("application/json"),
-		Body:        bytes.NewReader([]byte("[{\r\n    \"SheetName\": \"Sheet 1\",\r\n    \"SheetIndex\": 1,\r\n\t\"State\":      {}\r\n}]\r\n")),
+		Body:        bytes.NewReader([]byte("[{\r\n    \"SheetName\": \"Sheet 1\",\r\n    \"SheetIndex\": 0,\r\n\t\"State\":      {}\r\n}]\r\n")),
 	})
 	if err != nil {
 		return events.APIGatewayProxyResponse{

@@ -1,7 +1,7 @@
 import { RootState } from '@/app/lib/redux/store';
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
-import { setValue as setSpreadSheet } from "../../../lib/redux/spreadsheetSlice"
+import { setValue as setSpreadSheet } from "../../../lib/redux/spreadSheetMetaDataSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from 'react';
 import { Sheet, SpreadSheet, State } from '@/app/types/SpreadSheet';

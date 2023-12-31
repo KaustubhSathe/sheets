@@ -8,18 +8,24 @@ import { MdHistory } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiFillPrinter } from "react-icons/ai";
-import { CopySpreadSheet, CreateSpreadSheet, DeleteSpreadSheet } from "@/app/api/spreadsheet";
-import { SpreadSheet } from "@/app/types/SpreadSheet";
+import { CopySpreadSheet, CreateSpreadSheet, DeleteSpreadSheet, UpdateSheets } from "@/app/api/spreadsheet";
+import { SpreadSheet, State } from "@/app/types/SpreadSheet";
 import { RxCross1 } from "react-icons/rx";
 import Cloud from '../../../../../public/grey-cloud-2.svg'
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
+import { RootState } from "@/app/lib/redux/store";
+import { useSelector } from "react-redux";
+import globals from "@/app/lib/globals/globals";
 
-export default function FileButton({ text, spreadsheet, setVersionHistory, setShareDialog }: { text: string, spreadsheet: SpreadSheet | undefined, setVersionHistory: Dispatch<SetStateAction<boolean>>, setShareDialog: Dispatch<SetStateAction<boolean>> }) {
+export default function FileButton({ text, setVersionHistory, setShareDialog }: { text: string, setVersionHistory: Dispatch<SetStateAction<boolean>>, setShareDialog: Dispatch<SetStateAction<boolean>> }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
+    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
+    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const [detailsDialog, setDetailsDialog] = useState<boolean>(false);
     const router = useRouter();
     const ctrlDown = useRef<boolean>(false);
@@ -30,16 +36,50 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
         }
     }, []);
 
+    const saveSheet = useCallback(async () => {
+        for (let j = 0; j < columns; j++) {
+            for (let i = 0; i < rows; i++) {
+                const key = String.fromCharCode(65 + j) + (i + 1).toString();
+                const elem = document.getElementById(key) as HTMLDivElement;
+                const newState: State = {
+                    BackGroundColor: elem.style.backgroundColor,
+                    FontWeight: elem.style.fontWeight,
+                    FontColor: elem.style.color,
+                    FontStyle: elem.style.fontStyle,
+                    FontFamily: elem.style.fontFamily,
+                    TextContent: elem.innerText,
+                    TextDecoration: elem.style.textDecoration,
+                }
+                globals.spreadsheet.Sheets[selectedSheet].State[key] = newState;
+            }
+        }
+        const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
+        const res = await UpdateSheets(access_token, {
+            Sheets: globals.spreadsheet.Sheets,
+            SpreadSheetID: globals.spreadsheet?.SK.slice(12),
+        })
+
+        return res;
+    }, [columns, rows, selectedSheet]);
+
     useEffect(() => {
         document.addEventListener("click", click);
 
-        document.addEventListener("keydown", (e) => {
+        document.addEventListener("keydown", async (e) => {
             if (e.ctrlKey) {
                 ctrlDown.current = true;
             }
-            if (ctrlDown && e.key === 'o') {
+            if (ctrlDown.current && e.key === 'o') {
                 e.preventDefault();
                 setOpenDialog(true)
+            }
+            if (ctrlDown.current && e.key === 's') {
+                e.preventDefault();
+                console.log("saving here")
+                const res = await saveSheet();
+                if (res.status === 200) {
+                    console.log("saving success")
+                }
             }
         });
 
@@ -52,7 +92,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
         return () => {
             document.removeEventListener("click", click);
         };
-    }, [click]);
+    }, [click, saveSheet]);
 
     const createSpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
@@ -69,7 +109,7 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
 
     const copySpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        CopySpreadSheet(access_token, spreadsheet?.SpreadSheetTitle, spreadsheet?.Favorited, spreadsheet?.Sheets)
+        CopySpreadSheet(access_token, spreadSheetMetaData?.SpreadSheetTitle, spreadSheetMetaData?.Favorited, globals.spreadsheet?.Sheets)
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
@@ -141,9 +181,9 @@ export default function FileButton({ text, spreadsheet, setVersionHistory, setSh
                         </div>
                     </div>
                     <div>
-                        <span className="block mb-4">Owner: {spreadsheet?.UserName}</span>
-                        <span className="block mb-4">Modified: {spreadsheet?.UpdatedAt.toString()}</span>
-                        <span className="block">Created: {spreadsheet?.CreatedAt.toString()}</span>
+                        <span className="block mb-4">Owner: {spreadSheetMetaData?.UserName}</span>
+                        <span className="block mb-4">Modified: {spreadSheetMetaData?.UpdatedAt.toString()}</span>
+                        <span className="block">Created: {spreadSheetMetaData?.CreatedAt.toString()}</span>
                     </div>
                 </div>
             </>}
