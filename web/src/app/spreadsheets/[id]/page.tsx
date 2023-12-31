@@ -12,13 +12,14 @@ import { useCallback, useEffect } from "react";
 import { GetSpreadSheet } from "@/app/api/spreadsheet";
 import { setValue as setSpreadSheet } from '../../lib/redux/spreadsheetSlice';
 import React from "react";
+import { SpreadSheet } from "@/app/types/SpreadSheet";
 
 export default function Spreadsheet() {
     const router = useRouter();
     const dispatch = useDispatch();
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
-
+    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const pathname = usePathname();
 
     useEffect(() => {
@@ -33,10 +34,19 @@ export default function Spreadsheet() {
                 if (res.status === 200) {
                     return res.json();
                 }
-            }).then(res => {
+            }).then((res: SpreadSheet) => {
                 dispatch(setSpreadSheet(res));
+                if (res && res.Sheets && res.Sheets[selectedSheet - 1] && res.Sheets[selectedSheet - 1].State) {
+                    for (let key in res.Sheets[selectedSheet - 1].State) {
+                        const val = res.Sheets[selectedSheet - 1].State[key]
+                        let elem = document.getElementById(key) as HTMLDivElement
+                        if (elem) {
+                            elem.innerText = val.TextContent
+                        }
+                    }
+                }
             })
-    }, [router, dispatch]);
+    }, [router, dispatch, selectedSheet]);
 
     return (
         <>

@@ -1,17 +1,21 @@
+import { RootState } from '@/app/lib/redux/store';
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
-import { useDispatch } from "react-redux";
+import { setValue as setSpreadSheet } from "../../../lib/redux/spreadsheetSlice"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from 'react';
+import { Sheet, SpreadSheet, State } from '@/app/types/SpreadSheet';
 
 
 export default function Cell({ i, j }: { i: number, j: number }) {
     const dispatch = useDispatch()
-    const id = String.fromCharCode(65 + j) + (i + 1).toString()
+    const id = String.fromCharCode(65 + j) + (i + 1).toString();
 
     return (
-        <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px]`}>
-            <div className="peer overflow-x-clip overflow-y-clip pl-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
-                contentEditable
+        <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
+            <div className="peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip pl-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 spellCheck={false}
+                contentEditable
                 id={id}
                 onFocus={(e) => {
                     dispatch(setSelectedCell(e.currentTarget.id))
