@@ -348,8 +348,6 @@ export default function CellsGrid() {
             document.getElementById("cellgrid")?.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
                 const { clientX: mouseX, clientY: mouseY } = e;
-
-                console.log("hello world")
             })
         })
         document.getElementById("cellgrid")?.addEventListener("mouseover", (e) => {

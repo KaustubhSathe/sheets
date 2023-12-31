@@ -75,10 +75,9 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
             }
             if (ctrlDown.current && e.key === 's') {
                 e.preventDefault();
-                console.log("saving here")
                 const res = await saveSheet();
                 if (res.status === 200) {
-                    console.log("saving success")
+                    
                 }
             }
         });

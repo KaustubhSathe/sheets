@@ -5,16 +5,14 @@ import { setValue as setSelectedSheet } from '../../../lib/redux/selectedSheetSl
 import { RootState } from "@/app/lib/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function SheetsBox({ index, onClick }: { index: number, onClick: MouseEventHandler<HTMLDivElement> }) {
+export default function SheetsBox({ index, onClick, sheetName }: { index: number, onClick: MouseEventHandler<HTMLDivElement>, sheetName: string }) {
     const [dropdown, setDropDown] = useState<boolean>(false);
     const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const selected = selectedSheet === index;
-    console.log(selectedSheet)
-    console.log(index)
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
     const dispatch = useDispatch();
     const ref1 = useRef<HTMLDivElement>(null);
-    const [name, setName] = useState<string>(`Sheet ${index}`);
+    const [name, setName] = useState<string>(sheetName);
     const [editing, setEditing] = useState<boolean>(false);
 
     const click = useCallback((e: MouseEvent) => {

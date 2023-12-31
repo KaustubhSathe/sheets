@@ -31,14 +31,14 @@ export default function SheetsBar() {
             <button className="ml-[46px] hover:bg-slate-200 hover:rounded-full w-[37px] flex align-middle justify-center" onClick={() => {
                 globals.spreadsheet.Sheets.push({
                     SheetIndex: spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 : 0,
-                    SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 : 0 + 1).toString(),
+                    SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                     State: {},
                 })
                 dispatch(setSpreadSheetMetaData({
                     ...spreadSheetMetaData,
                     SheetsData: [...spreadSheetMetaData.SheetsData, {
                         SheetIndex: spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 : 0,
-                        SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 : 0 + 1).toString(),
+                        SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                     }]
                 }))
             }}>
@@ -92,11 +92,8 @@ export default function SheetsBar() {
             </div>
 
             {
-                spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => <SheetsBox key={x.SheetIndex} index={x.SheetIndex} onClick={() => {
+                spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => <SheetsBox key={x.SheetIndex} sheetName={x.SheetName} index={x.SheetIndex} onClick={() => {
                     if (globals.spreadsheet && globals.spreadsheet.Sheets && globals.spreadsheet.Sheets[x.SheetIndex] && globals.spreadsheet.Sheets[x.SheetIndex].State) {
-                        console.log(selectedSheet)
-                        console.log(x.SheetIndex)
-                        console.log(globals.spreadsheet)
                         for (let j = 0; j < columns; j++) {
                             for (let i = 0; i < rows; i++) {
                                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
@@ -121,10 +118,6 @@ export default function SheetsBar() {
                                         TextContent: "",
                                         TextDecoration: "underline",
                                     }
-                                }
-                                if (key === "A1") {
-                                    console.log(globals.spreadsheet.Sheets[x.SheetIndex].State)
-                                    console.log(globals.spreadsheet.Sheets[selectedSheet].State)
                                 }
                                 elem.innerText = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
                             }
