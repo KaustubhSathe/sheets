@@ -1,13 +1,12 @@
-import { MouseEventHandler, useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { GoTriangleDown } from "react-icons/go";
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
-import { setValue as setSelectedSheet } from '../../../lib/redux/selectedSheetSlice'
 import { RootState } from "@/app/lib/redux/store";
 import { useDispatch, useSelector } from "react-redux";
+import globals from "@/app/lib/globals/globals";
 
-export default function SheetsBox({ index, onClick, sheetName }: { index: number, onClick: MouseEventHandler<HTMLDivElement>, sheetName: string }) {
+export default function SheetsBox({ index, onClick, sheetName, selectedSheet, setSelectedSheet }: { index: number, onClick: MouseEventHandler<HTMLDivElement>, sheetName: string, selectedSheet: number, setSelectedSheet: Dispatch<SetStateAction<number>> }) {
     const [dropdown, setDropDown] = useState<boolean>(false);
-    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const selected = selectedSheet === index;
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
     const dispatch = useDispatch();
@@ -66,7 +65,8 @@ export default function SheetsBox({ index, onClick, sheetName }: { index: number
                     <span className="inline-block mt-auto mb-auto font-semibold">Duplicate</span>
                 </div>
                 <div className="flex gap-2 justify-start bg-white hover:bg-slate-100 hover:cursor-pointer w-[150px] h-[30px] pl-2" onClick={(e) => {
-                    dispatch(setSelectedSheet(0))
+                    setSelectedSheet(0)
+                    globals.selectedSheet = 0
                     dispatch(setSpreadSheetMetaData({
                         ...spreadSheetMetaData,
                         SheetsData: spreadSheetMetaData.SheetsData.filter(x => x.SheetIndex !== index)

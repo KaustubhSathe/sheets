@@ -17,6 +17,7 @@ import { UpdateSpreadSheetTitle } from '@/app/api/spreadsheet'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/app/lib/redux/store'
+import SaveStatus from './SaveStatus'
 
 export default function MenuBar() {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
@@ -90,6 +91,7 @@ export default function MenuBar() {
                                 })
                         }, 500)} value={spreadSheetTitle} onChange={(e) => setSpreadSheetTitle(e.target.value)} />
                         <AiOutlineStar className='w-[20px] h-[20px] inline-block mt-auto mb-auto mr-[8px] ml-[8px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-full' />
+                        <SaveStatus />
                         <div className='mt-[2px] w-full hidden sm:block'>
                             <FileButton text={'File'} setVersionHistory={setVersionHistory} setShareDialog={setShareDialog} />
                             <EditButton text={'Edit'} />
@@ -117,7 +119,7 @@ export default function MenuBar() {
                     </div>
                     {profileVisible && <div className="z-50 shadow-black shadow-md absolute right-[16px] bottom-[-200px] sm:bottom-[-195px] bg-[#E9EEF6] w-[200px] h-[200px] sm:w-[300px] sm:h-[200px] rounded-2xl flex flex-col align-middle justify-center gap-4">
                         <div className="ml-auto mr-auto w-[80%] h-[40px] rounded-2xl text-center">
-                            <span className="m-auto block font-bold">Hi!!</span>
+                            <span className="m-auto block font-bold">Hi {spreadSheetMetaData.UserName}!!</span>
                         </div>
                         <div className="ml-auto mr-auto bg-slate-400 w-[80%] h-[40px] rounded-2xl text-center hover:bg-slate-500 hover:cursor-pointer flex" onClick={() => {
                             localStorage.removeItem("spreadsheet_access_token");

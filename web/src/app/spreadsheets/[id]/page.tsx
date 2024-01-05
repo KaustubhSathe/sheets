@@ -20,8 +20,6 @@ export default function Spreadsheet() {
     const dispatch = useDispatch();
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
-    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
-    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const pathname = usePathname();
 
     useEffect(() => {
@@ -52,13 +50,13 @@ export default function Spreadsheet() {
                         }
                     })
                 }));
-                if (res && res.Sheets && res.Sheets[selectedSheet] && res.Sheets[selectedSheet].State) {
-                    for (let j = 0; j < columns; j++) {
-                        for (let i = 0; i < rows; i++) {
+                if (res && res.Sheets && res.Sheets[globals.selectedSheet] && res.Sheets[globals.selectedSheet].State) {
+                    for (let j = 0; j < globals.columns; j++) {
+                        for (let i = 0; i < globals.rows; i++) {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                                 let elem = document.getElementById(key) as HTMLDivElement
-                                if (!globals.spreadsheet.Sheets[selectedSheet].State[key]) {
-                                    globals.spreadsheet.Sheets[selectedSheet].State[key] = {
+                                if (!globals.spreadsheet.Sheets[globals.selectedSheet].State[key]) {
+                                    globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                         BackGroundColor: "#FFFFFF",
                                         FontColor: "Black",
                                         FontFamily: "Roboto",
@@ -68,12 +66,12 @@ export default function Spreadsheet() {
                                         TextDecoration: "underline",
                                     }
                                 }
-                                elem.innerText = globals.spreadsheet.Sheets[selectedSheet].State[key].TextContent
+                                elem.innerText = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
                         }
                     }
                 }
             })
-    }, [router, dispatch, selectedSheet, columns, rows]);
+    }, [router, dispatch]);
 
     return (
         <>

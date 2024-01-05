@@ -5,14 +5,12 @@ import { MdCheck } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/lib/redux/store';
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
-import { setValue as setSelectedSheet } from '../../../lib/redux/selectedSheetSlice'
 import globals from '@/app/lib/globals/globals';
 import { State } from '@/app/types/SpreadSheet';
 
 export default function SheetsBar() {
-    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
-    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
+    const [selectedSheet, setSelectedSheet] = useState<number>(0);
     const dispatch = useDispatch();
     const [sheetsDropDown, setSheetsDropDown] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
@@ -52,12 +50,12 @@ export default function SheetsBar() {
                         {spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => (
                             <div key={x.SheetIndex} className="flex gap-2 justify-center w-[90px] h-[40px] bg-white hover:bg-slate-300" onClick={() => {
                                 if (globals.spreadsheet && globals.spreadsheet.Sheets && globals.spreadsheet.Sheets[x.SheetIndex] && globals.spreadsheet.Sheets[x.SheetIndex].State) {
-                                    for (let j = 0; j < columns; j++) {
-                                        for (let i = 0; i < rows; i++) {
+                                    for (let j = 0; j < globals.columns; j++) {
+                                        for (let i = 0; i < globals.rows; i++) {
                                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                                             let elem = document.getElementById(key) as HTMLDivElement
                                             // First save old state
-                                            globals.spreadsheet.Sheets[selectedSheet].State[key] = {
+                                            globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                                 BackGroundColor: elem.style.backgroundColor,
                                                 FontColor: elem.style.color,
                                                 FontFamily: elem.style.fontFamily,
@@ -81,7 +79,8 @@ export default function SheetsBar() {
                                         }
                                     }
                                 }
-                                dispatch(setSelectedSheet(x.SheetIndex))
+                                globals.selectedSheet = x.SheetIndex
+                                setSelectedSheet(x.SheetIndex)
                             }}>
                                 {selectedSheet === x.SheetIndex && <MdCheck className="inline-block mt-auto mb-auto font-semibold" />}
                                 <span className="mt-auto mb-auto">{x.SheetName}</span>
@@ -92,14 +91,14 @@ export default function SheetsBar() {
             </div>
 
             {
-                spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => <SheetsBox key={x.SheetIndex} sheetName={x.SheetName} index={x.SheetIndex} onClick={() => {
+                spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => <SheetsBox selectedSheet={selectedSheet} setSelectedSheet={setSelectedSheet} key={x.SheetIndex} sheetName={x.SheetName} index={x.SheetIndex} onClick={() => {
                     if (globals.spreadsheet && globals.spreadsheet.Sheets && globals.spreadsheet.Sheets[x.SheetIndex] && globals.spreadsheet.Sheets[x.SheetIndex].State) {
-                        for (let j = 0; j < columns; j++) {
-                            for (let i = 0; i < rows; i++) {
+                        for (let j = 0; j < globals.columns; j++) {
+                            for (let i = 0; i < globals.rows; i++) {
                                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
                                 let elem = document.getElementById(key) as HTMLDivElement
                                 // First save old state
-                                globals.spreadsheet.Sheets[selectedSheet].State[key] = {
+                                globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                     BackGroundColor: elem.style.backgroundColor,
                                     FontColor: elem.style.color,
                                     FontFamily: elem.style.fontFamily,
@@ -123,7 +122,8 @@ export default function SheetsBar() {
                             }
                         }
                     }
-                    dispatch(setSelectedSheet(x.SheetIndex))
+                    globals.selectedSheet = x.SheetIndex
+                    setSelectedSheet(x.SheetIndex)
                 }
                 } />)
             }

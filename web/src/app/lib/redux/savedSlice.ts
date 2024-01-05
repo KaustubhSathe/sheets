@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const selectedSheetSlice = createSlice({
-  name: 'selectedSheet',
+export enum STATUS {
+    SAVED,
+    UNSAVED,
+    SAVING
+}
+
+export const savedSlice = createSlice({
+  name: 'saved',
   initialState: {
-    value: 0,
+    value: STATUS.SAVED,
   },
   reducers: {
     setValue: (state, action) => {
@@ -13,6 +19,6 @@ export const selectedSheetSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setValue } = selectedSheetSlice.actions
+export const { setValue } = savedSlice.actions
 
-export default selectedSheetSlice.reducer
+export default savedSlice.reducer

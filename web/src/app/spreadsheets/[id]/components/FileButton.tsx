@@ -16,19 +16,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Papa from 'papaparse';
 import { RootState } from "@/app/lib/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import globals from "@/app/lib/globals/globals";
+import { STATUS, setValue as setSaved } from "@/app/lib/redux/savedSlice";
 
 export default function FileButton({ text, setVersionHistory, setShareDialog }: { text: string, setVersionHistory: Dispatch<SetStateAction<boolean>>, setShareDialog: Dispatch<SetStateAction<boolean>> }) {
     const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
-    const selectedSheet = useSelector((state: RootState) => state.selectedSheet).value;
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const [detailsDialog, setDetailsDialog] = useState<boolean>(false);
     const router = useRouter();
     const ctrlDown = useRef<boolean>(false);
+    const dispatch = useDispatch();
 
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
@@ -37,8 +37,8 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
     }, []);
 
     const saveSheet = useCallback(async () => {
-        for (let j = 0; j < columns; j++) {
-            for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < globals.columns; j++) {
+            for (let i = 0; i < globals.rows; i++) {
                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
                 const elem = document.getElementById(key) as HTMLDivElement;
                 const newState: State = {
@@ -50,7 +50,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                     TextContent: elem.innerText,
                     TextDecoration: elem.style.textDecoration,
                 }
-                globals.spreadsheet.Sheets[selectedSheet].State[key] = newState;
+                globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = newState;
             }
         }
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
@@ -60,7 +60,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
         })
 
         return res;
-    }, [columns, rows, selectedSheet]);
+    }, []);
 
     useEffect(() => {
         document.addEventListener("click", click);
@@ -73,11 +73,13 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                 e.preventDefault();
                 setOpenDialog(true)
             }
-            if (ctrlDown.current && e.key === 's') {
+            if (ctrlDown.current && e.key === 's' && !globals.saved) {
                 e.preventDefault();
+                dispatch(setSaved(STATUS.SAVING))
                 const res = await saveSheet();
                 if (res.status === 200) {
-                    
+                    globals.saved = true
+                    dispatch(setSaved(STATUS.SAVED))
                 }
             }
         });

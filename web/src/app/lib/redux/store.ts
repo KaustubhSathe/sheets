@@ -6,8 +6,7 @@ import spreadsheetsReducer from './spreadsheetsSlice'
 import spreadSheetMetaDataReducer from './spreadSheetMetaDataSlice'
 import formulaBarVisibleReducer from './formulaBarVisibleSlice'
 import toolBarVisibleReducer from './toolBarVisibleSlice'
-import selectedSheetReducer from './selectedSheetSlice'
-import totalRCReducer from './totalRCSlice'
+import savedReducer from './savedSlice'
 
 const store = configureStore({
   reducer: {
@@ -18,8 +17,7 @@ const store = configureStore({
     spreadSheetMetaData: spreadSheetMetaDataReducer,
     formulaBarVisible: formulaBarVisibleReducer,
     toolBarVisible: toolBarVisibleReducer,
-    selectedSheet: selectedSheetReducer,
-    totalRC: totalRCReducer,
+    saved: savedReducer,
   },
 })
 

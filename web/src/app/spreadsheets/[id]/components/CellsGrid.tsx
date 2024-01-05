@@ -42,7 +42,6 @@ export default function CellsGrid() {
     const dispatch = useDispatch()
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
-    const { rows, columns } = useSelector((state: RootState) => state.totalRC).value;
     const [activeCol, setActiveCol] = useState<string | null>(null);
     const [activeRow, setActiveRow] = useState<string | null>(null);
     const isMouseDown = useRef<boolean>(false);
@@ -62,12 +61,12 @@ export default function CellsGrid() {
         }
         element = document.getElementById("colModifier" + activeCol)
         if (element) {
-            let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+            let offsetBottom = document.getElementById("row" + globals.rows)?.getBoundingClientRect().bottom
             offsetBottom = offsetBottom ? offsetBottom : 0
             element.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
             element.style.backgroundColor = 'rgb(203,213,225,1)'
         }
-    }, [activeCol, rows]);
+    }, [activeCol]);
 
     const mouseMoveVertical = useCallback((e: MouseEvent) => {
         let element = document.getElementById("row" + activeRow)
@@ -414,10 +413,10 @@ export default function CellsGrid() {
         return () => {
             removeListeners();
         };
-    }, [activeCol, activeRow, rows, mouseMoveHorizontal, mouseMoveVertical, mouseUp, removeListeners, dispatch]);
+    }, [activeCol, activeRow, mouseMoveHorizontal, mouseMoveVertical, mouseUp, removeListeners, dispatch]);
 
     const rowsNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < rows; i++) {
+    for (let i = 0; i < globals.rows; i++) {
         rowsNumbers.push((
             <div
                 id={"row" + (i + 1).toString()}
@@ -448,7 +447,7 @@ export default function CellsGrid() {
     }
 
     const colNumbers: Array<React.ReactNode> = [];
-    for (let i = 0; i < columns; i++) {
+    for (let i = 0; i < globals.columns; i++) {
         colNumbers.push((
             <div
                 id={"column" + String.fromCharCode(65 + i)}
@@ -459,7 +458,7 @@ export default function CellsGrid() {
                 <div
                     id={"colModifier" + String.fromCharCode(65 + i)}
                     onMouseOver={(e) => {
-                        let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+                        let offsetBottom = document.getElementById("row" + globals.rows)?.getBoundingClientRect().bottom
                         offsetBottom = offsetBottom ? offsetBottom : 0
                         e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
@@ -469,7 +468,7 @@ export default function CellsGrid() {
                         e.currentTarget.style.backgroundColor = ''
                     }}
                     onMouseDown={(e) => {
-                        let offsetBottom = document.getElementById("row" + rows)?.getBoundingClientRect().bottom
+                        let offsetBottom = document.getElementById("row" + globals.rows)?.getBoundingClientRect().bottom
                         offsetBottom = offsetBottom ? offsetBottom : 0
                         e.currentTarget.style.height = (offsetBottom - (60 + 40 + 35)).toString() + "px"
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
@@ -483,9 +482,9 @@ export default function CellsGrid() {
     }
 
     const cells: Array<React.ReactNode> = [];
-    for (let j = 0; j < columns; j++) {
+    for (let j = 0; j < globals.columns; j++) {
         const x: Array<React.ReactNode> = [];
-        for (let i = 0; i < rows; i++) {
+        for (let i = 0; i < globals.rows; i++) {
             x.push(
                 <Cell i={i} j={j} key={String.fromCharCode(65 + j) + (i + 1).toString()} />
             );

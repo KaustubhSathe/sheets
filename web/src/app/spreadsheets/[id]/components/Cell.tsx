@@ -1,10 +1,8 @@
-import { RootState } from '@/app/lib/redux/store';
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
-import { setValue as setSpreadSheet } from "../../../lib/redux/spreadSheetMetaDataSlice"
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from 'react';
-import { Sheet, SpreadSheet, State } from '@/app/types/SpreadSheet';
+import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
+import { useDispatch } from "react-redux";
+import globals from '@/app/lib/globals/globals';
 
 
 export default function Cell({ i, j }: { i: number, j: number }) {
@@ -21,6 +19,10 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     dispatch(setSelectedCell(e.currentTarget.id))
                 }}
                 onInput={(e) => {
+                    if (globals.saved) {
+                        globals.saved = false
+                        dispatch(setSaved(STATUS.UNSAVED))
+                    }
                     dispatch(setValueFormulaBar(e.currentTarget.innerText))
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}

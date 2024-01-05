@@ -8,6 +8,10 @@ const globals: {
     cutStart: string | null,
     cutEnd: string | null,
     spreadsheet: SpreadSheet,
+    selectedSheet: number,
+    rows: number,
+    columns: number,
+    saved: boolean,
 } =  {
     selectStart: "A1",
     selectEnd: "A1",
@@ -15,7 +19,11 @@ const globals: {
     copyEnd: null,
     cutStart: null,
     cutEnd: null,
-    spreadsheet: {} as SpreadSheet
+    spreadsheet: {} as SpreadSheet,
+    selectedSheet: 0,
+    columns: 26,
+    rows: 100,
+    saved: true
 }
 
 export default globals;
