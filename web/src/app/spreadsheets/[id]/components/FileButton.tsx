@@ -39,14 +39,14 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
         for (let j = 0; j < globals.columns; j++) {
             for (let i = 0; i < globals.rows; i++) {
                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                const elem = document.getElementById(key) as HTMLDivElement;
+                const elem = document.getElementById(key) as HTMLTextAreaElement;
                 const newState: State = {
                     BackGroundColor: elem.style.backgroundColor,
                     FontWeight: elem.style.fontWeight,
                     FontColor: elem.style.color,
                     FontStyle: elem.style.fontStyle,
                     FontFamily: elem.style.fontFamily,
-                    TextContent: elem.innerText,
+                    TextContent: elem.value,
                     TextDecoration: elem.style.textDecoration,
                 }
                 globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = newState;

@@ -7,6 +7,7 @@ import { RootState } from '@/app/lib/redux/store';
 import globals from '@/app/lib/globals/globals';
 import { useRouter } from 'next/navigation';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
+import { Command } from '@/app/types/Command';
 
 function getAdjacentID(id: string, key: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
@@ -225,7 +226,7 @@ export default function CellsGrid() {
             dispatch(setSelectedCell(getAdjacentID(currentElementId, e.key)))
         }
 
-        if (e.ctrlKey) {
+        if (e.key === "Control") {
             globals.ctrlDown = true;
         }
 
@@ -247,10 +248,18 @@ export default function CellsGrid() {
 
         if (globals.ctrlDown && e.key === "z") {
             e.preventDefault();
+            console.log(globals.undoStack)
             if (globals.undoStack.length) {
                 globals.undoStack[globals.undoStack.length - 1].Inverse()
-                globals.redoStack.push(globals.undoStack[globals.undoStack.length - 1])
-                globals.undoStack.pop();
+                globals.redoStack.push(globals.undoStack.pop() as Command);
+            }
+        }
+
+        if (globals.ctrlDown && e.key === "y") {
+            e.preventDefault();
+            if (globals.redoStack.length) {
+                globals.redoStack[globals.redoStack.length - 1].Action()
+                globals.undoStack.push(globals.redoStack.pop() as Command);
             }
         }
 
@@ -307,9 +316,9 @@ export default function CellsGrid() {
             for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
                 for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
                     const id = String.fromCharCode(j) + i.toString();
-                    let elem = document.getElementById(id);
+                    let elem = document.getElementById(id) as HTMLTextAreaElement;
                     if (elem) {
-                        elem.innerText = ""
+                        elem.value = ""
                     }
                 }
             }

@@ -53,7 +53,7 @@ export default function SheetsBar() {
                                     for (let j = 0; j < globals.columns; j++) {
                                         for (let i = 0; i < globals.rows; i++) {
                                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                                            let elem = document.getElementById(key) as HTMLDivElement
+                                            let elem = document.getElementById(key) as HTMLTextAreaElement
                                             // First save old state
                                             globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                                 BackGroundColor: elem.style.backgroundColor,
@@ -75,7 +75,7 @@ export default function SheetsBar() {
                                                     TextDecoration: "underline",
                                                 }
                                             }
-                                            elem.innerText = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
+                                            elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
                                         }
                                     }
                                 }
@@ -96,7 +96,7 @@ export default function SheetsBar() {
                         for (let j = 0; j < globals.columns; j++) {
                             for (let i = 0; i < globals.rows; i++) {
                                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                                let elem = document.getElementById(key) as HTMLDivElement
+                                let elem = document.getElementById(key) as HTMLTextAreaElement
                                 // First save old state
                                 globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                     BackGroundColor: elem.style.backgroundColor,
@@ -118,7 +118,7 @@ export default function SheetsBar() {
                                         TextDecoration: "underline",
                                     }
                                 }
-                                elem.innerText = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
+                                elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
                             }
                         }
                     }

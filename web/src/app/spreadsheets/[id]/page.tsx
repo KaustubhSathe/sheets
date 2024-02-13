@@ -54,7 +54,7 @@ export default function Spreadsheet() {
                     for (let j = 0; j < globals.columns; j++) {
                         for (let i = 0; i < globals.rows; i++) {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                                let elem = document.getElementById(key) as HTMLDivElement
+                                let elem = document.getElementById(key) as HTMLTextAreaElement
                                 if (!globals.spreadsheet.Sheets[globals.selectedSheet].State[key]) {
                                     globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
                                         BackGroundColor: "#FFFFFF",
@@ -66,7 +66,7 @@ export default function Spreadsheet() {
                                         TextDecoration: "underline",
                                     }
                                 }
-                                elem.innerText = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
+                                elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
                         }
                     }
                 }
