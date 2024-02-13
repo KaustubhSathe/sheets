@@ -248,7 +248,6 @@ export default function CellsGrid() {
 
         if (globals.ctrlDown && e.key === "z") {
             e.preventDefault();
-            console.log(globals.undoStack)
             if (globals.undoStack.length) {
                 globals.undoStack[globals.undoStack.length - 1].Inverse()
                 globals.redoStack.push(globals.undoStack.pop() as Command);

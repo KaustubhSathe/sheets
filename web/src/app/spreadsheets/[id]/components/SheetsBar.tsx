@@ -61,7 +61,7 @@ export default function SheetsBar() {
                                                 FontFamily: elem.style.fontFamily,
                                                 FontStyle: elem.style.fontStyle,
                                                 FontWeight: elem.style.fontWeight,
-                                                TextContent: elem.innerText,
+                                                TextContent: elem.value,
                                                 TextDecoration: elem.style.textDecoration,
                                             }
                                             if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {
@@ -104,7 +104,7 @@ export default function SheetsBar() {
                                     FontFamily: elem.style.fontFamily,
                                     FontStyle: elem.style.fontStyle,
                                     FontWeight: elem.style.fontWeight,
-                                    TextContent: elem.innerText,
+                                    TextContent: elem.value,
                                     TextDecoration: elem.style.textDecoration,
                                 }
                                 if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {

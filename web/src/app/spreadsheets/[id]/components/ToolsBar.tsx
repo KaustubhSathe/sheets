@@ -1,6 +1,8 @@
 import { AiOutlineSearch } from 'react-icons/ai'
 import { LuUndo2, LuRedo2, LuPrinter, LuMinus, LuPlus } from 'react-icons/lu'
 import { BiBold, BiItalic, BiStrikethrough, BiFontColor, BiColorFill } from 'react-icons/bi'
+import globals from '@/app/lib/globals/globals';
+import { Command } from '@/app/types/Command';
 
 export default function ToolsBar() {
     return (
@@ -11,26 +13,41 @@ export default function ToolsBar() {
                 </div>
                 <input type="text" className="pt-[4px] pb-[4px] pl-[28px] pr-[8px] mt-[5px] mb-[5px] ml-[8px] text-sm text-gray-900 border border-gray-300 rounded-lg w-[200px] outline-none" placeholder="Search Commands" />
             </div>
-            <button className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                if (globals.undoStack.length) {
+                    globals.undoStack[globals.undoStack.length - 1].Inverse()
+                    globals.redoStack.push(globals.undoStack.pop() as Command);
+                }
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <LuUndo2 />
             </button>
-            <button className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                if (globals.redoStack.length) {
+                    globals.redoStack[globals.redoStack.length - 1].Action()
+                    globals.undoStack.push(globals.redoStack.pop() as Command);
+                }
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <LuRedo2 />
             </button>
-            <button className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                window.print()
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <LuPrinter />
             </button>
-            <select className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit">
-                <option>100%</option>
-                <option>90%</option>
-                <option>80%</option>
-                <option>70%</option>
-                <option>60%</option>
-                <option>50%</option>
-                <option>40%</option>
-                <option>30%</option>
-                <option>20%</option>
-                <option>10%</option>
+            <select onClick={(e) => {
+                // @ts-ignore
+                document.body.style.zoom = (e.target as HTMLSelectElement).value
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit">
+                <option value={1}>100%</option>
+                <option value={0.9}>90%</option>
+                <option value={0.8}>80%</option>
+                <option value={0.7}>70%</option>
+                <option value={0.6}>60%</option>
+                <option value={0.5}>50%</option>
+                <option value={0.4}>40%</option>
+                <option value={0.3}>30%</option>
+                <option value={0.2}>20%</option>
+                <option value={0.1}>10%</option>
             </select>
 
             <div className="h-[20px] w-[2px] mt-auto mb-auto ml-[8px] border-solid bg-slate-400"></div>
