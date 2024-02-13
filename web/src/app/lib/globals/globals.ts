@@ -1,4 +1,5 @@
 import { SpreadSheet } from "@/app/types/SpreadSheet";
+import { Command } from "@/app/types/Command";
 
 const globals: {
     selectStart: string,
@@ -12,6 +13,9 @@ const globals: {
     rows: number,
     columns: number,
     saved: boolean,
+    ctrlDown: boolean,
+    undoStack: Command[],
+    redoStack: Command[],
 } =  {
     selectStart: "A1",
     selectEnd: "A1",
@@ -23,7 +27,10 @@ const globals: {
     selectedSheet: 0,
     columns: 26,
     rows: 100,
-    saved: true
+    saved: true,
+    ctrlDown: false,
+    undoStack: [],
+    redoStack: []
 }
 
 export default globals;

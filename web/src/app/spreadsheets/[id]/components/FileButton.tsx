@@ -27,7 +27,6 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [detailsDialog, setDetailsDialog] = useState<boolean>(false);
     const router = useRouter();
-    const ctrlDown = useRef<boolean>(false);
     const dispatch = useDispatch();
 
     const click = useCallback((e: MouseEvent) => {
@@ -66,14 +65,14 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
         document.addEventListener("click", click);
 
         document.addEventListener("keydown", async (e) => {
-            if (e.ctrlKey) {
-                ctrlDown.current = true;
+            if (e.key === "Control") {
+                globals.ctrlDown = true;
             }
-            if (ctrlDown.current && e.key === 'o') {
+            if (globals.ctrlDown && e.key === 'o') {
                 e.preventDefault();
                 setOpenDialog(true)
             }
-            if (ctrlDown.current && e.key === 's' && !globals.saved) {
+            if (globals.ctrlDown && e.key === 's' && !globals.saved) {
                 e.preventDefault();
                 dispatch(setSaved(STATUS.SAVING))
                 const res = await saveSheet();
@@ -84,16 +83,10 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
             }
         });
 
-        document.addEventListener("keyup", (e) => {
-            if (e.ctrlKey) {
-                ctrlDown.current = false;
-            }
-        });
-
         return () => {
             document.removeEventListener("click", click);
         };
-    }, [click, saveSheet]);
+    }, [click, saveSheet, dispatch]);
 
     const createSpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
