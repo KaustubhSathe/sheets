@@ -20,9 +20,8 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     oldText.current = e.currentTarget.value
                     dispatch(setSelectedCell(e.currentTarget.id))
                     const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
-                    const cell = document.getElementById("fontSelector") as HTMLSelectElement
-                    if (fontSelector) {
-                        fontSelector.style.fontFamily = 
+                    if (fontSelector && globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily) {
+                        fontSelector.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily
                     }
                 }}
                 onInput={(e) => {
@@ -35,7 +34,7 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     const currentTarget = e.currentTarget
                     globals.undoStack.push({
                         Action: () => {
-                            currentTarget.value = currentText    
+                            currentTarget.value = currentText
                         },
                         Inverse: () => {
                             currentTarget.value = oldTextVal

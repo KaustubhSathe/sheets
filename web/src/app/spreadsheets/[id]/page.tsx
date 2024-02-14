@@ -54,25 +54,25 @@ export default function Spreadsheet() {
                     for (let j = 0; j < globals.columns; j++) {
                         for (let i = 0; i < globals.rows; i++) {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                                let elem = document.getElementById(key) as HTMLTextAreaElement
-                                if (!globals.spreadsheet.Sheets[globals.selectedSheet].State[key]) {
-                                    globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
-                                        BackGroundColor: "#FFFFFF",
-                                        FontColor: "Black",
-                                        FontFamily: "Roboto",
-                                        FontStyle: "underline",
-                                        FontWeight: "bold",
-                                        TextContent: "",
-                                        TextDecoration: "underline",
-                                    }
+                            let elem = document.getElementById(key) as HTMLTextAreaElement
+                            if (!globals.spreadsheet.Sheets[globals.selectedSheet].State[key]) {
+                                globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
+                                    BackGroundColor: "#FFFFFF",
+                                    FontColor: "Black",
+                                    FontFamily: "Roboto",
+                                    FontStyle: "underline",
+                                    FontWeight: "bold",
+                                    TextContent: "",
+                                    TextDecoration: "underline",
                                 }
-                                elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
-                                elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].BackGroundColor
-                                elem.style.color = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontColor
-                                elem.style.fontFamily = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontFamily
-                                elem.style.fontStyle = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontStyle
-                                elem.style.fontWeight = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontWeight
-                                elem.style.textDecoration = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextDecoration
+                            }
+                            elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
+                            elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].BackGroundColor
+                            elem.style.color = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontColor
+                            elem.style.fontFamily = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontFamily
+                            elem.style.fontStyle = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontStyle
+                            elem.style.fontWeight = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontWeight
+                            elem.style.textDecoration = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextDecoration
                         }
                     }
                 }

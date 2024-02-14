@@ -60,6 +60,7 @@ export default function ToolsBar() {
                         let elem = document.getElementById(id) as HTMLTextAreaElement;
                         if (elem) {
                             elem.style.fontFamily = fontFamily
+                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily = fontFamily
                         }
                     }
                 }
