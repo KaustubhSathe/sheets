@@ -48,6 +48,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                     FontFamily: elem.style.fontFamily,
                     TextContent: elem.value,
                     TextDecoration: elem.style.textDecoration,
+                    FontSize: parseInt(elem.style.fontSize)
                 }
                 globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = newState;
             }
