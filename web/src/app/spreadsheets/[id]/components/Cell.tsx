@@ -20,8 +20,16 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     oldText.current = e.currentTarget.value
                     dispatch(setSelectedCell(e.currentTarget.id))
                     const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
-                    if (fontSelector && globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily) {
+                    const fontSizeSelector = document.getElementById("fontSizeSelector") as HTMLInputElement
+                    const boldSelector = document.getElementById("boldSelector") as HTMLButtonElement
+                    const itaclicSelector = document.getElementById("italicSelector") as HTMLButtonElement
+                    const strikethroughSelector = document.getElementById("strikethroughSelector") as HTMLButtonElement
+                    if (globals.spreadsheet.Sheets[globals.selectedSheet].State[id]) {
                         fontSelector.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily
+                        boldSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontWeight === "bold" ? "#d3e3fd" : "inherit"
+                        fontSizeSelector.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize ? globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize.toString() : "16"
+                        itaclicSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontStyle === "italic" ? "#d3e3fd" : "inherit"
+                        strikethroughSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].TextDecoration === "line-through" ? "#d3e3fd" : "inherit"
                     }
                 }}
                 onInput={(e) => {

@@ -63,6 +63,7 @@ export default function SheetsBar() {
                                                 FontWeight: elem.style.fontWeight,
                                                 TextContent: elem.value,
                                                 TextDecoration: elem.style.textDecoration,
+                                                FontSize: parseInt(elem.style.fontSize)
                                             }
                                             if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {
                                                 globals.spreadsheet.Sheets[x.SheetIndex].State[key] = {
@@ -73,6 +74,7 @@ export default function SheetsBar() {
                                                     FontWeight: "bold",
                                                     TextContent: "",
                                                     TextDecoration: "underline",
+                                                    FontSize: parseInt(elem.style.fontSize)
                                                 }
                                             }
                                             elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
@@ -106,6 +108,7 @@ export default function SheetsBar() {
                                     FontWeight: elem.style.fontWeight,
                                     TextContent: elem.value,
                                     TextDecoration: elem.style.textDecoration,
+                                    FontSize: parseInt(elem.style.fontSize)
                                 }
                                 if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {
                                     globals.spreadsheet.Sheets[x.SheetIndex].State[key] = {
@@ -116,6 +119,7 @@ export default function SheetsBar() {
                                         FontWeight: "bold",
                                         TextContent: "",
                                         TextDecoration: "underline",
+                                        FontSize: parseInt(elem.style.fontSize)
                                     }
                                 }
                                 elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent

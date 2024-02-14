@@ -21,10 +21,11 @@ export type Sheet = {
 }
 
 export type State = {
-    FontWeight: string,
-    FontStyle: string,
-    TextDecoration: string,
-    FontColor: string,
+    FontWeight: string, // for boldness
+    FontSize: Number, // fontsize
+    FontStyle: string, // for italic
+    TextDecoration: string, // for underline
+    FontColor: string, 
     BackGroundColor: string,
     FontFamily: string,
     TextContent: string,
