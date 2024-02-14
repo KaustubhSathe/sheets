@@ -13,12 +13,17 @@ export default function Cell({ i, j }: { i: number, j: number }) {
 
     return (
         <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
-            <textarea className="peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip pl-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
+            <textarea className="overflow-hidden text-sm peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip p-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 spellCheck={false}
                 id={id}
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
                     dispatch(setSelectedCell(e.currentTarget.id))
+                    const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
+                    const cell = document.getElementById("fontSelector") as HTMLSelectElement
+                    if (fontSelector) {
+                        fontSelector.style.fontFamily = 
+                    }
                 }}
                 onInput={(e) => {
                     if (globals.saved) {

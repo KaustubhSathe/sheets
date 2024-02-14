@@ -67,6 +67,12 @@ export default function Spreadsheet() {
                                     }
                                 }
                                 elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
+                                elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].BackGroundColor
+                                elem.style.color = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontColor
+                                elem.style.fontFamily = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontFamily
+                                elem.style.fontStyle = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontStyle
+                                elem.style.fontWeight = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontWeight
+                                elem.style.textDecoration = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextDecoration
                         }
                     }
                 }

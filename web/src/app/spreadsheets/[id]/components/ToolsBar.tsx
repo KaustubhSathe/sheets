@@ -52,11 +52,23 @@ export default function ToolsBar() {
 
             <div className="h-[20px] w-[2px] mt-auto mb-auto ml-[8px] border-solid bg-slate-400"></div>
 
-            <select className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit">
-                <option>Helvetica</option>
-                <option>Sans-Serif</option>
-                <option>Google Sans</option>
-                <option>Cursive</option>
+            <select onClick={(e) => {
+                const fontFamily = (e.target as HTMLSelectElement).value
+                for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                    for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
+                        const id = String.fromCharCode(j) + i.toString();
+                        let elem = document.getElementById(id) as HTMLTextAreaElement;
+                        if (elem) {
+                            elem.style.fontFamily = fontFamily
+                        }
+                    }
+                }
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit" id="fontSelector">
+                <option value={"Arial"}>Arial </option>
+                <option value={"Verdana"}>Verdana</option>
+                <option value={"Times New Roman"}>Times New Roman</option>
+                <option value={"Garamond"}>Garamond</option>
+                <option value={"Roboto"}>Roboto</option>
             </select>
 
             <div className="h-[20px] w-[2px] mt-auto mb-auto ml-[8px] border-solid bg-slate-400"></div>
