@@ -149,11 +149,21 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
 
                             const fileData = await fileHandle.getFile();
 
-
                             Papa.parse(fileData, {
-                                header: true,
+                                header: false,
                                 skipEmptyLines: true,
-                                complete: (results) => {
+                                complete: (results: { data: Array<Array<string>> }) => {
+                                    for (let j = 0; j < globals.columns; j++) {
+                                        for (let i = 0; i < globals.rows; i++) {
+                                            const id = String.fromCharCode(65 + j) + (i + 1).toString();
+                                            let cell = document.getElementById(id) as HTMLTextAreaElement;
+                                            if (cell && results.data && results.data[i] && results.data[i][j]) {
+                                                cell.value = results.data[i][j]
+                                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].TextContent = results.data[i][j]
+                                            }
+                                        }
+                                    }
+                                    setOpenDialog(false)
                                 }
                             })
                         }} className="ml-auto mr-auto w-[100px] h-[50px] bg-[#1A73E8] mt-4 rounded-md flex justify-center hover:cursor-pointer hover:bg-blue-600 hover:scale-[1.01] hover:shadow-sm hover:shadow-black">

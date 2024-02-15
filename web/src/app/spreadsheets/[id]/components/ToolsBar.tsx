@@ -182,14 +182,46 @@ export default function ToolsBar() {
                 <BiStrikethrough />
             </button>
 
-            <button className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                const fontColorPicker = document.getElementById("fontColorPicker") as HTMLInputElement
+                fontColorPicker.click()
+            }} className="ml-[8px] hover:bg-slate-200 relative hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <BiFontColor />
+                <input onChange={(e) => {
+                    const color = e.currentTarget.value
+                    for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                        for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
+                            const id = String.fromCharCode(j) + i.toString();
+                            let cell = document.getElementById(id) as HTMLTextAreaElement;
+                            if (cell) {
+                                cell.style.color = color
+                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontColor = color
+                            }
+                        }
+                    }
+                }} id='fontColorPicker' className='inline-block float-right w-0 h-0' type='color' />
             </button>
 
             <div className="h-[20px] w-[2px] mt-auto mb-auto ml-[8px] border-solid bg-slate-400"></div>
 
-            <button className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                const backgroundColorPicker = document.getElementById("backgroundColorPicker") as HTMLInputElement
+                backgroundColorPicker.click()
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <BiColorFill />
+                <input onChange={(e) => {
+                    const color = e.currentTarget.value
+                    for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+                        for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
+                            const id = String.fromCharCode(j) + i.toString();
+                            let cell = document.getElementById(id) as HTMLTextAreaElement;
+                            if (cell) {
+                                cell.style.backgroundColor = color
+                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor = color
+                            }
+                        }
+                    }
+                }} id='backgroundColorPicker' className='inline-block float-right w-0 h-0' type='color' />
             </button>
 
         </div>
