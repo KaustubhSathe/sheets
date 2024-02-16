@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/google/uuid"
 )
 
 type Dynamo struct {
@@ -245,6 +246,93 @@ func (db *Dynamo) GetSpreadSheets(spreadsheetID string, userID int64) ([]*model.
 	return spreadsheets, nil
 }
 
+func (db *Dynamo) CreateComment(spreadsheetID string, userID int64, userName string, sheetNo int64, cellID string, content string) (*model.Comment, error) {
+	cc := &model.Comment{
+		Base: model.Base{
+			PK:        db.SpreadSheetPK(spreadsheetID),
+			SK:        db.CommentSK(uuid.NewString()),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		UserName:      userName,
+		UserID:        userID,
+		SpreadSheetID: spreadsheetID,
+		SheetNo:       sheetNo,
+		CellID:        cellID,
+		Content:       content,
+	}
+	comment, err := dynamodbattribute.MarshalMap(cc)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Client.PutItem(&dynamodb.PutItemInput{
+		Item:      comment,
+		TableName: aws.String(config.SPREADSHEETTABLE),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return cc, nil
+}
+
+func (db *Dynamo) GetComments(spreadsheetID string) ([]*model.Comment, error) {
+	res, err := db.Client.Query(&dynamodb.QueryInput{
+		TableName:              aws.String(config.SPREADSHEETTABLE),
+		KeyConditionExpression: aws.String("#PK = :pk AND begins_with(#SK, :sk)"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":pk": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			":sk": {
+				S: aws.String(db.CommentSK("")),
+			},
+		},
+		ExpressionAttributeNames: map[string]*string{
+			"#PK": aws.String("PK"),
+			"#SK": aws.String("SK"),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if res.Items == nil {
+		return nil, nil
+	}
+	comments := []*model.Comment{}
+
+	for i := 0; i < len(res.Items); i++ {
+		comment := model.Comment{}
+		err = dynamodbattribute.UnmarshalMap(res.Items[i], &comment)
+		if err != nil {
+			return nil, err
+		}
+		comments = append(comments, &comment)
+	}
+
+	return comments, nil
+}
+
+func (db *Dynamo) DeleteComment(spreadsheetID string, commentID string) error {
+	_, err := db.Client.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			"SK": {
+				S: aws.String(db.CommentSK(commentID)),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *Dynamo) UserPK(userID int64) string {
 	return fmt.Sprintf("USER#%d", userID)
 }
@@ -259,4 +347,8 @@ func (db *Dynamo) SpreadSheetPK(spreadsheetID string) string {
 
 func (db *Dynamo) SpreadSheetSK(spreadsheetID string) string {
 	return fmt.Sprintf("SPREADSHEET#%s", spreadsheetID)
+}
+
+func (db *Dynamo) CommentSK(commentID string) string {
+	return fmt.Sprintf("COMMENT#%s", commentID)
 }

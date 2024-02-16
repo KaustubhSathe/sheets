@@ -226,7 +226,21 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                         <AiOutlineMail className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Email</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    <div onClick={() => {
+                        const csv = [];
+                        for (let i = 0; i < globals.rows; i++) {
+                            const rw = [];
+                            for (let j = 0; j < globals.columns; j++) {
+                                const key = String.fromCharCode(65 + j) + (i + 1).toString();
+                                rw.push(globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent);
+                            }
+                            csv.push(rw);
+                        }
+
+                        const download = Papa.unparse(csv);
+
+                        window.open("data:text/csv;charset=utf-8," + download) 
+                    }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <MdOutlineFileDownload className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Download as csv</span>
                     </div>
