@@ -20,7 +20,6 @@ func (in *Comment) Stringify() string {
 	return string(b)
 }
 
-
 func StringifyComments(in []*Comment) string {
 	b, err := json.Marshal(in)
 	if err != nil {

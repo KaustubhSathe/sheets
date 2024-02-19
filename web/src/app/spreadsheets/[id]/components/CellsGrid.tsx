@@ -8,6 +8,9 @@ import globals from '@/app/lib/globals/globals';
 import { useRouter } from 'next/navigation';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { Command } from '@/app/types/Command';
+import ContextMenu from './ContextMenu';
+import Comment from './Comment';
+import Note from './Note';
 
 function getAdjacentID(id: string, key: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
@@ -111,7 +114,7 @@ export default function CellsGrid() {
                 const id = String.fromCharCode(j) + i.toString();
                 let elem = document.getElementById(id);
                 if (elem) {
-                    elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor;
+                    elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor ? globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor : "white";
                     elem.style.borderBottomWidth = '1px';
                     elem.style.borderRightWidth = '1px';
                     elem.style.borderTopWidth = '0px'
@@ -132,6 +135,15 @@ export default function CellsGrid() {
     }, []);
 
     const mouseDownEventHandler = useCallback((e: MouseEvent) => {
+        const comment = document.getElementById("comment") as HTMLDivElement;
+        comment.style.display = "none";
+        const note = document.getElementById("note") as HTMLDivElement;
+        note.style.display = "none";
+        if (e.button === 2) {
+            return;
+        }
+        const contextmenu = document.getElementById("contextmenu") as HTMLDivElement;
+        contextmenu.style.display = "none";
         clearSelectedCells();
         if (e.target && (e.target as HTMLDivElement).id && /^[A-Z]\d+$/.test((e.target as HTMLDivElement).id)) {
             globals.selectStart = (e.target as HTMLDivElement).id
@@ -146,11 +158,6 @@ export default function CellsGrid() {
             (e.target as HTMLDivElement).style.borderColor = '#1a73e8';
         }
         isMouseDown.current = true;
-
-        document.getElementById("cellgrid")?.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-            const { clientX: mouseX, clientY: mouseY } = e;
-        })
     }, [dispatch, clearSelectedCells]);
 
     const mouseOverEventHandler = useCallback((e: MouseEvent) => {
@@ -275,10 +282,10 @@ export default function CellsGrid() {
                         const y1 = globals.selectStart.charCodeAt(0) + j;
                         const id0 = String.fromCharCode(y0) + x0.toString();
                         const id1 = String.fromCharCode(y1) + x1.toString();
-                        let elem0 = document.getElementById(id0);
-                        let elem1 = document.getElementById(id1);
+                        let elem0 = document.getElementById(id0) as HTMLTextAreaElement;
+                        let elem1 = document.getElementById(id1) as HTMLTextAreaElement;
                         if (elem1 && elem0) {
-                            elem1.innerText = elem0.innerText
+                            elem1.value = elem0.value
                         }
                     }
                 }
@@ -295,11 +302,11 @@ export default function CellsGrid() {
                         const y1 = globals.selectStart.charCodeAt(0) + j;
                         const id0 = String.fromCharCode(y0) + x0.toString();
                         const id1 = String.fromCharCode(y1) + x1.toString();
-                        let elem0 = document.getElementById(id0);
-                        let elem1 = document.getElementById(id1);
+                        let elem0 = document.getElementById(id0) as HTMLTextAreaElement;
+                        let elem1 = document.getElementById(id1) as HTMLTextAreaElement;
                         if (elem1 && elem0) {
-                            elem1.innerText = elem0.innerText
-                            elem0.innerText = ""
+                            elem1.value = elem0.value
+                            elem0.value = ""
                         }
                     }
                 }
@@ -345,6 +352,17 @@ export default function CellsGrid() {
         document.getElementById("cellgrid")?.addEventListener("mouseover", mouseOverEventHandler);
         document.getElementById("cellgrid")?.addEventListener("mouseup", () => {
             isMouseDown.current = false;
+        })
+
+        document.getElementById("cellgrid")?.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            const { clientX: mouseX, clientY: mouseY } = e;
+            const contextMenu = document.getElementById("contextmenu") as HTMLDivElement;
+            contextMenu.style.display = "block"
+            contextMenu.style.zIndex = "1000"
+            contextMenu.style.position = "absolute"
+            contextMenu.style.left = mouseX + "px"
+            contextMenu.style.top = mouseY + "px"
         })
 
         if (activeCol !== null) {
@@ -444,24 +462,29 @@ export default function CellsGrid() {
     }
 
     return (
-        <div id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
-            <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
-            <div className="h-[30px] ml-[46px] flex bg-inherit">
-                {
-                    colNumbers
-                }
+        <>
+            <ContextMenu />
+            <Comment />
+            <Note />
+            <div id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
+                <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
+                <div className="h-[30px] ml-[46px] flex bg-inherit">
+                    {
+                        colNumbers
+                    }
+                </div>
+                <div className="sticky left-0 bg-inherit w-[46px] inline-block float-left">
+                    {
+                        rowsNumbers
+                    }
+                </div>
+                <div className="ml-[46px] flex">
+                    {
+                        cells
+                    }
+                </div>
             </div>
-            <div className="sticky left-0 bg-inherit w-[46px] inline-block float-left">
-                {
-                    rowsNumbers
-                }
-            </div>
-            <div className="ml-[46px] flex">
-                {
-                    cells
-                }
-            </div>
-        </div>
+        </>
     );
 }
 

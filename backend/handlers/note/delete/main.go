@@ -5,7 +5,7 @@ import (
 	"backend-go/db/model"
 	"backend-go/utils"
 	"context"
-	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -14,23 +14,24 @@ import (
 var dynamo *db.Dynamo
 var redis *db.Redis
 
-// This will be a PATCH request
+// This will be a DELETE request
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	// First authenticate the request only after that create SpreadSheet
-	spreadsheet_access_token := request.Headers["spreadsheet_access_token"]
+	// First authenticate the request only after that delete SpreadSheet by id
+	access_token := request.Headers["spreadsheet_access_token"]
+	spreadsheet_id := request.QueryStringParameters["spreadsheet_id"]
+	note_id := request.QueryStringParameters["note_id"]
 	// Now fetch the user details from redis
 	if redis == nil {
 		redis = db.NewRedis(ctx)
 	}
-	user, err := redis.Get(ctx, redis.AuthKey(spreadsheet_access_token))
-	if err != nil {
+	user, err := redis.Get(ctx, redis.AuthKey(access_token))
+	if err != nil || len(user) == 0 {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 401,
 		}, nil
 	}
-	userInfo := &model.UserInfo{}
-	err = utils.Parse(user, &userInfo)
-	if err != nil {
+	userInfo := model.UserInfo{}
+	if err = utils.Parse(user, &userInfo); err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 		}, nil
@@ -40,21 +41,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		dynamo = db.NewDynamo(ctx)
 	}
 
-	// Now parse body
-	body := struct {
-		Content       string `json:"Content"`
-		SpreadSheetID string `json:"SpreadSheetID"`
-		CommentID     string `json:"CommentID"`
-	}{}
-	err = json.Unmarshal([]byte(request.Body), &body)
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-		}, nil
-	}
-
-	// Now update the Comment with new content
-	err = dynamo.UpdateComment(body.SpreadSheetID, body.CommentID, body.Content)
+	// Now delete the note using spreadsheet ID and noteID from dynamo DB
+	err = dynamo.DeleteNote(spreadsheet_id, note_id)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -63,6 +51,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
+		Body:       fmt.Sprintf("Note deleted with spreadsheet_id: %s and note_id: %s", spreadsheet_id, note_id),
 	}, nil
 }
 

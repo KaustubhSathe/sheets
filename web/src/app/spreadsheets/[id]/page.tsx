@@ -56,14 +56,14 @@ export default function Spreadsheet() {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                             let elem = document.getElementById(key) as HTMLTextAreaElement
                             globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
-                                BackGroundColor: res.Sheets[globals.selectedSheet].State[key].BackGroundColor ? res.Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
-                                FontColor: res.Sheets[globals.selectedSheet].State[key].FontColor ? res.Sheets[globals.selectedSheet].State[key].FontColor : "Black",
-                                FontFamily: res.Sheets[globals.selectedSheet].State[key].FontFamily ? res.Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",
+                                BackGroundColor: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
+                                FontColor: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontColor : "Black",
+                                FontFamily: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",
                                 FontStyle: "normal",
                                 FontWeight: "normal",
-                                TextContent: res.Sheets[globals.selectedSheet].State[key].TextContent,
+                                TextContent: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].TextContent : "",
                                 TextDecoration: "normal",
-                                FontSize: res.Sheets[globals.selectedSheet].State[key].FontSize ? res.Sheets[globals.selectedSheet].State[key].FontSize : 16
+                                FontSize: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontSize : 16
                             }
                             elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
                             elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].BackGroundColor

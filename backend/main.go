@@ -30,6 +30,11 @@ type Lambdas struct {
 	CreateCommentHandler          awscdklambdagoalpha.GoFunction
 	GetCommentsHandler            awscdklambdagoalpha.GoFunction
 	DeleteCommentHandler          awscdklambdagoalpha.GoFunction
+	UpdateCommentHandler          awscdklambdagoalpha.GoFunction
+	CreateNoteHandler             awscdklambdagoalpha.GoFunction
+	GetNotesHandler               awscdklambdagoalpha.GoFunction
+	DeleteNoteHandler             awscdklambdagoalpha.GoFunction
+	UpdateNoteHandler             awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -188,6 +193,61 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
+	updateCommentHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("updateCommentHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/comment/update"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
+	createNoteHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("createNoteHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/note/create"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
+	getNotesHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("getNotesHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/note/get"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
+	deleteNoteHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("deleteNoteHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/note/delete"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
+	updateNoteHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("updateNoteHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/note/update"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
 	return &Lambdas{
 		CallbackHandler:               callbackHandler,
 		AuthenticateHandler:           authenticateHandler,
@@ -200,6 +260,11 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		CreateCommentHandler:          createCommentHandler,
 		GetCommentsHandler:            getCommentsHandler,
 		DeleteCommentHandler:          deleteCommentHandler,
+		UpdateCommentHandler:          updateCommentHandler,
+		CreateNoteHandler:             createNoteHandler,
+		GetNotesHandler:               getNotesHandler,
+		DeleteNoteHandler:             deleteNoteHandler,
+		UpdateNoteHandler:             updateNoteHandler,
 	}
 }
 
@@ -316,6 +381,41 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Path:        jsii.String("/api/comment"),
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_DELETE},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.DeleteCommentHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Update comment API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/comment"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_PATCH},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateCommentHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Create note API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/note"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_POST},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.CreateNoteHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Get notes API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/note"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.GetNotesHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Delete note API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/note"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_DELETE},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.DeleteNoteHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
+	// Update note API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/note"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_PATCH},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateNoteHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
 
 	return spreadsheetApi

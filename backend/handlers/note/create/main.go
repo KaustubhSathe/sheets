@@ -14,7 +14,7 @@ import (
 var dynamo *db.Dynamo
 var redis *db.Redis
 
-// This will be a PATCH request
+// This will be a POST request
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	// First authenticate the request only after that create SpreadSheet
 	spreadsheet_access_token := request.Headers["spreadsheet_access_token"]
@@ -44,7 +44,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	body := struct {
 		Content       string `json:"Content"`
 		SpreadSheetID string `json:"SpreadSheetID"`
-		CommentID     string `json:"CommentID"`
+		SheetNo       int64  `json:"SheetNo"`
+		CellID        string `json:"CellID"`
 	}{}
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -53,16 +54,21 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}, nil
 	}
 
-	// Now update the Comment with new content
-	err = dynamo.UpdateComment(body.SpreadSheetID, body.CommentID, body.Content)
+	// Now create a new note in DB
+	// PK: spreadsheet id
+	// SK: note id
+	note, err := dynamo.CreateNote(body.SpreadSheetID, int64(userInfo.User["id"].(float64)), userInfo.User["login"].(string), body.SheetNo, body.CellID, body.Content)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
-		}, nil
+		}, err
 	}
+
+	var stringified = note.Stringify()
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
+		Body:       stringified,
 	}, nil
 }
 

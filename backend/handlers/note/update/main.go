@@ -44,7 +44,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	body := struct {
 		Content       string `json:"Content"`
 		SpreadSheetID string `json:"SpreadSheetID"`
-		CommentID     string `json:"CommentID"`
+		NoteID        string `json:"NoteID"`
 	}{}
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -54,7 +54,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	// Now update the Comment with new content
-	err = dynamo.UpdateComment(body.SpreadSheetID, body.CommentID, body.Content)
+	err = dynamo.UpdateNote(body.SpreadSheetID, body.NoteID, body.Content)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,

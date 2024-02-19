@@ -333,6 +333,143 @@ func (db *Dynamo) DeleteComment(spreadsheetID string, commentID string) error {
 	return nil
 }
 
+func (db *Dynamo) UpdateComment(spreadsheetID, commentID, content string) error {
+	_, err := db.Client.UpdateItem(&dynamodb.UpdateItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			"SK": {
+				S: aws.String(db.CommentSK(commentID)),
+			},
+		},
+		UpdateExpression: aws.String("set Content = :content"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":content": {
+				S: aws.String(content),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *Dynamo) CreateNote(spreadsheetID string, userID int64, userName string, sheetNo int64, cellID string, content string) (*model.Note, error) {
+	nn := &model.Note{
+		Base: model.Base{
+			PK:        db.SpreadSheetPK(spreadsheetID),
+			SK:        db.NoteSK(uuid.NewString()),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		UserName:      userName,
+		UserID:        userID,
+		SpreadSheetID: spreadsheetID,
+		SheetNo:       sheetNo,
+		CellID:        cellID,
+		Content:       content,
+	}
+	note, err := dynamodbattribute.MarshalMap(nn)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Client.PutItem(&dynamodb.PutItemInput{
+		Item:      note,
+		TableName: aws.String(config.SPREADSHEETTABLE),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return nn, nil
+}
+
+func (db *Dynamo) GetNotes(spreadsheetID string) ([]*model.Note, error) {
+	res, err := db.Client.Query(&dynamodb.QueryInput{
+		TableName:              aws.String(config.SPREADSHEETTABLE),
+		KeyConditionExpression: aws.String("#PK = :pk AND begins_with(#SK, :sk)"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":pk": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			":sk": {
+				S: aws.String(db.NoteSK("")),
+			},
+		},
+		ExpressionAttributeNames: map[string]*string{
+			"#PK": aws.String("PK"),
+			"#SK": aws.String("SK"),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if res.Items == nil {
+		return nil, nil
+	}
+	notes := []*model.Note{}
+
+	for i := 0; i < len(res.Items); i++ {
+		note := model.Note{}
+		err = dynamodbattribute.UnmarshalMap(res.Items[i], &note)
+		if err != nil {
+			return nil, err
+		}
+		notes = append(notes, &note)
+	}
+
+	return notes, nil
+}
+
+func (db *Dynamo) DeleteNote(spreadsheetID string, noteID string) error {
+	_, err := db.Client.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			"SK": {
+				S: aws.String(db.NoteSK(noteID)),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *Dynamo) UpdateNote(spreadsheetID, noteID, content string) error {
+	_, err := db.Client.UpdateItem(&dynamodb.UpdateItemInput{
+		TableName: aws.String(config.SPREADSHEETTABLE),
+		Key: map[string]*dynamodb.AttributeValue{
+			"PK": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			"SK": {
+				S: aws.String(db.NoteSK(noteID)),
+			},
+		},
+		UpdateExpression: aws.String("set Content = :content"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":content": {
+				S: aws.String(content),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *Dynamo) UserPK(userID int64) string {
 	return fmt.Sprintf("USER#%d", userID)
 }
@@ -351,4 +488,8 @@ func (db *Dynamo) SpreadSheetSK(spreadsheetID string) string {
 
 func (db *Dynamo) CommentSK(commentID string) string {
 	return fmt.Sprintf("COMMENT#%s", commentID)
+}
+
+func (db *Dynamo) NoteSK(noteID string) string {
+	return fmt.Sprintf("NOTE#%s", noteID)
 }
