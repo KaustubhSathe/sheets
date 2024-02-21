@@ -2,14 +2,12 @@ import { TbMathFunction } from 'react-icons/tb'
 import { useSelector, useDispatch } from 'react-redux'
 import { setValue } from '../../../lib/redux/nameBoxSlice'
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
+import { RootState } from '@/app/lib/redux/store'
 
 export default function FormulaBar() {
-    //@ts-ignore
-    const nameBoxValue = useSelector(state => state.nameBox.value)
-    //@ts-ignore
-    const formulaBarValue = useSelector(state => state.formulaBar.value)
-    //@ts-ignore
-    const selectedCell = useSelector(state => state.selectedCell.value)
+    const nameBoxValue = useSelector((state: RootState) => state.nameBox.value)
+    const formulaBarValue = useSelector((state: RootState) => state.formulaBar.value)
+    const selectStart = useSelector((state: RootState) => state.selectStart.value)
     const dispatch = useDispatch()
 
     return (
@@ -22,9 +20,9 @@ export default function FormulaBar() {
 
             <input type="text" className="pt-[4px] pb-[4px] pl-[4px] pr-[8px] mt-[5px] mb-[5px] ml-[8px] mr-[8px] text-sm text-gray-900 border border-slate-300 rounded-lg w-[100%] outline-none" value={formulaBarValue} onChange={(e) => {
                 dispatch(setValueFormulaBar(e.target.value))
-                const selectedCellText = document.getElementById(selectedCell);
-                if (selectedCellText) {
-                    selectedCellText.innerText = e.target.value
+                const selectStartText = document.getElementById(selectStart);
+                if (selectStart) {
+                    selectStart.innerText = e.target.value
                 }
             }
             } />

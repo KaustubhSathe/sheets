@@ -1,5 +1,6 @@
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import { Command } from "@/app/types/Command";
+import { Comment } from "@/app/types/Comment";
 
 const globals: {
     selectStart: string,
@@ -9,6 +10,7 @@ const globals: {
     cutStart: string | null,
     cutEnd: string | null,
     spreadsheet: SpreadSheet,
+    comments: Comment[],
     selectedSheet: number,
     rows: number,
     columns: number,
@@ -24,6 +26,7 @@ const globals: {
     cutStart: null,
     cutEnd: null,
     spreadsheet: {} as SpreadSheet,
+    comments: [],
     selectedSheet: 0,
     columns: 26,
     rows: 100,

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const selectedCellSlice = createSlice({
-  name: 'selectedCell',
+export const selectStartSlice = createSlice({
+  name: 'selectStart',
   initialState: {
     value: '',
   },
@@ -13,6 +13,6 @@ export const selectedCellSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setValue } = selectedCellSlice.actions
+export const { setValue } = selectStartSlice.actions
 
-export default selectedCellSlice.reducer
+export default selectStartSlice.reducer

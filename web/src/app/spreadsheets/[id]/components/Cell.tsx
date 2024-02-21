@@ -1,5 +1,5 @@
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
-import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
+import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { useDispatch } from "react-redux";
 import globals from '@/app/lib/globals/globals';
@@ -16,9 +16,12 @@ export default function Cell({ i, j }: { i: number, j: number }) {
             <textarea className="overflow-hidden text-sm peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip p-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 spellCheck={false}
                 id={id}
+                onMouseOver={() => {
+
+                }}
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
-                    dispatch(setSelectedCell(e.currentTarget.id))
+                    dispatch(setSelectStart(e.currentTarget.id))
                     const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
                     const fontSizeSelector = document.getElementById("fontSizeSelector") as HTMLInputElement
                     const boldSelector = document.getElementById("boldSelector") as HTMLButtonElement

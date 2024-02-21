@@ -2,7 +2,7 @@ import { setValue as setNameBoxValue } from '../../../lib/redux/nameBoxSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Cell from './Cell';
-import { setValue as setSelectedCell } from '../../../lib/redux/selectedCellSlice';
+import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { RootState } from '@/app/lib/redux/store';
 import globals from '@/app/lib/globals/globals';
 import { useRouter } from 'next/navigation';
@@ -230,7 +230,7 @@ export default function CellsGrid() {
                 globals.selectStart = elem.id
                 globals.selectEnd = elem.id
             }
-            dispatch(setSelectedCell(getAdjacentID(currentElementId, e.key)))
+            dispatch(setSelectStart(getAdjacentID(currentElementId, e.key)))
         }
 
         if (e.key === "Control") {

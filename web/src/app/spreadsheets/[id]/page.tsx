@@ -14,6 +14,8 @@ import { setValue as setSpreadSheetMetaData } from '../../lib/redux/spreadSheetM
 import React from "react";
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import globals from "@/app/lib/globals/globals";
+import { GetComment } from "@/app/api/comment";
+import { Comment } from "@/app/types/Comment";
 
 export default function Spreadsheet() {
     const router = useRouter();
@@ -24,6 +26,7 @@ export default function Spreadsheet() {
 
     useEffect(() => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
+        const spreadsheet_id = window.location.href.split("/")[window.location.href.split("/").length - 1]
         if (access_token === null) {
             return router.push("/")
         }
@@ -76,6 +79,18 @@ export default function Spreadsheet() {
                         }
                     }
                 }
+            })
+
+        GetComment(access_token, spreadsheet_id)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            }).then((res: Comment[]) => {
+                globals.comments = [];
+                res.forEach(cc => {
+                    globals.comments.push(cc);
+                })
             })
     }, [router, dispatch]);
 
