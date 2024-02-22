@@ -20,9 +20,9 @@ export default function FormulaBar() {
 
             <input type="text" className="pt-[4px] pb-[4px] pl-[4px] pr-[8px] mt-[5px] mb-[5px] ml-[8px] mr-[8px] text-sm text-gray-900 border border-slate-300 rounded-lg w-[100%] outline-none" value={formulaBarValue} onChange={(e) => {
                 dispatch(setValueFormulaBar(e.target.value))
-                const selectStartText = document.getElementById(selectStart);
+                const selectStartText = document.getElementById(selectStart) as HTMLTextAreaElement;
                 if (selectStart) {
-                    selectStart.innerText = e.target.value
+                    selectStartText.value = e.target.value
                 }
             }
             } />
