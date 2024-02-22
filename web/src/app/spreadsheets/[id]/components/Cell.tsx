@@ -1,9 +1,10 @@
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import globals from '@/app/lib/globals/globals';
 import { useRef, useState } from 'react';
+import { RootState } from '@/app/lib/redux/store';
 
 
 export default function Cell({ i, j }: { i: number, j: number }) {
@@ -17,7 +18,6 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 spellCheck={false}
                 id={id}
                 onMouseOver={() => {
-
                 }}
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
@@ -57,6 +57,7 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             />
+            <div id={id + "comment"} className="w-0 h-0 border-r-[10px] border-solid border-b-[10px] border-b-transparent border-r-transparent absolute top-0 right-0 z-50"></div>
             <div className="absolute bottom-[-3px] right-[-3px] w-[10px] h-[10px] rounded-full peer-focus:bg-[#1a73e8] peer-focus:hover:cursor-crosshair peer-focus:z-10">
             </div>
         </div>

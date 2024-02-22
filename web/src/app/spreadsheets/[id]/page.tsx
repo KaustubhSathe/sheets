@@ -16,6 +16,8 @@ import { SpreadSheet } from "@/app/types/SpreadSheet";
 import globals from "@/app/lib/globals/globals";
 import { GetComment } from "@/app/api/comment";
 import { Comment } from "@/app/types/Comment";
+import { setValue as setComments } from '../../lib/redux/commentsSlice';
+
 
 export default function Spreadsheet() {
     const router = useRouter();
@@ -87,10 +89,7 @@ export default function Spreadsheet() {
                     return res.json();
                 }
             }).then((res: Comment[]) => {
-                globals.comments = [];
-                res.forEach(cc => {
-                    globals.comments.push(cc);
-                })
+                dispatch(setComments(res));
             })
     }, [router, dispatch]);
 

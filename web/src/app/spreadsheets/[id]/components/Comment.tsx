@@ -1,14 +1,42 @@
 import { CreateComment } from "@/app/api/comment";
 import globals from "@/app/lib/globals/globals";
 import { RootState } from "@/app/lib/redux/store";
-import { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setValue as setComments } from '../../../lib/redux/commentsSlice';
+import { Comment } from "@/app/types/Comment";
+import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
+
 
 export default function Comment() {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
     const [comment, setComment] = useState("");
     const selectStart = useSelector((state: RootState) => state.selectStart.value)
     const comments = useSelector((state: RootState) => state.comments.value)
+    const filteredComments = comments.filter(x => x.CellID.localeCompare(selectStart) === 0)
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        comments.forEach(cc => {
+            const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
+            cellMarker.style.borderRightColor = "#fcbc03"
+            const cell = document.getElementById(cc.CellID) as HTMLDivElement
+            cell.onmouseover = () => {
+                dispatch(setSelectStart(cc.CellID))
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                const x = document.getElementById(cc.CellID) as HTMLDivElement
+                comment.style.display = "block"
+                comment.style.zIndex = "1000"
+                comment.style.position = "absolute"
+                comment.style.top = x.getBoundingClientRect().top + "px"
+                comment.style.left = x.getBoundingClientRect().right + "px"
+            }
+            // cell.onmouseleave = () => {
+            //     const comment = document.getElementById("comment") as HTMLDivElement;
+            //     comment.style.display = "none";
+            // }
+        })
+    }, [comments]);
 
     const saveComment = useCallback(async () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
@@ -25,14 +53,12 @@ export default function Comment() {
                 <span className="mt-auto mb-auto text-black font-normal text-2xl">{spreadSheetMetaData?.UserName}</span>
             </div>
             <div>
-                {globals.comments.map(cc => {
-                    if (cc.CellID === globals.selectStart) {
-                        return (<div key={cc.CellID}>
+                {filteredComments.map(cc => {
+                    return (
+                        <div key={cc.PK}>
                             <span>{cc.Content}</span>
-                        </div>);
-                    }
-
-                    return null;
+                        </div>
+                    );
                 })}
             </div>
             <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} className="resize-none outline-none border-[1px] rounded-full pl-4 pr-4 pt-2 pb-2 mb-3 mt-3 border-black w-full" />
@@ -46,9 +72,9 @@ export default function Comment() {
                     <button onClick={async (e) => {
                         const res = await saveComment();
                         if (res.status === 200) {
+                            const cc: Comment = await res.json();
+                            dispatch(setComments([...comments, cc]));
                             setComment("");
-                            const cc = await res.json();
-                            globals.comments.push(cc);
                         } else {
                             console.log("some error", res.status)
                         }
