@@ -92,8 +92,19 @@ export default function ContextMenu() {
                 comment.style.display = "block"
                 comment.style.zIndex = "1000"
                 comment.style.position = "absolute"
-                comment.style.top = x.getBoundingClientRect().top + "px"
-                comment.style.left = x.getBoundingClientRect().right + "px"
+                // bottom case
+                if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
+                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + "px"
+                } else {
+                    comment.style.top = x.getBoundingClientRect().top + "px"
+                }
+
+                // right case
+                if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
+                    comment.style.left = x.getBoundingClientRect().right - comment.offsetWidth + "px"
+                } else {
+                    comment.style.left = x.getBoundingClientRect().right + "px"
+                }
                 const contextmenu = document.getElementById("contextmenu") as HTMLDivElement;
                 contextmenu.style.display = "none";
             }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">

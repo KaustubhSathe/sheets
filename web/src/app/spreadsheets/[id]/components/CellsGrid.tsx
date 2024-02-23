@@ -361,8 +361,19 @@ export default function CellsGrid() {
             contextMenu.style.display = "block"
             contextMenu.style.zIndex = "1000"
             contextMenu.style.position = "absolute"
-            contextMenu.style.left = mouseX + "px"
-            contextMenu.style.top = mouseY + "px"
+            // left case
+            if (Math.abs(mouseX - window.innerWidth) < 250) {
+                contextMenu.style.left = mouseX - 250 + "px"
+            } else {
+                contextMenu.style.left = mouseX + "px"
+            }
+
+            // bottom case
+            if (Math.abs(mouseY - window.innerHeight) < 200) {
+                contextMenu.style.top = mouseY - 200 + "px"
+            } else {
+                contextMenu.style.top = mouseY + "px"
+            }
         })
 
         if (activeCol !== null) {
