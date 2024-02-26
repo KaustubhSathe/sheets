@@ -8,15 +8,17 @@ import ToolsBar from "./components/ToolsBar";
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../lib/redux/store'
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { GetSpreadSheet } from "@/app/api/spreadsheet";
 import { setValue as setSpreadSheetMetaData } from '../../lib/redux/spreadSheetMetaDataSlice';
 import React from "react";
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import globals from "@/app/lib/globals/globals";
-import { GetComment } from "@/app/api/comment";
+import { GetComments } from "@/app/api/comment";
 import { Comment } from "@/app/types/Comment";
 import { setValue as setComments } from '../../lib/redux/commentsSlice';
+import { setValue as setNotes } from '../../lib/redux/notesSlice';
+import { GetNotes } from "@/app/api/note";
 
 
 export default function Spreadsheet() {
@@ -83,7 +85,7 @@ export default function Spreadsheet() {
                 }
             })
 
-        GetComment(access_token, spreadsheet_id)
+        GetComments(access_token, spreadsheet_id)
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
@@ -91,7 +93,21 @@ export default function Spreadsheet() {
             }).then((res: Comment[]) => {
                 dispatch(setComments(res));
             })
+
+
+        GetNotes(access_token, spreadsheet_id)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+            }).then(res => {
+                dispatch(setNotes(res))
+            })
+            
     }, [router, dispatch]);
+
+
+
 
     return (
         <>

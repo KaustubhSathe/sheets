@@ -196,7 +196,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                 <span ref={ref1} onClick={() => {
                     setDropDownVisible(true)
                 }} className="text-center inline-block w-auto h-[24px] pr-[7px] pl-[7px] br-[1px] bl-[1px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-md font-['Open_Sans']">{text}</span>
-                {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white">
+                {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white rounded-md shadow-md shadow-slate-600">
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={createSpreadSheet}>
                         <BsFillFileEarmarkSpreadsheetFill className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">New Spreadsheet</span>
@@ -239,7 +239,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
 
                         const download = Papa.unparse(csv);
 
-                        window.open("data:text/csv;charset=utf-8," + download) 
+                        window.open("data:text/csv;charset=utf-8," + download)
                     }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <MdOutlineFileDownload className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Download as csv</span>

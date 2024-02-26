@@ -37,7 +37,7 @@ export default function ViewButton({ text }: { text: string }) {
     return (
         <div className="inline-block relative">
             <span ref={ref1} onClick={() => setDropDownVisible(!dropDownVisible)} className="text-center inline-block w-auto h-[24px] pr-[7px] pl-[7px] br-[1px] bl-[1px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-md font-['Open_Sans']">{text}</span>
-            {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white">
+            {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white rounded-md shadow-md shadow-slate-600">
                 <div className="relative">
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onMouseOver={() => {
                         setShow(true)
@@ -135,7 +135,7 @@ export default function ViewButton({ text }: { text: string }) {
                     </div>}
                 </div>
 
-                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => {
+                <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] hover:rounded-md" onClick={() => {
                     document.body.requestFullscreen()
                 }}>
                     <BiFullscreen className="w-6 h-6 ml-2 mt-auto mb-auto" />

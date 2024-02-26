@@ -109,7 +109,7 @@ function CommentCard({ comment }: { comment: Comment }) {
 
 export default function Comment() {
     const [comment, setComment] = useState("");
-    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
+    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
     const selectStart = useSelector((state: RootState) => state.selectStart.value)
     const comments = useSelector((state: RootState) => state.comments.value)
     const filteredComments = comments.filter(x => x.CellID.localeCompare(selectStart) === 0)
@@ -120,7 +120,7 @@ export default function Comment() {
             const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
             cellMarker.style.borderRightColor = "#fcbc03"
             const cell = document.getElementById(cc.CellID) as HTMLDivElement
-            cell.onmouseover = (e) => {
+            cellMarker.addEventListener('mouseover', (e) => {
                 dispatch(setSelectStart(cc.CellID))
                 const comment = document.getElementById("comment") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
@@ -130,24 +130,53 @@ export default function Comment() {
 
                 // bottom case
                 if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
-                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + "px"
+                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
                 } else {
                     comment.style.top = x.getBoundingClientRect().top + "px"
                 }
 
                 // right case
                 if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
-                    comment.style.left = x.getBoundingClientRect().right - comment.offsetWidth + "px"
+                    comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
                 } else {
                     comment.style.left = x.getBoundingClientRect().right + "px"
                 }
-            }
-            // cell.onmouseleave = () => {
-            //     const comment = document.getElementById("comment") as HTMLDivElement;
-            //     comment.style.display = "none";
-            // }
+            })
+
+            cell.addEventListener('mouseover', (e) => {
+                dispatch(setSelectStart(cc.CellID))
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                const x = document.getElementById(cc.CellID) as HTMLDivElement
+                comment.style.display = "block"
+                comment.style.zIndex = "1000"
+                comment.style.position = "absolute"
+
+                // bottom case
+                if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
+                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
+                } else {
+                    comment.style.top = x.getBoundingClientRect().top + "px"
+                }
+
+                // right case
+                if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
+                    comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
+                } else {
+                    comment.style.left = x.getBoundingClientRect().right + "px"
+                }
+            })
+
+            cell.addEventListener('mouseleave', () => {
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                comment.style.display = "none";
+            })
+
+            cellMarker.addEventListener('mouseleave', () => {
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                comment.style.display = "none";
+            })
         })
-    }, [comments]);
+    }, [comments, dispatch]);
 
     const saveComment = useCallback(async () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
@@ -156,7 +185,16 @@ export default function Comment() {
     }, [comment, spreadSheetMetaData, selectStart]);
 
     return (
-        <div id="comment" className="w-[350px]  hidden bg-white shadow-lg shadow-slate-400 rounded-lg p-4">
+        <div
+            onMouseOver={() => {
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                comment.style.display = "block";
+            }}
+            onMouseLeave={() => {
+                const comment = document.getElementById("comment") as HTMLDivElement;
+                comment.style.display = "none";
+            }}
+            id="comment" className="w-[350px]  hidden bg-white shadow-lg shadow-slate-400 rounded-lg p-4">
             <div className="overflow-y-scroll max-h-[300px]">
                 {filteredComments.sort((a, b) => new Date(a.CreatedAt).getTime() - new Date(b.CreatedAt).getTime()).map(cc => {
                     return <CommentCard key={cc.SK} comment={cc} />;

@@ -362,7 +362,7 @@ func (db *Dynamo) CreateNote(spreadsheetID string, userID int64, userName string
 	nn := &model.Note{
 		Base: model.Base{
 			PK:        db.SpreadSheetPK(spreadsheetID),
-			SK:        db.NoteSK(uuid.NewString()),
+			SK:        db.NoteSK(cellID),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		},

@@ -8,6 +8,7 @@ import formulaBarVisibleReducer from './formulaBarVisibleSlice'
 import toolBarVisibleReducer from './toolBarVisibleSlice'
 import savedReducer from './savedSlice'
 import commentsReducer from './commentsSlice'
+import notesReducer from './notesSlice'
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     toolBarVisible: toolBarVisibleReducer,
     saved: savedReducer,
     comments: commentsReducer,
+    notes: notesReducer,
   },
 })
 

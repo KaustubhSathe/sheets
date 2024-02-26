@@ -15,7 +15,7 @@ export async function CreateComment(access_token: string, content: string, sprea
     return response;
 }
 
-export async function GetComment(access_token: string, spreadsheet_id: string) {
+export async function GetComments(access_token: string, spreadsheet_id: string) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/comment?spreadsheet_id=${spreadsheet_id}`, {
         method: "GET",
         headers: {

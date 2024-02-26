@@ -30,48 +30,48 @@ export default function HelpButton({ text }: { text: string }) {
     return (
         <>
             {improve && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setImprove(false)}>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setImprove(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
                     <p>Drop a mail at <Link href="mailto:kaustubhsathe39443@gmail.com" target="_blank" className="text-blue-600 underline">kaustubhsathe39443@gmail.com</Link> or raise a issue at <Link href="https://github.com/KaustubhSathe/spreadsheet" target="_blank" className="text-blue-600 underline">https://github.com/KaustubhSathe/spreadsheet</Link></p>
                 </div>
             </>
             }
             {privacyPolicy && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setPrivacyPolicy(false)}>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setPrivacyPolicy(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
                     <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block">This app is made just for educational purpose. &#128516;</p>
                 </div>
             </>
             }
             {termsOfService && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setTermsOfService(false)}>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setTermsOfService(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
                     <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block">Use or modify as per your convenience. &#128516;</p>
                 </div>
             </>
             }
             {functions && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setFunctions(false)}>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setFunctions(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
                     <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block">List of functions</p>
                 </div>
             </>
             }
             {shortcuts && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setShortCuts(false)}>
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setShortCuts(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
                     <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block">List of shortcuts</p>
                 </div>
             </>
             }
             <div className="inline-block relative">
                 <span ref={ref1} onClick={() => setDropDownVisible(!dropDownVisible)} className="text-center inline-block w-auto h-[24px] pr-[7px] pl-[7px] br-[1px] bl-[1px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-md font-['Open_Sans']">{text}</span>
-                {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white">
+                {dropDownVisible && <div className="absolute top-[1.7rem] z-[1000] left-0 w-[320px] bg-white rounded-md shadow-md shadow-slate-600">
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setImprove(!improve)}>
                         <MdOutlineLiveHelp className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Help WorkSheets Improve</span>
@@ -88,7 +88,7 @@ export default function HelpButton({ text }: { text: string }) {
                         <MdFunctions className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Functions</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setShortCuts(!shortcuts)}>
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px] rounded-md" onClick={() => setShortCuts(!shortcuts)}>
                         <MdKeyboard className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Keyboard Shortcuts</span>
                     </div>
