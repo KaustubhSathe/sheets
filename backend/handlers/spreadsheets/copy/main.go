@@ -43,9 +43,9 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	// Now parse body
 	body := struct {
-		SpreadSheetTitle string        `json:"SpreadSheetTitle"`
-		Favorited        bool          `json:"Favorited"`
-		Sheets           []model.Sheet `json:"Sheets"`
+		SpreadSheetTitle string          `json:"SpreadSheetTitle"`
+		Favorited        bool            `json:"Favorited"`
+		Versions         []model.Version `json:"Versions"`
 	}{}
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -62,7 +62,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		},
 		SpreadSheetTitle: body.SpreadSheetTitle,
 		Favorited:        body.Favorited,
-		Sheets:           body.Sheets,
+		Versions:         body.Versions,
 	}, &model.User{
 		ID:       int64(userInfo.User["id"].(float64)),
 		UserName: userInfo.User["login"].(string),

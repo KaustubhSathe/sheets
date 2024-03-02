@@ -4,13 +4,14 @@ import { RootState } from '@/app/lib/redux/store';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
+import { setValue as setNotes } from '../../../lib/redux/notesSlice'
+import { Note } from '@/app/types/Note';
 
 export default function Note() {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
     const selectStart = useSelector((state: RootState) => state.selectStart.value)
     const notes = useSelector((state: RootState) => state.notes.value)
-    const filteredNote = notes.filter(x => x.CellID.localeCompare(selectStart) === 0)
-    const [note, setNote] = useState<string>(filteredNote.length > 0 ? filteredNote[0].Content : "");
+    const [note, setNote] = useState<string>("");
     const dispatch = useDispatch();
 
     const saveNote = useCallback(async () => {
@@ -20,6 +21,8 @@ export default function Note() {
     }, [note, selectStart, spreadSheetMetaData]);
 
     useEffect(() => {
+        const filteredNote = notes.filter(x => x.CellID.localeCompare(selectStart) === 0)
+        setNote(filteredNote.length > 0 ? filteredNote[0].Content : "")
         notes.forEach(cc => {
             const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
             cellMarker.style.borderRightColor = "#fcbc03"
@@ -73,7 +76,6 @@ export default function Note() {
 
                 // left case
                 if (Math.abs(e.clientX) < note.offsetWidth) {
-                    console.log("ghelere")
                     note.style.left = x.getBoundingClientRect().left + "px"
                     note.style.top = x.getBoundingClientRect().top - note.offsetHeight + "px"
                 } else {
@@ -98,7 +100,7 @@ export default function Note() {
                 comment.style.display = "none";
             })
         })
-    }, [notes, dispatch]);
+    }, [notes, dispatch, selectStart]);
 
     return (
         <div
@@ -111,7 +113,9 @@ export default function Note() {
                 comment.style.display = "none";
             }}
             id="note" className='p-2 hidden bg-white outline outline-1 outline-black rounded-lg'>
-            <textarea value={note} className="w-[350px] bg-white rounded-lg p-2 outline outline-[1px] outline-black" onChange={(e) => setNote(e.target.value)} />
+            <textarea value={note} className="w-[350px] bg-white rounded-lg p-2 outline outline-[1px] outline-black" onChange={(e) => {
+                setNote(e.target.value)
+            }} />
             <div className='flex justify-end gap-2'>
                 <button onClick={() => {
                     const comment = document.getElementById("note") as HTMLDivElement;
@@ -121,7 +125,8 @@ export default function Note() {
                     <button onClick={async (e) => {
                         const res = await saveNote();
                         if (res.status === 200) {
-                            console.log("saved note")
+                            const nn: Note = await res.json();
+                            dispatch(setNotes([...notes.filter(x => x.CellID.localeCompare(selectStart) !== 0), nn]))
                         } else {
                             console.log("some error", res.status)
                         }

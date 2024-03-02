@@ -76,10 +76,40 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		UserID:           user.ID,
 		SpreadSheetTitle: "Untitled spreadsheet",
 		Favorited:        false,
-		Sheets:           []model.Sheet{},
-		LastOpened:       time.Now(),
+		Versions: []model.Version{
+			{
+				VersionName: "Version1",
+				CreatedAt:   time.Now(),
+				Sheets:      []model.Sheet{},
+			},
+		},
+		LastOpened: time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
+	if err != nil {
+		return nil, err
+	}
+	ss1 := &model.SpreadSheet{
+		Base: model.Base{
+			PK:        db.SpreadSheetPK(spreadsheetID),
+			SK:        db.SpreadSheetSK(spreadsheetID),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		},
+		UserName:         user.UserName,
+		UserID:           user.ID,
+		SpreadSheetTitle: "Untitled spreadsheet",
+		Favorited:        false,
+		Versions: []model.Version{
+			{
+				VersionName: "Version1",
+				CreatedAt:   time.Now(),
+				Sheets:      []model.Sheet{},
+			},
+		},
+		LastOpened: time.Now(),
+	}
+	spreadsheet1, err := dynamodbattribute.MarshalMap(ss1)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +120,11 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: spreadsheet,
+					},
+				},
+				{
+					PutRequest: &dynamodb.PutRequest{
+						Item: spreadsheet1,
 					},
 				},
 			},
@@ -114,7 +149,7 @@ func (db *Dynamo) CopySpreadSheet(spreadsheetCopy *model.SpreadSheet, user *mode
 		UserID:           user.ID,
 		SpreadSheetTitle: spreadsheetCopy.SpreadSheetTitle,
 		Favorited:        spreadsheetCopy.Favorited,
-		Sheets:           spreadsheetCopy.Sheets,
+		Versions:         spreadsheetCopy.Versions,
 		LastOpened:       time.Now(),
 	}
 	spreadsheet, err := dynamodbattribute.MarshalMap(ss)
@@ -207,6 +242,38 @@ func (db *Dynamo) UpdateSpreadSheets(spreadsheetID string, user *model.User, new
 	}
 
 	return nil
+}
+
+func (db *Dynamo) GetSpreadSheet(spreadsheetID string) (*model.SpreadSheet, error) {
+	res, err := db.Client.Query(&dynamodb.QueryInput{
+		TableName:              aws.String(config.SPREADSHEETTABLE),
+		KeyConditionExpression: aws.String("#PK = :pk AND #SK = :sk"),
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":pk": {
+				S: aws.String(db.SpreadSheetPK(spreadsheetID)),
+			},
+			":sk": {
+				S: aws.String(db.SpreadSheetSK(spreadsheetID)),
+			},
+		},
+		ExpressionAttributeNames: map[string]*string{
+			"#PK": aws.String("PK"),
+			"#SK": aws.String("SK"),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if res.Items == nil {
+		return nil, nil
+	}
+
+	spreadsheet := model.SpreadSheet{}
+	err = dynamodbattribute.UnmarshalMap(res.Items[0], &spreadsheet)
+	if err != nil {
+		return nil, err
+	}
+	return &spreadsheet, nil
 }
 
 func (db *Dynamo) GetSpreadSheets(spreadsheetID string, userID int64) ([]*model.SpreadSheet, error) {

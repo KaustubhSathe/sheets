@@ -8,8 +8,14 @@ export type SpreadSheet = {
     UserID: number,
     SpreadSheetTitle: string,
     Favorited: boolean,
-    Sheets: Sheet[],
+    Versions: Version[],
     LastOpened: Date
+}
+
+export type Version = {
+    VersionName: string,
+    CreatedAt: Date,
+    Sheets: Sheet[]
 }
 
 export type Sheet = {

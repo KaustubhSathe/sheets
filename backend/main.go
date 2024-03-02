@@ -35,6 +35,7 @@ type Lambdas struct {
 	GetNotesHandler               awscdklambdagoalpha.GoFunction
 	DeleteNoteHandler             awscdklambdagoalpha.GoFunction
 	UpdateNoteHandler             awscdklambdagoalpha.GoFunction
+	ShareSpreadSheetHandler       awscdklambdagoalpha.GoFunction
 }
 
 func CreateDynamoTable(stack awscdk.Stack) {
@@ -248,6 +249,17 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
+	shareSpreadSheetHandler := awscdklambdagoalpha.NewGoFunction(stack, jsii.String("shareSpreadSheetHandler"), &awscdklambdagoalpha.GoFunctionProps{
+		Runtime: awslambda.Runtime_PROVIDED_AL2(),
+		Entry:   jsii.String("./handlers/spreadsheets/share"),
+		Bundling: &awscdklambdagoalpha.BundlingOptions{
+			GoBuildFlags: jsii.Strings(`-ldflags "-s -w"`),
+		},
+		Role:         requiredRoles,
+		Environment:  envs,
+		Architecture: awslambda.Architecture_ARM_64(),
+	})
+
 	return &Lambdas{
 		CallbackHandler:               callbackHandler,
 		AuthenticateHandler:           authenticateHandler,
@@ -265,6 +277,7 @@ func CreateLambdas(stack awscdk.Stack) *Lambdas {
 		GetNotesHandler:               getNotesHandler,
 		DeleteNoteHandler:             deleteNoteHandler,
 		UpdateNoteHandler:             updateNoteHandler,
+		ShareSpreadSheetHandler:       shareSpreadSheetHandler,
 	}
 }
 
@@ -417,6 +430,14 @@ func CreateHTTPApi(stack awscdk.Stack, lambdas *Lambdas) awscdkapigatewayv2alpha
 		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_PATCH},
 		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.UpdateNoteHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
 	})
+
+	// Share spreadsheet API
+	spreadsheetApi.AddRoutes(&awscdkapigatewayv2alpha.AddRoutesOptions{
+		Path:        jsii.String("/api/share"),
+		Methods:     &[]awscdkapigatewayv2alpha.HttpMethod{awscdkapigatewayv2alpha.HttpMethod_GET},
+		Integration: awscdkapigatewayv2integrationsalpha.NewHttpLambdaIntegration(jsii.String("SpreadSheetHttpLambdaIntegration"), lambdas.ShareSpreadSheetHandler, &awscdkapigatewayv2integrationsalpha.HttpLambdaIntegrationProps{}),
+	})
+
 
 	return spreadsheetApi
 }

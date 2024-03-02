@@ -60,7 +60,7 @@ export default function ToolsBar() {
                         let elem = document.getElementById(id) as HTMLTextAreaElement;
                         if (elem) {
                             elem.style.fontFamily = fontFamily
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily = fontFamily
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontFamily = fontFamily
                         }
                     }
                 }
@@ -85,7 +85,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.fontSize = elem.value + "px"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize = parseInt(elem.value)
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize = parseInt(elem.value)
                         }
                     }
                 }
@@ -99,7 +99,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.fontSize = e.currentTarget.value + "px"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize = parseInt(e.currentTarget.value)
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize = parseInt(e.currentTarget.value)
                         }
                     }
                 }
@@ -115,7 +115,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.fontSize = elem.value + "px"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize = parseInt(elem.value)
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize = parseInt(elem.value)
                         }
                     }
                 }
@@ -136,7 +136,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.fontWeight = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "bold" : "normal"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontWeight = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "bold" : "normal"
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontWeight = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "bold" : "normal"
                         }
                     }
                 }
@@ -155,7 +155,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.fontStyle = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "italic" : "normal"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontStyle = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "italic" : "normal"
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontStyle = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "italic" : "normal"
                         }
                     }
                 }
@@ -174,7 +174,7 @@ export default function ToolsBar() {
                         let cell = document.getElementById(id) as HTMLTextAreaElement;
                         if (cell) {
                             cell.style.textDecoration = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "line-through" : "none"
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[id].TextDecoration = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "line-through" : "none"
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextDecoration = elem.style.backgroundColor === "rgb(211, 227, 253)" ? "line-through" : "none"
                         }
                     }
                 }
@@ -195,7 +195,7 @@ export default function ToolsBar() {
                             let cell = document.getElementById(id) as HTMLTextAreaElement;
                             if (cell) {
                                 cell.style.color = color
-                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontColor = color
+                                globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontColor = color
                             }
                         }
                     }
@@ -217,7 +217,7 @@ export default function ToolsBar() {
                             let cell = document.getElementById(id) as HTMLTextAreaElement;
                             if (cell) {
                                 cell.style.backgroundColor = color
-                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor = color
+                                globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].BackGroundColor = color
                             }
                         }
                     }

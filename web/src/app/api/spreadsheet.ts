@@ -1,4 +1,4 @@
-import { Sheet, State } from "../types/SpreadSheet";
+import { Sheet, Version } from "../types/SpreadSheet";
 
 export async function GetSpreadSheet(access_token: string, spreadsheet_id: string) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet?spreadsheet_id=${spreadsheet_id}`, {
@@ -6,6 +6,14 @@ export async function GetSpreadSheet(access_token: string, spreadsheet_id: strin
         headers: {
             'spreadsheet_access_token': access_token,
         },
+    })
+
+    return response;
+}
+
+export async function ShareSpreadSheet(spreadsheet_id: string) {
+    const response = await fetch(`${process.env.API_DOMAIN}/api/share?spreadsheet_id=${spreadsheet_id}`, {
+        method: "GET",
     })
 
     return response;
@@ -22,7 +30,7 @@ export async function CreateSpreadSheet(access_token: string) {
     return response;
 }
 
-export async function CopySpreadSheet(access_token: string, spreadSheetTitle: string | undefined, favorited: boolean | undefined, sheets: Sheet[] | undefined) {
+export async function CopySpreadSheet(access_token: string, spreadSheetTitle: string | undefined, favorited: boolean | undefined, versions: Version[] | undefined) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_copy`, {
         method: "POST",
         headers: {
@@ -31,7 +39,7 @@ export async function CopySpreadSheet(access_token: string, spreadSheetTitle: st
         body: JSON.stringify({
             SpreadSheetTitle: spreadSheetTitle,
             Favorited: favorited,
-            Sheets: sheets,
+            Versions: versions,
         })
     })
 
@@ -68,7 +76,7 @@ export async function UpdateSpreadSheetTitle(access_token: string, spreadsheet_i
 
 
 export async function UpdateSheets(access_token: string,  body: {
-    Sheets: Sheet[],
+    Versions: Version[],
     SpreadSheetID: string,
 }) {
     const response = await fetch(`${process.env.API_DOMAIN}/api/spreadsheet_sheets`, {

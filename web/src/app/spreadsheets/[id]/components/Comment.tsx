@@ -8,7 +8,7 @@ import { Comment } from "@/app/types/Comment";
 import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { SlOptionsVertical } from "react-icons/sl";
 
-function CommentCard({ comment }: { comment: Comment }) {
+export function CommentCard({ comment }: { comment: Comment }) {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
     const ref = useRef<HTMLDivElement>(null)
     const ref1 = useRef<HTMLInputElement>(null)

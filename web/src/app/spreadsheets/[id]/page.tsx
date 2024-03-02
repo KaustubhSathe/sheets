@@ -19,6 +19,7 @@ import { Comment } from "@/app/types/Comment";
 import { setValue as setComments } from '../../lib/redux/commentsSlice';
 import { setValue as setNotes } from '../../lib/redux/notesSlice';
 import { GetNotes } from "@/app/api/note";
+import { Note } from "@/app/types/Note";
 
 
 export default function Spreadsheet() {
@@ -50,36 +51,42 @@ export default function Spreadsheet() {
                     UpdatedAt: res.UpdatedAt,
                     UserName: res.UserName,
                     SpreadSheetTitle: res.SpreadSheetTitle,
-                    SheetsData: res.Sheets.map(x => {
+                    Versions: res.Versions.map(x => {
+                        return {
+                            CreatedAt: x.CreatedAt,
+                            VersionName: x.VersionName
+                        }
+                    }),
+                    SheetsData: res.Versions[0].Sheets.map(x => {
                         return {
                             SheetIndex: x.SheetIndex,
                             SheetName: x.SheetName,
                         }
                     })
                 }));
-                if (res && res.Sheets && res.Sheets[globals.selectedSheet] && res.Sheets[globals.selectedSheet].State) {
+                if (res && res.Versions && res.Versions[0] && res.Versions[0].Sheets && res.Versions[0].Sheets[globals.selectedSheet] && res.Versions[0].Sheets[globals.selectedSheet].State) {
                     for (let j = 0; j < globals.columns; j++) {
                         for (let i = 0; i < globals.rows; i++) {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                             let elem = document.getElementById(key) as HTMLTextAreaElement
-                            globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
-                                BackGroundColor: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
-                                FontColor: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontColor : "Black",
-                                FontFamily: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",
+                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = {
+                                BackGroundColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
+                                FontColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor : "Black",
+                                FontFamily: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",
                                 FontStyle: "normal",
                                 FontWeight: "normal",
-                                TextContent: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].TextContent : "",
+                                TextContent: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent : "",
                                 TextDecoration: "normal",
-                                FontSize: res.Sheets[globals.selectedSheet].State[key] ? res.Sheets[globals.selectedSheet].State[key].FontSize : 16
+                                FontSize: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontSize : 16
                             }
-                            elem.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent
-                            elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].BackGroundColor
-                            elem.style.color = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontColor
-                            elem.style.fontFamily = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontFamily
-                            elem.style.fontStyle = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontStyle
-                            elem.style.fontWeight = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontWeight
-                            elem.style.textDecoration = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextDecoration
-                            elem.style.fontSize = globals.spreadsheet.Sheets[globals.selectedSheet].State[key].FontSize + "px"
+                            elem.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent
+                            elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor
+                            elem.style.color = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor
+                            elem.style.fontFamily = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontFamily
+                            elem.style.fontStyle = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontStyle
+                            elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontWeight
+                            elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextDecoration
+                            elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontSize + "px"
                         }
                     }
                 }
@@ -100,14 +107,11 @@ export default function Spreadsheet() {
                 if (res.status === 200) {
                     return res.json();
                 }
-            }).then(res => {
+            }).then((res: Note[]) => {
                 dispatch(setNotes(res))
             })
-            
+
     }, [router, dispatch]);
-
-
-
 
     return (
         <>

@@ -1,4 +1,3 @@
-import { SpreadSheet } from '@/app/types/SpreadSheet'
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 export const spreadhSheetMetaDataSlice = createSlice({
@@ -14,6 +13,10 @@ export const spreadhSheetMetaDataSlice = createSlice({
       SheetsData: {
         SheetName: string,
         SheetIndex: number,
+      }[],
+      Versions: {
+        VersionName: string,
+        CreatedAt: Date
       }[]
     },
   },
@@ -28,6 +31,10 @@ export const spreadhSheetMetaDataSlice = createSlice({
       SheetsData: {
         SheetName: string,
         SheetIndex: number,
+      }[],
+      Versions: {
+        VersionName: string,
+        CreatedAt: Date
       }[]
     }>) => {
       state.value = action.payload

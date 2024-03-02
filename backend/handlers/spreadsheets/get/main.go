@@ -47,16 +47,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		dynamo = db.NewDynamo(ctx)
 	}
 
-	// Now first check for spreadsheet in redis, if not present in redis fetch from DB
-	res, err := redis.Get(ctx, redis.SpreadSheetKey(spreadsheet_id))
-	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-		}, nil
-	}
-
-	if res == "" {
-		// means fetch from DB
+	if spreadsheet_id == "" {
+		// means fetch multiple spreadsheets from DB
 		spreadsheets, err := dynamo.GetSpreadSheets(spreadsheet_id, int64(userInfo.User["id"].(float64)))
 		if err != nil {
 			return events.APIGatewayProxyResponse{
@@ -80,6 +72,13 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}, nil
 	}
 
+	res, err := redis.Get(ctx, redis.SpreadSheetKey(spreadsheet_id))
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
 	spreadsheet := model.SpreadSheet{}
 	if err = utils.Parse(res, &spreadsheet); err != nil {
 		return events.APIGatewayProxyResponse{
@@ -98,7 +97,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	sheets, err := s3Client.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(config.SPREADSHEET_BUCKET),
-		Key:    aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), spreadsheet_id)),
+		Key:    aws.String(fmt.Sprintf("SPREADSHEET#%s.json", spreadsheet_id)),
 	})
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -113,7 +112,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 			StatusCode: 500,
 		}, err
 	}
-	err = json.Unmarshal(body, &spreadsheet.Sheets)
+	err = json.Unmarshal(body, &spreadsheet.Versions)
 
 	if err != nil {
 		return events.APIGatewayProxyResponse{

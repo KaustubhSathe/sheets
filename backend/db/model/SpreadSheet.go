@@ -12,8 +12,14 @@ type SpreadSheet struct {
 	UserID           int64
 	SpreadSheetTitle string
 	Favorited        bool
-	Sheets           []Sheet // Will contain pointer to S3 objects, index indicates the sheet number
+	Versions         []Version // Will contain pointer to S3 objects, index indicates the sheet number
 	LastOpened       time.Time
+}
+
+type Version struct {
+	VersionName string
+	CreatedAt   time.Time
+	Sheets      []Sheet
 }
 
 type Sheet struct {

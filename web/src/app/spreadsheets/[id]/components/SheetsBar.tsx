@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/lib/redux/store';
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
 import globals from '@/app/lib/globals/globals';
-import { State } from '@/app/types/SpreadSheet';
 
 export default function SheetsBar() {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
@@ -27,7 +26,7 @@ export default function SheetsBar() {
     return (
         <div className="bg-[#F9FBFD] h-[37px] flex align-middle">
             <button className="ml-[46px] hover:bg-slate-200 hover:rounded-full w-[37px] flex align-middle justify-center" onClick={() => {
-                globals.spreadsheet.Sheets.push({
+                globals.spreadsheet.Versions[0].Sheets.push({
                     SheetIndex: spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 : 0,
                     SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                     State: {},

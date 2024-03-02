@@ -27,12 +27,12 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     const boldSelector = document.getElementById("boldSelector") as HTMLButtonElement
                     const itaclicSelector = document.getElementById("italicSelector") as HTMLButtonElement
                     const strikethroughSelector = document.getElementById("strikethroughSelector") as HTMLButtonElement
-                    if (globals.spreadsheet.Sheets[globals.selectedSheet].State[id]) {
-                        fontSelector.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontFamily
-                        boldSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontWeight === "bold" ? "#d3e3fd" : "inherit"
-                        fontSizeSelector.value = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize ? globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontSize.toString() : "16"
-                        itaclicSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].FontStyle === "italic" ? "#d3e3fd" : "inherit"
-                        strikethroughSelector.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].TextDecoration === "line-through" ? "#d3e3fd" : "inherit"
+                    if (globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id]) {
+                        fontSelector.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontFamily
+                        boldSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontWeight === "bold" ? "#d3e3fd" : "inherit"
+                        fontSizeSelector.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize ? globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize.toString() : "16"
+                        itaclicSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontStyle === "italic" ? "#d3e3fd" : "inherit"
+                        strikethroughSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextDecoration === "line-through" ? "#d3e3fd" : "inherit"
                     }
                 }}
                 onInput={(e) => {

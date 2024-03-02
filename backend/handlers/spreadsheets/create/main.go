@@ -7,7 +7,9 @@ import (
 	"backend-go/utils"
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -68,11 +70,31 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		s3Client = s3.New(sess)
 	}
 
+	body := []model.Version{
+		{
+			VersionName: "Version1",
+			CreatedAt:   time.Now(),
+			Sheets: []model.Sheet{
+				{
+					SheetName:  "Sheet 1",
+					SheetIndex: 0,
+					State:      make(map[string]model.State),
+				},
+			},
+		},
+	}
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+		}, nil
+	}
+
 	_, err = s3Client.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(config.SPREADSHEET_BUCKET),
-		Key:         aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), spreadSheetID)),
+		Key:         aws.String(fmt.Sprintf("SPREADSHEET#%s.json", spreadSheetID)),
 		ContentType: aws.String("application/json"),
-		Body:        bytes.NewReader([]byte("[{\r\n    \"SheetName\": \"Sheet 1\",\r\n    \"SheetIndex\": 0,\r\n\t\"State\":      {}\r\n}]\r\n")),
+		Body:        bytes.NewReader(jsonBody),
 	})
 	if err != nil {
 		return events.APIGatewayProxyResponse{
@@ -80,12 +102,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}, err
 	}
 
-	spreadsheet.Sheets = []model.Sheet{
-		{
-			SheetName: "Sheet 1",
-			State:     make(map[string]model.State),
-		},
-	}
+	spreadsheet.Versions = body
 
 	var stringified = spreadsheet.Stringify()
 	// Now store the SpreadSheet object in Redis

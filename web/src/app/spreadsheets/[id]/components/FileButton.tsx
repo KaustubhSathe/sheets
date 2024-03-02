@@ -50,12 +50,12 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                     TextDecoration: elem.style.textDecoration,
                     FontSize: parseInt(elem.style.fontSize)
                 }
-                globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = newState;
+                globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = newState;
             }
         }
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
         const res = await UpdateSheets(access_token, {
-            Sheets: globals.spreadsheet.Sheets,
+            Versions: globals.spreadsheet.Versions,
             SpreadSheetID: globals.spreadsheet?.SK.slice(12),
         })
 
@@ -104,7 +104,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
 
     const copySpreadSheet = () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        CopySpreadSheet(access_token, spreadSheetMetaData?.SpreadSheetTitle, spreadSheetMetaData?.Favorited, globals.spreadsheet?.Sheets)
+        CopySpreadSheet(access_token, spreadSheetMetaData?.SpreadSheetTitle, spreadSheetMetaData?.Favorited, globals.spreadsheet?.Versions)
             .then(res => {
                 if (res.status === 200) {
                     return res.json();
@@ -118,9 +118,9 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
     return (
         <>
             {openDialog && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" >
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" >
                 </div >
-                <div className="absolute top-[10vh] left-[15vw] z-50 w-[70vw] h-[80vh] bg-white rounded-xl p-[24px]">
+                <div className="absolute top-[10vh] left-[15vw] z-[1000] w-[70vw] h-[80vh] bg-white rounded-xl p-[24px]">
                     <div className="flex justify-between">
                         <div className="flex gap-3">
                             <BsFillFileEarmarkSpreadsheetFill className="w-8 h-8" style={{ color: '#0F9D58' }} />
@@ -159,7 +159,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                                             let cell = document.getElementById(id) as HTMLTextAreaElement;
                                             if (cell && results.data && results.data[i] && results.data[i][j]) {
                                                 cell.value = results.data[i][j]
-                                                globals.spreadsheet.Sheets[globals.selectedSheet].State[id].TextContent = results.data[i][j]
+                                                globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextContent = results.data[i][j]
                                             }
                                         }
                                     }
@@ -174,9 +174,9 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                 </div>
             </>}
             {detailsDialog && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" >
+                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" >
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
                     <div className="flex justify-between">
                         <div className="flex gap-3">
                             <span className="text-2xl">Document Details</span>
@@ -196,7 +196,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                 <span ref={ref1} onClick={() => {
                     setDropDownVisible(true)
                 }} className="text-center inline-block w-auto h-[24px] pr-[7px] pl-[7px] br-[1px] bl-[1px] hover:bg-slate-200 hover:cursor-pointer hover:rounded-md font-['Open_Sans']">{text}</span>
-                {dropDownVisible && <div className="absolute top-[1.7rem] z-50 left-0 w-[320px] bg-white rounded-md shadow-md shadow-slate-600">
+                {dropDownVisible && <div className="absolute top-[1.7rem] z-[1000] left-0 w-[320px] bg-white rounded-md shadow-md shadow-slate-600">
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={createSpreadSheet}>
                         <BsFillFileEarmarkSpreadsheetFill className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">New Spreadsheet</span>
@@ -232,7 +232,7 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                             const rw = [];
                             for (let j = 0; j < globals.columns; j++) {
                                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
-                                rw.push(globals.spreadsheet.Sheets[globals.selectedSheet].State[key].TextContent);
+                                rw.push(globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent);
                             }
                             csv.push(rw);
                         }

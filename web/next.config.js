@@ -2,7 +2,8 @@
 const nextConfig = {
     env: {
         'GITHUB_CLIENT_ID': process.env.GITHUB_CLIENT_ID,
-        'API_DOMAIN': 'https://pulpynl9a6.execute-api.ap-south-1.amazonaws.com'
+        'API_DOMAIN': 'https://pulpynl9a6.execute-api.ap-south-1.amazonaws.com',
+        'DOMAIN': process.env.DOMAIN,
     }
 }
 

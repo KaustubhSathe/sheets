@@ -18,6 +18,10 @@ import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/app/lib/redux/store'
 import SaveStatus from './SaveStatus'
+import { CommentsDialog } from './CommentsDialog'
+import { ShareDialog } from './ShareDialog'
+import { VersionDialog } from './VersionDialog'
+
 
 export default function MenuBar() {
     const [menuDropDownVisible, setMenuDropDownVisible] = useState<boolean>(false);
@@ -28,6 +32,7 @@ export default function MenuBar() {
     const [spreadSheetTitle, setSpreadSheetTitle] = useState<string | undefined>(spreadSheetMetaData?.SpreadSheetTitle);
     const [versionHistory, setVersionHistory] = useState<boolean>(false);
     const [shareDialog, setShareDialog] = useState<boolean>(false);
+    const [commentsDialog, setCommentsDialog] = useState<boolean>(false);
     const [profileVisible, setProfileVisible] = useState<boolean>(false);
 
     const click = useCallback((e: MouseEvent) => {
@@ -51,27 +56,9 @@ export default function MenuBar() {
 
     return (
         <>
-            {versionHistory && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setVersionHistory(false)}>
-                </div >
-                <div className="absolute right-0 z-50 w-[20vw] h-[100vh] bg-white rounded-xl p-[24px]">
-                    <span className='text-3xl font-roboto font-normal text-slate-700 block'>Version History</span>
-                    <div>
-                        <div>1</div>
-                        <div>2</div>
-                        <div>3</div>
-                        <div>4</div>
-                        <div>5</div>
-                    </div>
-                </div>
-            </>}
-            {shareDialog && <>
-                <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-40 flex justify-center align-middle" onClick={() => setShareDialog(false)}>
-                </div >
-                <div className="absolute top-[40vh] left-[40vw] z-50 w-[20vw] h-[20vh] bg-white rounded-xl p-[24px]">
-                    share logic
-                </div>
-            </>}
+            {versionHistory && <VersionDialog setVersionHistory={setVersionHistory} />}
+            {commentsDialog && <CommentsDialog setCommentsDialog={setCommentsDialog} />}
+            {shareDialog && <ShareDialog setShareDialog={setShareDialog} />}
             <div className="bg-[#F9FBFD] h-[60px] w-full max-h-[60px] flex justify-between overflow-hidden sm:overflow-visible" id='menubar'>
                 <div className='sm:min-w-[450px] h-full flex'>
                     <Link href="/spreadsheets" className='w-[60px] pl-[10px] pr-[10px] ml-[8px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer'>
@@ -107,9 +94,11 @@ export default function MenuBar() {
                         <FaClockRotateLeft className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </div>
 
-                    <Link href="#" className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
+                    <div onClick={() => {
+                        setCommentsDialog(true);
+                    }} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:bg-slate-200 hover:cursor-pointer flex align-middle justify-center">
                         <MdOutlineInsertComment className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
-                    </Link>
+                    </div>
                     <div onClick={() => setShareDialog(true)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:cursor-pointer hover:rounded-full hover:bg-slate-200 flex align-middle justify-center">
                         <MdShare className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
                     </div>

@@ -114,7 +114,7 @@ export default function CellsGrid() {
                 const id = String.fromCharCode(j) + i.toString();
                 let elem = document.getElementById(id);
                 if (elem) {
-                    elem.style.backgroundColor = globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor ? globals.spreadsheet.Sheets[globals.selectedSheet].State[id].BackGroundColor : "white";
+                    elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].BackGroundColor ? globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].BackGroundColor : "white";
                     elem.style.borderBottomWidth = '1px';
                     elem.style.borderRightWidth = '1px';
                     elem.style.borderTopWidth = '0px'

@@ -88,22 +88,23 @@ export default function ContextMenu() {
             <div onClick={(e) => {
                 e.preventDefault();
                 const comment = document.getElementById("comment") as HTMLDivElement;
-                const x = document.getElementById(globals.selectStart) as HTMLDivElement
+                const cell = document.getElementById(globals.selectStart) as HTMLDivElement
                 comment.style.display = "block"
                 comment.style.zIndex = "1000"
                 comment.style.position = "absolute"
+
                 // bottom case
                 if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
-                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + "px"
+                    comment.style.top = cell.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
                 } else {
-                    comment.style.top = x.getBoundingClientRect().top + "px"
+                    comment.style.top = cell.getBoundingClientRect().top + "px"
                 }
 
                 // right case
                 if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
-                    comment.style.left = x.getBoundingClientRect().right - comment.offsetWidth + "px"
+                    comment.style.left = cell.getBoundingClientRect().left - comment.offsetWidth + "px"
                 } else {
-                    comment.style.left = x.getBoundingClientRect().right + "px"
+                    comment.style.left = cell.getBoundingClientRect().right + "px"
                 }
                 const contextmenu = document.getElementById("contextmenu") as HTMLDivElement;
                 contextmenu.style.display = "none";

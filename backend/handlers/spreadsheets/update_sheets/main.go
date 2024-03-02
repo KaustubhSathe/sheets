@@ -49,8 +49,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	// Now parse body
 	body := struct {
-		Sheets        []model.Sheet `json:"Sheets"`
-		SpreadSheetID string        `json:"SpreadSheetID"`
+		Versions      []model.Version `json:"Versions"`
+		SpreadSheetID string          `json:"SpreadSheetID"`
 	}{}
 	err = json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
@@ -68,7 +68,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	// Now delete the old sheet.json from s3 and add the new one which is present in request body
-	sheets, err := json.Marshal(body.Sheets)
+	sheets, err := json.Marshal(body.Versions)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -77,7 +77,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	_, err = s3Client.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(config.SPREADSHEET_BUCKET),
-		Key:         aws.String(fmt.Sprintf("USER#%d#SPREADSHEET#%s.json", int64(userInfo.User["id"].(float64)), body.SpreadSheetID)),
+		Key:         aws.String(fmt.Sprintf("SPREADSHEET#%s.json", body.SpreadSheetID)),
 		ContentType: aws.String("application/json"),
 		Body:        bytes.NewReader(sheets),
 	})
