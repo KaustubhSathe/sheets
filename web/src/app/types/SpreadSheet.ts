@@ -14,6 +14,7 @@ export type SpreadSheet = {
 
 export type Version = {
     VersionName: string,
+    VersionID: string,
     CreatedAt: Date,
     Sheets: Sheet[]
 }

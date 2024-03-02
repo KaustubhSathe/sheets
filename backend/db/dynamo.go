@@ -79,6 +79,7 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		Versions: []model.Version{
 			{
 				VersionName: "Version1",
+				VersionID:   uuid.NewString(),
 				CreatedAt:   time.Now(),
 				Sheets:      []model.Sheet{},
 			},
@@ -103,6 +104,7 @@ func (db *Dynamo) CreateSpreadSheet(spreadsheetID string, user *model.User) (*mo
 		Versions: []model.Version{
 			{
 				VersionName: "Version1",
+				VersionID:   uuid.NewString(),
 				CreatedAt:   time.Now(),
 				Sheets:      []model.Sheet{},
 			},

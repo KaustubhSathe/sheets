@@ -74,6 +74,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 		{
 			VersionName: "Version1",
 			CreatedAt:   time.Now(),
+			VersionID:   uuid.NewString(),
 			Sheets: []model.Sheet{
 				{
 					SheetName:  "Sheet 1",

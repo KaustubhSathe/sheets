@@ -18,6 +18,7 @@ type SpreadSheet struct {
 
 type Version struct {
 	VersionName string
+	VersionID   string
 	CreatedAt   time.Time
 	Sheets      []Sheet
 }

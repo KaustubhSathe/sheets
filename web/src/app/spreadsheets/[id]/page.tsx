@@ -54,7 +54,8 @@ export default function Spreadsheet() {
                     Versions: res.Versions.map(x => {
                         return {
                             CreatedAt: x.CreatedAt,
-                            VersionName: x.VersionName
+                            VersionName: x.VersionName,
+                            VersionID: x.VersionID,
                         }
                     }),
                     SheetsData: res.Versions[0].Sheets.map(x => {

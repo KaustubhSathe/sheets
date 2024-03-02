@@ -16,7 +16,8 @@ export const spreadhSheetMetaDataSlice = createSlice({
       }[],
       Versions: {
         VersionName: string,
-        CreatedAt: Date
+        CreatedAt: Date,
+        VersionID: string
       }[]
     },
   },
@@ -34,7 +35,8 @@ export const spreadhSheetMetaDataSlice = createSlice({
       }[],
       Versions: {
         VersionName: string,
-        CreatedAt: Date
+        CreatedAt: Date,
+        VersionID: string
       }[]
     }>) => {
       state.value = action.payload
