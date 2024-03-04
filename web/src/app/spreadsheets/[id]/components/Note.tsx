@@ -127,8 +127,6 @@ export default function Note() {
                         if (res.status === 200) {
                             const nn: Note = await res.json();
                             dispatch(setNotes([...notes.filter(x => x.CellID.localeCompare(selectStart) !== 0), nn]))
-                        } else {
-                            console.log("some error", res.status)
                         }
                     }} className="mr-4 w-[100px] h-[36px] font-semibold text-white bg-[#0b57d0] rounded-full hover:shadow-sm hover:shadow-black">
                         Save

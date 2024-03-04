@@ -1,6 +1,7 @@
 import { SpreadSheet } from "@/app/types/SpreadSheet";
 import { Command } from "@/app/types/Command";
 import { Comment } from "@/app/types/Comment";
+import { HyperFormula } from 'hyperformula';
 
 const globals: {
     selectStart: string,
@@ -18,6 +19,7 @@ const globals: {
     ctrlDown: boolean,
     undoStack: Command[],
     redoStack: Command[],
+    hfInstance: HyperFormula
 } =  {
     selectStart: "A1",
     selectEnd: "A1",
@@ -33,7 +35,10 @@ const globals: {
     saved: true,
     ctrlDown: false,
     undoStack: [],
-    redoStack: []
+    redoStack: [],
+    hfInstance: HyperFormula.buildEmpty({
+        licenseKey: 'gpl-v3'
+    }),
 }
 
 export default globals;

@@ -66,6 +66,13 @@ export default function Spreadsheet() {
                     })
                 }));
                 if (res && res.Versions && res.Versions[0] && res.Versions[0].Sheets && res.Versions[0].Sheets[globals.selectedSheet] && res.Versions[0].Sheets[globals.selectedSheet].State) {
+                    for (let i = 0; i < globals.spreadsheet.Versions[0].Sheets.length; i++) {
+                        if (!globals.hfInstance.doesSheetExist(globals.spreadsheet.Versions[0].Sheets[i].SheetName)) {
+                            globals.hfInstance.addSheet(globals.spreadsheet.Versions[0].Sheets[i].SheetName)
+                            globals.hfInstance.addColumns(i, [0, globals.columns])
+                            globals.hfInstance.addRows(i, [0, globals.rows])
+                        }
+                    }
                     for (let j = 0; j < globals.columns; j++) {
                         for (let i = 0; i < globals.rows; i++) {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
@@ -88,8 +95,14 @@ export default function Spreadsheet() {
                             elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontWeight
                             elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextDecoration
                             elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontSize + "px"
+                            globals.hfInstance.setCellContents({
+                                col: j,
+                                row: i,
+                                sheet: globals.selectedSheet
+                            }, globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent)
                         }
                     }
+
                 }
             })
 

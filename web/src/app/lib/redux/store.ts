@@ -10,6 +10,7 @@ import savedReducer from './savedSlice'
 import commentsReducer from './commentsSlice'
 import notesReducer from './notesSlice'
 
+
 const store = configureStore({
   reducer: {
     nameBox: nameBoxReducer,
@@ -23,6 +24,9 @@ const store = configureStore({
     comments: commentsReducer,
     notes: notesReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  })
 })
 
 export type RootState = ReturnType<typeof store.getState>

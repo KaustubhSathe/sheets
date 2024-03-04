@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import globals from '@/app/lib/globals/globals';
 import { useRef, useState } from 'react';
 import { RootState } from '@/app/lib/redux/store';
+import { DetailedCellError, ExportedCellChange, ExportedChange, SimpleCellAddress } from 'hyperformula';
 
 
 export default function Cell({ i, j }: { i: number, j: number }) {
@@ -51,8 +52,18 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                             currentTarget.value = oldTextVal
                         }
                     })
-                    currentTarget.value = currentText
-                    oldText.current = currentText
+                    const address = globals.hfInstance.simpleCellAddressFromString(id, globals.selectedSheet)
+                    const changes: ExportedChange[] = globals.hfInstance.setCellContents(address as SimpleCellAddress, currentText)
+                    for (let i = 1; i < changes.length; i++) {
+                        const key = String.fromCharCode(65 + (changes[i] as ExportedCellChange).col) + ((changes[i] as ExportedCellChange).row + 1).toString()
+                        const elem = document.getElementById(key) as HTMLTextAreaElement
+                        if (elem) {
+                            elem.value = changes[i].newValue?.toString() as string
+                        }
+                    }
+                    const calculated = globals.hfInstance.getCellValue(address as SimpleCellAddress)
+                    currentTarget.value = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
+                    oldText.current = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
                     dispatch(setValueFormulaBar(currentText))
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}

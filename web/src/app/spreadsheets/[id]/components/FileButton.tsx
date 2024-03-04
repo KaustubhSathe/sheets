@@ -206,7 +206,14 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                         <span className="inline-block mt-auto mb-auto">Open</span>
                         <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+O</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setOpenDialog(!openDialog)}>
+                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={async () => {
+                        dispatch(setSaved(STATUS.SAVING))
+                        const res = await saveSheet();
+                        if (res.status === 200) {
+                            globals.saved = true
+                            dispatch(setSaved(STATUS.SAVED))
+                        }
+                    }}>
                         <IoIosSave className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Save</span>
                         <span className="inline-block mt-auto mb-auto ml-auto mr-4 text-base font-semibold text-gray-500">Ctrl+S</span>

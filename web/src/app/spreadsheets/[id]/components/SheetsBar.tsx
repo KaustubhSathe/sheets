@@ -48,13 +48,13 @@ export default function SheetsBar() {
                     sheetsDropDown && spreadSheetMetaData && spreadSheetMetaData.SheetsData && <div className={`absolute left-0`} style={{ top: -1 * spreadSheetMetaData.SheetsData.length * 40 + 'px' }}>
                         {spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => (
                             <div key={x.SheetIndex} className="flex gap-2 justify-center w-[90px] h-[40px] bg-white hover:bg-slate-300" onClick={() => {
-                                if (globals.spreadsheet && globals.spreadsheet.Sheets && globals.spreadsheet.Sheets[x.SheetIndex] && globals.spreadsheet.Sheets[x.SheetIndex].State) {
+                                if (globals.spreadsheet && globals.spreadsheet.Versions[0].Sheets && globals.spreadsheet.Versions[0].Sheets[x.SheetIndex] && globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State) {
                                     for (let j = 0; j < globals.columns; j++) {
                                         for (let i = 0; i < globals.rows; i++) {
                                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                                             let elem = document.getElementById(key) as HTMLTextAreaElement
                                             // First save old state
-                                            globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
+                                            globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = {
                                                 BackGroundColor: elem.style.backgroundColor,
                                                 FontColor: elem.style.color,
                                                 FontFamily: elem.style.fontFamily,
@@ -64,8 +64,8 @@ export default function SheetsBar() {
                                                 TextDecoration: elem.style.textDecoration,
                                                 FontSize: parseInt(elem.style.fontSize)
                                             }
-                                            if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {
-                                                globals.spreadsheet.Sheets[x.SheetIndex].State[key] = {
+                                            if (!globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key]) {
+                                                globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key] = {
                                                     BackGroundColor: "#FFFFFF",
                                                     FontColor: "Black",
                                                     FontFamily: "Roboto",
@@ -76,7 +76,7 @@ export default function SheetsBar() {
                                                     FontSize: parseInt(elem.style.fontSize)
                                                 }
                                             }
-                                            elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
+                                            elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent
                                         }
                                     }
                                 }
@@ -93,13 +93,13 @@ export default function SheetsBar() {
 
             {
                 spreadSheetMetaData && spreadSheetMetaData.SheetsData && spreadSheetMetaData.SheetsData.map(x => <SheetsBox selectedSheet={selectedSheet} setSelectedSheet={setSelectedSheet} key={x.SheetIndex} sheetName={x.SheetName} index={x.SheetIndex} onClick={() => {
-                    if (globals.spreadsheet && globals.spreadsheet.Sheets && globals.spreadsheet.Sheets[x.SheetIndex] && globals.spreadsheet.Sheets[x.SheetIndex].State) {
+                    if (globals.spreadsheet && globals.spreadsheet.Versions[0].Sheets && globals.spreadsheet.Versions[0].Sheets[x.SheetIndex] && globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State) {
                         for (let j = 0; j < globals.columns; j++) {
                             for (let i = 0; i < globals.rows; i++) {
                                 const key = String.fromCharCode(65 + j) + (i + 1).toString();
                                 let elem = document.getElementById(key) as HTMLTextAreaElement
                                 // First save old state
-                                globals.spreadsheet.Sheets[globals.selectedSheet].State[key] = {
+                                globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = {
                                     BackGroundColor: elem.style.backgroundColor,
                                     FontColor: elem.style.color,
                                     FontFamily: elem.style.fontFamily,
@@ -109,8 +109,8 @@ export default function SheetsBar() {
                                     TextDecoration: elem.style.textDecoration,
                                     FontSize: parseInt(elem.style.fontSize)
                                 }
-                                if (!globals.spreadsheet.Sheets[x.SheetIndex].State[key]) {
-                                    globals.spreadsheet.Sheets[x.SheetIndex].State[key] = {
+                                if (!globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key]) {
+                                    globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key] = {
                                         BackGroundColor: "#FFFFFF",
                                         FontColor: "Black",
                                         FontFamily: "Roboto",
@@ -121,7 +121,7 @@ export default function SheetsBar() {
                                         FontSize: parseInt(elem.style.fontSize)
                                     }
                                 }
-                                elem.value = globals.spreadsheet.Sheets[x.SheetIndex].State[key].TextContent
+                                elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent
                             }
                         }
                     }

@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [profileVisible, setProfileVisible] = useState<boolean>(false);
   const [profileName, setProfileName] = useState<string>("");
   const [createNewSpreadSheetLoader, setCreateNewSpreadSheetLoader] = useState<boolean>(false);
+  const [searchItems, setSearchItems] = useState<SpreadSheet[]>([]);
 
   const authenticate = useCallback(Authenticate, []);
   const getspreadsheet = useCallback(GetSpreadSheet, []);
@@ -103,7 +104,20 @@ export default function Dashboard() {
             <div className="left-[4px] top-[4px] absolute h-[40px] w-[40px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
               <HiOutlineMagnifyingGlass className="w-[25px] h-[25px] mt-auto mb-auto" />
             </div>
-            <input type="text" className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
+            <input type="text" onChange={(e) => {
+              setSearchItems(spreadsheets.filter(x => e.target.value !== "" && x.SpreadSheetTitle.toLowerCase().startsWith(e.target.value)))
+            }} className="ml-[50px] w-full mt-[8px] mb-[8px] bg-inherit mr-[40px] outline-none" placeholder="Search" />
+            {searchItems.length !== 0 && <div className="absolute w-full top-[55px] flex flex-col gap-1">
+              {
+                searchItems.map(x => (
+                  <div key={x.PK} className="w-full h-[30px] rounded-lg bg-slate-200 pl-2 hover:cursor-pointer hover:bg-slate-300 flex flex-col" onClick={() => {
+                    router.push(`/spreadsheets/${x.SK.slice(12)}`);
+                  }}>
+                    <span className="mt-auto mb-auto">{x.SpreadSheetTitle}</span>
+                  </div>
+                ))
+              }
+            </div>}
           </div>
           <div ref={ref1} onClick={() => setProfileVisible(!profileVisible)} className="mr-4 mt-auto mb-auto min-h-[44px] min-w-[44px] flex align-middle justify-center hover:bg-slate-200 hover:rounded-full hover:cursor-pointer">
             <CgProfile className="w-[25px] h-[25px] mt-auto mb-auto" />
