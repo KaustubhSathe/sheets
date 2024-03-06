@@ -1,11 +1,10 @@
 import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
 import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import globals from '@/app/lib/globals/globals';
-import { useRef, useState } from 'react';
-import { RootState } from '@/app/lib/redux/store';
-import { DetailedCellError, ExportedCellChange, ExportedChange, SimpleCellAddress } from 'hyperformula';
+import { useRef } from 'react';
+import { DetailedCellError, ExportedCellChange, ExportedChange, FunctionPluginDefinition, SimpleCellAddress } from 'hyperformula';
 
 
 export default function Cell({ i, j }: { i: number, j: number }) {
@@ -14,14 +13,13 @@ export default function Cell({ i, j }: { i: number, j: number }) {
     const oldText = useRef<string>("");
 
     return (
-        <div className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
-            <textarea className="overflow-hidden text-sm peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip p-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
+        <div data-testid="cell-wrapper" className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
+            <textarea data-testid="cell-textbox" className="overflow-hidden text-sm peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip p-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 spellCheck={false}
                 id={id}
-                onMouseOver={() => {
-                }}
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
+                    globals.selectStart = e.currentTarget.id
                     dispatch(setSelectStart(e.currentTarget.id))
                     const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
                     const fontSizeSelector = document.getElementById("fontSizeSelector") as HTMLInputElement

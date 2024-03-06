@@ -20,6 +20,7 @@ import { setValue as setComments } from '../../lib/redux/commentsSlice';
 import { setValue as setNotes } from '../../lib/redux/notesSlice';
 import { GetNotes } from "@/app/api/note";
 import { Note } from "@/app/types/Note";
+import EmojiPicker from "emoji-picker-react";
 
 
 export default function Spreadsheet() {
@@ -27,7 +28,6 @@ export default function Spreadsheet() {
     const dispatch = useDispatch();
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
-    const pathname = usePathname();
 
     useEffect(() => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token"))
@@ -85,10 +85,12 @@ export default function Spreadsheet() {
                                 FontWeight: "normal",
                                 TextContent: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent : "",
                                 TextDecoration: "normal",
+                                BackGroundImage: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundImage : "",
                                 FontSize: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontSize : 16
                             }
                             elem.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent
                             elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor
+                            elem.style.backgroundImage = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundImage
                             elem.style.color = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor
                             elem.style.fontFamily = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontFamily
                             elem.style.fontStyle = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontStyle

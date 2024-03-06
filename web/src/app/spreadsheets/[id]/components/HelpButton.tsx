@@ -64,8 +64,11 @@ export default function HelpButton({ text }: { text: string }) {
             {shortcuts && <>
                 <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setShortCuts(false)}>
                 </div >
-                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex justify-center">
-                    <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block">List of shortcuts</p>
+                <div className="absolute top-[40vh] left-[40vw] z-[1000] w-[20vw] h-[20vh] bg-white rounded-xl p-[24px] flex flex-col justify-start">
+                    <p className="font-roboto font-semibold text-3xl mt-auto mb-auto block mr-auto ml-auto">List of shortcuts</p>
+                    <div>
+                        <span>Ctrl+S</span>
+                    </div>
                 </div>
             </>
             }

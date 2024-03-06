@@ -64,7 +64,7 @@ export default function ToolsBar() {
                         }
                     }
                 }
-            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit" id="fontSelector">
+            }} data-testid="fontSelector" className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px] outline-none hover:cursor-pointer bg-inherit" id="fontSelector">
                 <option value={"Arial"}>Arial </option>
                 <option value={"Verdana"}>Verdana</option>
                 <option value={"Times New Roman"}>Times New Roman</option>
@@ -140,7 +140,7 @@ export default function ToolsBar() {
                         }
                     }
                 }
-            }} id="boldSelector" className="ml-[8px] hover:bg-slate-200 rounded-lg hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            }} id="boldSelector" data-testid="boldSelector" className="ml-[8px] hover:bg-slate-200 rounded-lg hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <BiBold />
             </button>
 
@@ -159,7 +159,7 @@ export default function ToolsBar() {
                         }
                     }
                 }
-            }} id="italicSelector" className="ml-[8px] rounded-lg hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            }} id="italicSelector" data-testid="italicSelector" className="ml-[8px] rounded-lg hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <BiItalic />
             </button>
 
@@ -178,7 +178,7 @@ export default function ToolsBar() {
                         }
                     }
                 }
-            }} id="strikethroughSelector" className="ml-[8px] rounded-lg hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            }} id="strikethroughSelector" data-testid="strikethroughSelector" className="ml-[8px] rounded-lg hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <BiStrikethrough />
             </button>
 
@@ -223,7 +223,6 @@ export default function ToolsBar() {
                     }
                 }} id='backgroundColorPicker' className='inline-block float-right w-0 h-0' type='color' />
             </button>
-
         </div>
     );
 }

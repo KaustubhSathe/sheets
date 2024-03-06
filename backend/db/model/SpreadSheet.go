@@ -30,13 +30,14 @@ type Sheet struct {
 }
 
 type State struct {
-	Bold            bool
-	Italic          bool
-	StrikeThrough   bool
-	Underline       bool
+	FontWeight      string
+	FontSize        int32
+	FontStyle       string
+	TextDecoration  string
 	FontColor       string
 	BackGroundColor string
-	FontType        string
+	BackGroundImage string
+	FontFamily      string
 	TextContent     string
 }
 

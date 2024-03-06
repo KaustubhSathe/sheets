@@ -34,6 +34,7 @@ export type State = {
     TextDecoration: string, // for underline
     FontColor: string, 
     BackGroundColor: string,
+    BackGroundImage: string,
     FontFamily: string,
     TextContent: string,
 }

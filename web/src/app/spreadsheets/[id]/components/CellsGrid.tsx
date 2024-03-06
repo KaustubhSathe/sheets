@@ -5,12 +5,12 @@ import Cell from './Cell';
 import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { RootState } from '@/app/lib/redux/store';
 import globals from '@/app/lib/globals/globals';
-import { useRouter } from 'next/navigation';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { Command } from '@/app/types/Command';
 import ContextMenu from './ContextMenu';
 import Comment from './Comment';
 import Note from './Note';
+import EmojiPicker from 'emoji-picker-react';
 
 function getAdjacentID(id: string, key: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
