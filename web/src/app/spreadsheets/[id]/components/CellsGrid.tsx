@@ -12,7 +12,7 @@ import Comment from './Comment';
 import Note from './Note';
 import EmojiPicker from 'emoji-picker-react';
 
-function getAdjacentID(id: string, key: string): string {
+export function getAdjacentID(id: string, key: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
     let row = id.match(/([A-Z]+)(\d+)/)?.at(2)
     row = row ? row : "0"
@@ -427,6 +427,7 @@ export default function CellsGrid() {
         colNumbers.push((
             <div
                 id={"column" + String.fromCharCode(65 + i)}
+                data-testid={"column" + String.fromCharCode(65 + i)}
                 key={String.fromCharCode(65 + i)}
                 className="min-w-[80px] h-full text-center border-b-[1px] border-t-[1px] border-r-[1px] border-solid border-[#E1E1E1] relative flex justify-center"
             >
@@ -477,9 +478,9 @@ export default function CellsGrid() {
             <ContextMenu />
             <Comment />
             <Note />
-            <div id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
-                <div className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
-                <div className="h-[30px] ml-[46px] flex bg-inherit">
+            <div data-testid="cellgrid" id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
+                <div data-testid="greycell" className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
+                <div data-testid="columns" className="h-[30px] ml-[46px] flex bg-inherit">
                     {
                         colNumbers
                     }

@@ -107,6 +107,52 @@ describe('Cell', () => {
         fireEvent.input(textbox, { target: { value: 'helloworld' } })
         expect(textbox).toHaveValue("helloworld")
         expect(globals.saved).toBe(false)
-            
+        expect(globals.undoStack).toHaveLength(1)
+    })
+
+    it("checks comment marker attributes", () => {
+        const i = 1
+        const j = 23
+        const id = String.fromCharCode(65 + j) + (i + 1).toString()
+        render(
+            <Provider store={store}>
+                <Cell i={i} j={j} />
+            </Provider>
+        )
+
+        const marker = screen.getByTestId(id + "comment")
+        expect(marker).toHaveClass("w-0")
+        expect(marker).toHaveClass("h-0")
+        expect(marker).toHaveClass("border-r-[10px]")
+        expect(marker).toHaveClass("border-solid")
+        expect(marker).toHaveClass("border-b-[10px]")
+        expect(marker).toHaveClass("border-b-transparent")
+        expect(marker).toHaveClass("border-r-transparent")
+        expect(marker).toHaveClass("absolute")
+        expect(marker).toHaveClass("top-0")
+        expect(marker).toHaveClass("right-0")
+        expect(marker).toHaveClass("z-50")
+    })
+
+    it("checks drag marker attributes", () => {
+        const i = 1
+        const j = 23
+        const id = String.fromCharCode(65 + j) + (i + 1).toString()
+        render(
+            <Provider store={store}>
+                <Cell i={i} j={j} />
+            </Provider>
+        )
+
+        const marker = screen.getByTestId("drag-marker")
+        expect(marker).toHaveClass("absolute")
+        expect(marker).toHaveClass("bottom-[-3px]")
+        expect(marker).toHaveClass("right-[-3px]")
+        expect(marker).toHaveClass("w-[10px]")
+        expect(marker).toHaveClass("h-[10px]")
+        expect(marker).toHaveClass("rounded-full")
+        expect(marker).toHaveClass("peer-focus:bg-[#1a73e8]")
+        expect(marker).toHaveClass("peer-focus:hover:cursor-crosshair")
+        expect(marker).toHaveClass("peer-focus:z-10")
     })
 })
