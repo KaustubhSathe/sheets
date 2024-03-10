@@ -39,6 +39,7 @@ type State struct {
 	BackGroundImage string
 	FontFamily      string
 	TextContent     string
+	TextAlign       string
 }
 
 func (in *SpreadSheet) Stringify() string {

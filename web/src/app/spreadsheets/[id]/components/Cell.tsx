@@ -1,11 +1,9 @@
-import { setValue as setValueFormulaBar } from '../../../lib/redux/formulaBarSlice'
-import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { useDispatch } from "react-redux";
 import globals from '@/app/lib/globals/globals';
 import { useRef } from 'react';
 import { DetailedCellError, ExportedCellChange, ExportedChange, FunctionPluginDefinition, SimpleCellAddress } from 'hyperformula';
-
+import { setValue as setTextFormat } from '../../../lib/redux/textFormatSlice'
 
 export default function Cell({ i, j }: { i: number, j: number }) {
     const dispatch = useDispatch()
@@ -20,18 +18,25 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
                     globals.selectStart = e.currentTarget.id
-                    dispatch(setSelectStart(e.currentTarget.id))
-                    const fontSelector = document.getElementById("fontSelector") as HTMLSelectElement
-                    const fontSizeSelector = document.getElementById("fontSizeSelector") as HTMLInputElement
-                    const boldSelector = document.getElementById("boldSelector") as HTMLButtonElement
-                    const itaclicSelector = document.getElementById("italicSelector") as HTMLButtonElement
-                    const strikethroughSelector = document.getElementById("strikethroughSelector") as HTMLButtonElement
+                    const formulaBox = document.getElementById("formulaBox") as HTMLInputElement
+                    if (formulaBox) {
+                        formulaBox.value = e.target.value
+                    }
                     if (globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id]) {
-                        fontSelector.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontFamily
-                        boldSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontWeight === "bold" ? "#d3e3fd" : "inherit"
-                        fontSizeSelector.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize ? globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize.toString() : "16"
-                        itaclicSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontStyle === "italic" ? "#d3e3fd" : "inherit"
-                        strikethroughSelector.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextDecoration === "line-through" ? "#d3e3fd" : "inherit"
+                        dispatch(setTextFormat(
+                            {
+                                FontFamily: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontFamily,
+                                BackGroundColor: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].BackGroundColor,
+                                BackGroundImage: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].BackGroundImage,
+                                FontColor: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontColor,
+                                FontSize: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize,
+                                FontStyle: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontStyle,
+                                FontWeight: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontWeight,
+                                TextContent: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextContent,
+                                TextDecoration: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextDecoration,
+                                TextAlign: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextAlign
+                            }
+                        ))
                     }
                 }}
                 onInput={(e) => {
@@ -62,7 +67,10 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                     const calculated = globals.hfInstance.getCellValue(address as SimpleCellAddress)
                     currentTarget.value = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
                     oldText.current = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
-                    dispatch(setValueFormulaBar(currentText))
+                    const formulaBox = document.getElementById("formulaBox") as HTMLInputElement
+                    if (formulaBox) {
+                        formulaBox.value = currentTarget.value
+                    }
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             />

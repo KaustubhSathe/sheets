@@ -18,15 +18,15 @@ export function getAdjacentID(id: string, key: string): string {
     row = row ? row : "0"
     const colCode = col?.charCodeAt(0) ? col?.charCodeAt(0) : 65
     if (key === "ArrowDown")
-        return col + (parseInt(row) + 1).toString();
+        return col + Math.min(parseInt(row) + 1, globals.rows).toString();
 
     if (key === "ArrowUp")
-        return col + (parseInt(row) - 1).toString();
+        return col + Math.max(1, parseInt(row) - 1).toString();
 
     if (key === "ArrowRight")
-        return String.fromCharCode(colCode + 1) + row;
+        return String.fromCharCode(Math.min(colCode + 1, globals.columns + 65 - 1)) + row;
 
-    return String.fromCharCode(colCode - 1) + row;
+    return String.fromCharCode(Math.max(colCode - 1, 65)) + row;
 }
 
 export default function CellsGrid() {
@@ -179,7 +179,7 @@ export default function CellsGrid() {
                     }
                 }
             }
-            if (e.target && (e.target as HTMLDivElement).id) {
+            if (e.target && (e.target as HTMLDivElement).id && /^[A-Z]\d+$/.test((e.target as HTMLDivElement).id)) {
                 globals.selectEnd = (e.target as HTMLDivElement).id;
 
                 if (globals.selectEnd === globals.selectStart) {
@@ -214,7 +214,7 @@ export default function CellsGrid() {
             const currentElementId = (e.target as HTMLDivElement).id
             let elem = document.getElementById(currentElementId);
             if (elem) {
-                elem.style.backgroundColor = "#FFFFFF";
+                elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[currentElementId].BackGroundColor ? globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[currentElementId].BackGroundColor : "white";
                 elem.style.borderBottomWidth = '1px';
                 elem.style.borderRightWidth = '1px';
                 elem.style.borderTopWidth = '0px'
@@ -396,14 +396,16 @@ export default function CellsGrid() {
         rowsNumbers.push((
             <div
                 id={"row" + (i + 1).toString()}
+                data-testid={"row" + (i + 1).toString()}
                 key={(i + 1).toString()}
-                className="h-[30px] w-full flex justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans relative">
+                className="h-[30px] flex w-full justify-center align-middle border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] font-sans relative">
                 <span className='mt-auto mb-auto'>{i + 1}</span>
                 <div
                     id={"rowModifier" + (i + 1).toString()}
+                    data-testid={"rowModifier" + (i + 1).toString()}
                     onMouseOver={(e) => {
+                        e.currentTarget.style.zIndex = '5000'
                         e.currentTarget.style.width = '100vw'
-                        e.currentTarget.style.zIndex = '10000'
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                     }}
                     onMouseLeave={(e) => {
@@ -415,7 +417,7 @@ export default function CellsGrid() {
                         e.currentTarget.style.backgroundColor = 'rgb(203,213,225,1)'
                         setActiveRow((i + 1).toString())
                     }}
-                    className={`block absolute w-full cursor-row-resize h-[3px] bottom-[-1.5px] left-0 z-100000`}
+                    className={`block absolute w-full cursor-row-resize h-[3px] bottom-[-1.5px] left-0 z-[5000]`}
                 >
                 </div>
             </div>
@@ -434,6 +436,7 @@ export default function CellsGrid() {
                 <span className='mt-auto mb-auto'>{String.fromCharCode(65 + i)}</span>
                 <div
                     id={"colModifier" + String.fromCharCode(65 + i)}
+                    data-testid={"colModifier" + String.fromCharCode(65 + i)}
                     onMouseOver={(e) => {
                         let offsetBottom = document.getElementById("row" + globals.rows)?.getBoundingClientRect().bottom
                         offsetBottom = offsetBottom ? offsetBottom : 0
@@ -467,7 +470,12 @@ export default function CellsGrid() {
             );
         }
         cells.push((
-            <div className="min-w-[80px] bg-inherit" key={String.fromCharCode(65 + j)} id={"cellcontainer" + String.fromCharCode(65 + j)}>
+            <div
+                className="min-w-[80px] bg-inherit"
+                key={String.fromCharCode(65 + j)}
+                id={"cellcontainer" + String.fromCharCode(65 + j)}
+                data-testid={"cellcontainer" + String.fromCharCode(65 + j)}
+            >
                 {x}
             </div>
         ));
@@ -479,18 +487,18 @@ export default function CellsGrid() {
             <Comment />
             <Note />
             <div data-testid="cellgrid" id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
-                <div data-testid="greycell" className="fixed bg-slate-400 h-[30px] w-[46px] z-10 inline-block"></div>
-                <div data-testid="columns" className="h-[30px] ml-[46px] flex bg-inherit">
+                <div data-testid="greycell" className="fixed bg-slate-400 h-[30px] w-[46px] z-20 inline-block"></div>
+                <div data-testid="columns" className="h-[30px] ml-[46px] flex bg-inherit z-10">
                     {
                         colNumbers
                     }
                 </div>
-                <div className="sticky left-0 bg-inherit w-[46px] inline-block float-left">
+                <div data-testid="rows" className="sticky left-0 bg-inherit w-[46px] inline-block float-left z-10">
                     {
                         rowsNumbers
                     }
                 </div>
-                <div className="ml-[46px] flex">
+                <div data-testid="cellbox" className="ml-[46px] flex z-10">
                     {
                         cells
                     }

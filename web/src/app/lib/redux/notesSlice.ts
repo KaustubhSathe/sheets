@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const notesSlice = createSlice({
   name: 'notes',
   initialState: {
-    value: [] as Note[],
+    value: new Array<Note>,
   },
   reducers: {
     setValue: (state, action) => {

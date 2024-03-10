@@ -9,7 +9,7 @@ import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice'
 import { SlOptionsVertical } from "react-icons/sl";
 
 export function CommentCard({ comment }: { comment: Comment }) {
-    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
+    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
     const ref = useRef<HTMLDivElement>(null)
     const ref1 = useRef<HTMLInputElement>(null)
     const [content, setContent] = useState<string>(comment.Content);
@@ -106,7 +106,6 @@ export function CommentCard({ comment }: { comment: Comment }) {
     )
 }
 
-
 export default function Comment() {
     const [comment, setComment] = useState("");
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
@@ -194,18 +193,26 @@ export default function Comment() {
                 const comment = document.getElementById("comment") as HTMLDivElement;
                 comment.style.display = "none";
             }}
-            id="comment" className="w-[350px]  hidden bg-white shadow-lg shadow-slate-400 rounded-lg p-4">
+            id="comment"
+            data-testid="comment"
+            className="w-[350px] hidden bg-white shadow-lg shadow-slate-400 rounded-lg p-4">
             <div className="overflow-y-scroll max-h-[300px]">
                 {filteredComments.sort((a, b) => new Date(a.CreatedAt).getTime() - new Date(b.CreatedAt).getTime()).map(cc => {
                     return <CommentCard key={cc.SK} comment={cc} />;
                 })}
             </div>
-            <input type="text" value={comment} onChange={(e) => setComment(e.target.value)} className="resize-none outline-none border-[1px] rounded-full pl-4 pr-4 pt-2 pb-2 mb-3 mt-3 border-black w-full" />
+            <input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="resize-none outline-none border-[1px] rounded-full pl-4 pr-4 pt-2 pb-2 mb-3 mt-3 border-black w-full"
+            />
             <div className="flex justify-end gap-3">
                 <button onClick={() => {
                     const comment = document.getElementById("comment") as HTMLDivElement;
                     comment.style.display = "none"
-                }} className="w-[75px] h-[36px] text-blue-700 font-semibold hover:rounded-full hover:bg-blue-100">
+                }}
+                    className="w-[75px] h-[36px] text-blue-700 font-semibold hover:rounded-full hover:bg-blue-100">
                     Cancel
                 </button>
                 {comment === "" ? (<button className="mr-4 w-[100px] h-[36px] font-semibold text-gray-500 bg-gray-200 rounded-full">

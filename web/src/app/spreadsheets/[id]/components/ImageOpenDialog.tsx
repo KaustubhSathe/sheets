@@ -47,7 +47,6 @@ export function ImageOpenDialog({ setImageOpenDialog }: { setImageOpenDialog: Di
                         reader.onloadend = function () {
                             const elem = document.getElementById(globals.selectStart) as HTMLTextAreaElement
                             elem.style.backgroundImage = `url(${reader.result})`
-                            console.log(elem.style.backgroundImage)
                             globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].BackGroundImage = `url(${reader.result})`
                             setImageOpenDialog(false)
                             globals.saved = false

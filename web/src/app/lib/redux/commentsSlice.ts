@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const commentsSlice = createSlice({
   name: 'comments',
   initialState: {
-    value: [] as Comment[],
+    value: new Array<Comment>,
   },
   reducers: {
     setValue: (state, action) => {

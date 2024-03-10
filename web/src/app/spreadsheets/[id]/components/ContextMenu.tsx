@@ -10,7 +10,11 @@ export default function ContextMenu() {
     const dispatch = useDispatch()
 
     return (
-        <div id="contextmenu" className="hidden w-[250px] bg-white shadow-lg shadow-slate-400">
+        <div
+            data-testid="contextmenu"
+            id="contextmenu"
+            className="hidden w-[250px] bg-white shadow-lg shadow-slate-400"
+        >
             <div onClick={() => {
                 const contextmenu = document.getElementById("contextmenu") as HTMLDivElement;
                 contextmenu.style.display = "none";

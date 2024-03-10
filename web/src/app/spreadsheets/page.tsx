@@ -18,6 +18,7 @@ import Loading from "./components/Loading";
 export default function Dashboard() {
   const router = useRouter()
   const [spreadsheets, setSpreadSheets] = useState<SpreadSheet[]>([]);
+  const [loader, setLoader] = useState<boolean>(true);
   const [profileVisible, setProfileVisible] = useState<boolean>(false);
   const [profileName, setProfileName] = useState<string>("");
   const [createNewSpreadSheetLoader, setCreateNewSpreadSheetLoader] = useState<boolean>(false);
@@ -62,6 +63,7 @@ export default function Dashboard() {
                 }
               }).then(res => {
                 setSpreadSheets(res);
+                setLoader(false);
               })
           } else {
             localStorage.removeItem("spreadsheet_access_token");
@@ -151,7 +153,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="w-[75%] ml-auto mr-auto">
-            <SpreadSheetTable spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
+            <SpreadSheetTable loader={loader} spreadsheets={spreadsheets} setSpreadSheets={setSpreadSheets} />
           </div>
         </div>
         <PiPlusLight onClick={createSpreadSheet} className="z-10 fixed bottom-[24px] right-[24px] w-[60px] h-[60px] hover:opacity-[50%] hover:cursor-pointer shadow-sm shadow-black rounded-full bg-white" />

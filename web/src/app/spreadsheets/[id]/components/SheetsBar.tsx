@@ -4,6 +4,7 @@ import SheetsBox from './SheetBox';
 import { MdCheck } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/lib/redux/store';
+import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
 import globals from '@/app/lib/globals/globals';
 
@@ -38,6 +39,10 @@ export default function SheetsBar() {
                         SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                     }]
                 }))
+                if (globals.saved) {
+                    globals.saved = false
+                    dispatch(setSaved(STATUS.UNSAVED))
+                }
             }}>
                 <LuPlus className="mt-auto mb-auto w-[20px] h-[20px]" />
             </button>
@@ -62,7 +67,9 @@ export default function SheetsBar() {
                                                 FontWeight: elem.style.fontWeight,
                                                 TextContent: elem.value,
                                                 TextDecoration: elem.style.textDecoration,
-                                                FontSize: parseInt(elem.style.fontSize)
+                                                FontSize: parseInt(elem.style.fontSize),
+                                                BackGroundImage: "",
+                                                TextAlign: elem.style.textAlign
                                             }
                                             if (!globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key]) {
                                                 globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key] = {
@@ -73,7 +80,9 @@ export default function SheetsBar() {
                                                     FontWeight: "bold",
                                                     TextContent: "",
                                                     TextDecoration: "underline",
-                                                    FontSize: parseInt(elem.style.fontSize)
+                                                    FontSize: parseInt(elem.style.fontSize),
+                                                    BackGroundImage: "",
+                                                    TextAlign: elem.style.textAlign
                                                 }
                                             }
                                             elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent
@@ -107,7 +116,9 @@ export default function SheetsBar() {
                                     FontWeight: elem.style.fontWeight,
                                     TextContent: elem.value,
                                     TextDecoration: elem.style.textDecoration,
-                                    FontSize: parseInt(elem.style.fontSize)
+                                    FontSize: parseInt(elem.style.fontSize),
+                                    BackGroundImage: "",
+                                    TextAlign: elem.style.textAlign
                                 }
                                 if (!globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key]) {
                                     globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key] = {
@@ -118,7 +129,9 @@ export default function SheetsBar() {
                                         FontWeight: "bold",
                                         TextContent: "",
                                         TextDecoration: "underline",
-                                        FontSize: parseInt(elem.style.fontSize)
+                                        FontSize: parseInt(elem.style.fontSize),
+                                        BackGroundImage: "",
+                                        TextAlign: elem.style.textAlign
                                     }
                                 }
                                 elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent

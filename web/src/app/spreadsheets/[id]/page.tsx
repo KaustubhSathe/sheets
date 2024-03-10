@@ -7,8 +7,8 @@ import SheetsBar from "./components/SheetsBar";
 import ToolsBar from "./components/ToolsBar";
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../lib/redux/store'
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { GetSpreadSheet } from "@/app/api/spreadsheet";
 import { setValue as setSpreadSheetMetaData } from '../../lib/redux/spreadSheetMetaDataSlice';
 import React from "react";
@@ -20,12 +20,12 @@ import { setValue as setComments } from '../../lib/redux/commentsSlice';
 import { setValue as setNotes } from '../../lib/redux/notesSlice';
 import { GetNotes } from "@/app/api/note";
 import { Note } from "@/app/types/Note";
-import EmojiPicker from "emoji-picker-react";
-
+import { setValue as setTextFormat } from '../../lib/redux/textFormatSlice'
 
 export default function Spreadsheet() {
     const router = useRouter();
     const dispatch = useDispatch();
+    const [greyedOut, setGreyedOut] = useState<boolean>(true);
     const formulaBarVisible = useSelector((state: RootState) => state.formulaBarVisible).value;
     const toolBarVisible = useSelector((state: RootState) => state.toolBarVisible).value;
 
@@ -78,17 +78,19 @@ export default function Spreadsheet() {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                             let elem = document.getElementById(key) as HTMLTextAreaElement
                             globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = {
+                                TextAlign: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextAlign : "left",
                                 BackGroundColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
                                 FontColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor : "Black",
                                 FontFamily: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",
-                                FontStyle: "normal",
-                                FontWeight: "normal",
+                                FontStyle: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontStyle : "normal",
+                                FontWeight: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontWeight : "normal",
                                 TextContent: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent : "",
-                                TextDecoration: "normal",
+                                TextDecoration: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextDecoration : "none",
                                 BackGroundImage: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundImage : "",
                                 FontSize: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontSize : 16
                             }
                             elem.value = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextContent
+                            elem.style.textAlign = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].TextAlign
                             elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor
                             elem.style.backgroundImage = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundImage
                             elem.style.color = globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor
@@ -106,6 +108,21 @@ export default function Spreadsheet() {
                     }
 
                 }
+                setGreyedOut(false)
+                dispatch(setTextFormat(
+                    {
+                        FontFamily: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].FontFamily,
+                        BackGroundColor: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].BackGroundColor,
+                        BackGroundImage: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].BackGroundImage,
+                        FontColor: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].FontColor,
+                        FontSize: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].FontSize,
+                        FontStyle: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].FontStyle,
+                        FontWeight: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].FontWeight,
+                        TextContent: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].TextContent,
+                        TextDecoration: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].TextDecoration,
+                        TextAlign: globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[globals.selectStart].TextAlign
+                    }
+                ))
             })
 
         GetComments(access_token, spreadsheet_id)
@@ -131,6 +148,7 @@ export default function Spreadsheet() {
 
     return (
         <>
+            {greyedOut && <GreyOut />}
             <MenuBar />
             {toolBarVisible && <ToolsBar />}
             {formulaBarVisible && <FormulaBar />}
@@ -138,4 +156,10 @@ export default function Spreadsheet() {
             <SheetsBar />
         </>
     )
+}
+
+
+function GreyOut() {
+    return <div className="h-screen w-screen absolute z-[1000] bg-slate-500 opacity-50">
+    </div>
 }

@@ -29,12 +29,13 @@ export type Sheet = {
 
 export type State = {
     FontWeight: string, // for boldness
-    FontSize: Number, // fontsize
+    FontSize: number, // fontsize
     FontStyle: string, // for italic
-    TextDecoration: string, // for underline
+    TextDecoration: string, // for underline and strikethrough
     FontColor: string, 
     BackGroundColor: string,
     BackGroundImage: string,
     FontFamily: string,
     TextContent: string,
+    TextAlign: string
 }

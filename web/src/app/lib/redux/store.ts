@@ -1,20 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
 import nameBoxReducer from './nameBoxSlice'
 import formulaBarReducer from './formulaBarSlice'
-import selectStartReducer from './selectStartSlice'
 import spreadsheetsReducer from './spreadsheetsSlice'
+import selectStartReducer from './selectStartSlice'
 import spreadSheetMetaDataReducer from './spreadSheetMetaDataSlice'
 import formulaBarVisibleReducer from './formulaBarVisibleSlice'
 import toolBarVisibleReducer from './toolBarVisibleSlice'
 import savedReducer from './savedSlice'
 import commentsReducer from './commentsSlice'
 import notesReducer from './notesSlice'
-
+import textFormatReducer from './textFormatSlice'
 
 const store = configureStore({
   reducer: {
     nameBox: nameBoxReducer,
-    formulaBar: formulaBarReducer,
     selectStart: selectStartReducer,
     spreadsheets: spreadsheetsReducer,
     spreadSheetMetaData: spreadSheetMetaDataReducer,
@@ -23,6 +22,7 @@ const store = configureStore({
     saved: savedReducer,
     comments: commentsReducer,
     notes: notesReducer,
+    textFormat: textFormatReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,

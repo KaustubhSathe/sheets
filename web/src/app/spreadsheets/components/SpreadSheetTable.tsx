@@ -3,9 +3,9 @@ import SpreadSheetTile from "./SpreadSheetTile";
 import { Dispatch, SetStateAction } from "react";
 import Loading from "./Loading";
 
-export default function SpreadSheetTable({ spreadsheets, setSpreadSheets }: { spreadsheets: SpreadSheet[], setSpreadSheets: Dispatch<SetStateAction<SpreadSheet[]>> }) {
+export default function SpreadSheetTable({ spreadsheets, setSpreadSheets, loader }: { spreadsheets: SpreadSheet[], setSpreadSheets: Dispatch<SetStateAction<SpreadSheet[]>>, loader: boolean }) {
     return (
-        <div className="w-full mt-4" id="spreadsheet-table">
+        <div className="w-full mt-4 flex flex-col justify-center" id="spreadsheet-table">
             <div className="font-bold font-roboto text-[#212b3e] flex w-full justify-between m-0">
                 <div className="text-left ml-4 sm:ml-6">
                     SpreadSheet Title
@@ -15,8 +15,10 @@ export default function SpreadSheetTable({ spreadsheets, setSpreadSheets }: { sp
                 </div>
             </div>
             {
-                spreadsheets.length === 0 ? <div className="ml-auto mr-auto flex justify-center mt-[100px]">
+                loader ? <div className="ml-auto mr-auto flex justify-center mt-[100px]">
                     <Loading />
+                </div> : spreadsheets.length === 0 ? <div className="ml-auto mr-auto mt-4">
+                    You have 0 spreadsheets. Please create new.
                 </div> : spreadsheets.sort((a, b) => {
                     return (new Date(b.LastOpened).getTime() - new Date(a.LastOpened).getTime());
                 }).map(ss => (
