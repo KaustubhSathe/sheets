@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
 import nameBoxReducer from './nameBoxSlice'
-import formulaBarReducer from './formulaBarSlice'
 import spreadsheetsReducer from './spreadsheetsSlice'
 import selectStartReducer from './selectStartSlice'
 import spreadSheetMetaDataReducer from './spreadSheetMetaDataSlice'
