@@ -122,11 +122,11 @@ export default function Comment() {
             cellMarker.addEventListener('mouseover', (e) => {
                 dispatch(setSelectStart({
                     id: cc.CellID,
-                    bottom: "",
-                    left: "",
-                    right: "",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     text: "",
-                    top: "",
+                    top: 0,
                     display: "none"
                 }))
                 const comment = document.getElementById("comment") as HTMLDivElement;
@@ -153,11 +153,11 @@ export default function Comment() {
             cell.addEventListener('mouseover', (e) => {
                 dispatch(setSelectStart({
                     id: cc.CellID,
-                    bottom: "",
-                    left: "",
-                    right: "",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     text: "",
-                    top: "",
+                    top: 0,
                     display: "none"
                 }))
                 const comment = document.getElementById("comment") as HTMLDivElement;
