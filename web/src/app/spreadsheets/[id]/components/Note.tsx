@@ -30,11 +30,11 @@ export default function Note() {
             cellMarker.addEventListener('mouseover', (e) => {
                 dispatch(setSelectStart({
                     id: cc.CellID,
-                    bottom: "",
-                    left: "",
-                    right: "",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     text: "",
-                    top: "",
+                    top: 0,
                     display: "none"
                 }))
                 const note = document.getElementById("note") as HTMLDivElement;
@@ -70,11 +70,11 @@ export default function Note() {
             cell.addEventListener('mouseover', (e) => {
                 dispatch(setSelectStart({
                 id: cc.CellID,
-                bottom: "",
-                left: "",
-                right: "",
+                bottom: 0,
+                left: 0,
+                right: 0,
                 text: "",
-                top: "",
+                top: 0,
                 display: "none"
             }))
                 const note = document.getElementById("note") as HTMLDivElement;
