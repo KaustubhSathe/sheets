@@ -111,7 +111,7 @@ export default function Comment() {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
     const selectStart = useSelector((state: RootState) => state.selectStart.value)
     const comments = useSelector((state: RootState) => state.comments.value)
-    const filteredComments = comments.filter(x => x.CellID.localeCompare(selectStart) === 0)
+    const filteredComments = comments.filter(x => x.CellID.localeCompare(selectStart.id) === 0)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -120,7 +120,15 @@ export default function Comment() {
             cellMarker.style.borderRightColor = "#fcbc03"
             const cell = document.getElementById(cc.CellID) as HTMLDivElement
             cellMarker.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart(cc.CellID))
+                dispatch(setSelectStart({
+                    id: cc.CellID,
+                    bottom: "",
+                    left: "",
+                    right: "",
+                    text: "",
+                    top: "",
+                    display: "none"
+                }))
                 const comment = document.getElementById("comment") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
                 comment.style.display = "block"
@@ -143,7 +151,15 @@ export default function Comment() {
             })
 
             cell.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart(cc.CellID))
+                dispatch(setSelectStart({
+                    id: cc.CellID,
+                    bottom: "",
+                    left: "",
+                    right: "",
+                    text: "",
+                    top: "",
+                    display: "none"
+                }))
                 const comment = document.getElementById("comment") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
                 comment.style.display = "block"
@@ -179,7 +195,7 @@ export default function Comment() {
 
     const saveComment = useCallback(async () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        const res = await CreateComment(access_token, comment, spreadSheetMetaData?.SpreadSheetID, globals.selectedSheet, selectStart);
+        const res = await CreateComment(access_token, comment, spreadSheetMetaData?.SpreadSheetID, globals.selectedSheet, selectStart.id);
         return res;
     }, [comment, spreadSheetMetaData, selectStart]);
 

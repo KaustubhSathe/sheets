@@ -11,6 +11,7 @@ import ContextMenu from './ContextMenu';
 import Comment from './Comment';
 import Note from './Note';
 import EmojiPicker from 'emoji-picker-react';
+import { FormulaList } from './FormulaList';
 
 export function getAdjacentID(id: string, key: string): string {
     let col = id.match(/([A-Z]+)(\d+)/)?.at(1)
@@ -37,7 +38,7 @@ export default function CellsGrid() {
     const [activeRow, setActiveRow] = useState<string | null>(null);
     const isMouseDown = useRef<boolean>(false);
 
-    const mouseMoveHorizontal = useCallback((e: MouseEvent) => {
+    const mouseMoveHorizontalEventHandler = useCallback((e: MouseEvent) => {
         let element = document.getElementById("column" + activeCol)
         if (element) {
             let offsetLeft = document.getElementById("column" + activeCol)?.getBoundingClientRect().left
@@ -58,7 +59,7 @@ export default function CellsGrid() {
         }
     }, [activeCol]);
 
-    const mouseMoveVertical = useCallback((e: MouseEvent) => {
+    const mouseMoveVerticalEventHandler = useCallback((e: MouseEvent) => {
         let element = document.getElementById("row" + activeRow)
         if (element) {
             let offsetTop = document.getElementById("row" + activeRow)?.getBoundingClientRect().top
@@ -77,36 +78,6 @@ export default function CellsGrid() {
             element.style.backgroundColor = 'rgb(203,213,225,1)'
         }
     }, [activeRow]);
-
-    const removeListeners = useCallback(() => {
-        window.removeEventListener("mousemove", mouseMoveHorizontal);
-        window.removeEventListener("mousemove", mouseMoveVertical);
-        window.removeEventListener("mouseup", removeListeners);
-
-
-    }, [mouseMoveHorizontal, mouseMoveVertical]);
-
-    const mouseUp = useCallback((e: MouseEvent) => {
-        if (activeCol !== null) {
-            let element = document.getElementById("colModifier" + activeCol)?.style
-            if (element) {
-                element.height = '100%'
-                element.backgroundColor = ''
-            }
-            setActiveCol(null);
-            removeListeners();
-        }
-
-        if (activeRow !== null) {
-            let element = document.getElementById("rowModifier" + activeRow)?.style
-            if (element) {
-                element.width = '100%'
-                element.backgroundColor = ''
-            }
-            setActiveRow(null);
-            removeListeners();
-        }
-    }, [activeCol, activeRow, removeListeners]);
 
     const clearSelectedCells = useCallback(() => {
         for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
@@ -230,7 +201,15 @@ export default function CellsGrid() {
                 globals.selectStart = elem.id
                 globals.selectEnd = elem.id
             }
-            dispatch(setSelectStart(getAdjacentID(currentElementId, e.key)))
+            dispatch(setSelectStart({
+                id: getAdjacentID(currentElementId, e.key),
+                bottom: 0,
+                left: 0,
+                right: 0,
+                text: "",
+                top: 0,
+                display: "none"
+            }))
         }
 
         if (e.key === "Control") {
@@ -333,6 +312,69 @@ export default function CellsGrid() {
         }
     }, [dispatch, clearSelectedCells]);
 
+    const keyUpEventHandler = useCallback((e: KeyboardEvent) => {
+        if (e.key === "Control") {
+            globals.ctrlDown = false;
+        }
+    }, []);
+
+    const mouseUpEventHandler = useCallback(() => {
+        isMouseDown.current = false;
+        if (activeCol !== null) {
+            let element = document.getElementById("colModifier" + activeCol)?.style
+            if (element) {
+                element.height = '100%'
+                element.backgroundColor = ''
+            }
+            setActiveCol(null);
+            document.getElementById("cellgrid")?.removeEventListener("mouseup", mouseUpEventHandler);
+        }
+
+        if (activeRow !== null) {
+            let element = document.getElementById("rowModifier" + activeRow)?.style
+            if (element) {
+                element.width = '100%'
+                element.backgroundColor = ''
+            }
+            setActiveRow(null);
+            document.getElementById("cellgrid")?.removeEventListener("mouseup", mouseUpEventHandler);
+
+        }
+    }, [activeCol, activeRow])
+
+    const contextMenuEventHandler = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        const { clientX: mouseX, clientY: mouseY } = e;
+        const contextMenu = document.getElementById("contextmenu") as HTMLDivElement;
+        contextMenu.style.display = "block"
+        contextMenu.style.zIndex = "1000"
+        contextMenu.style.position = "absolute"
+        // left case
+        if (Math.abs(mouseX - window.innerWidth) < 250) {
+            contextMenu.style.left = mouseX - 250 + "px"
+        } else {
+            contextMenu.style.left = mouseX + "px"
+        }
+
+        // bottom case
+        if (Math.abs(mouseY - window.innerHeight) < 200) {
+            contextMenu.style.top = mouseY - 200 + "px"
+        } else {
+            contextMenu.style.top = mouseY + "px"
+        }
+    }, [])
+
+    const removeListeners = useCallback(() => {
+        document.removeEventListener("keyup", keyUpEventHandler)
+        document.removeEventListener("keydown", keyDownEventHandler);
+        document.getElementById("cellgrid")?.removeEventListener("mousedown", mouseDownEventHandler);
+        document.getElementById("cellgrid")?.removeEventListener("mouseover", mouseOverEventHandler);
+        document.getElementById("cellgrid")?.removeEventListener("mouseup", mouseUpEventHandler);
+        document.getElementById("cellgrid")?.removeEventListener("contextmenu", contextMenuEventHandler)
+        document.removeEventListener("mousemove", mouseMoveHorizontalEventHandler);
+        document.removeEventListener("mousemove", mouseMoveVerticalEventHandler);
+    }, [contextMenuEventHandler, keyDownEventHandler, keyUpEventHandler, mouseDownEventHandler, mouseMoveHorizontalEventHandler, mouseMoveVerticalEventHandler, mouseOverEventHandler, mouseUpEventHandler]);
+
     useEffect(() => {
         let elem = document.getElementById(globals.selectStart);
         if (elem) {
@@ -341,55 +383,27 @@ export default function CellsGrid() {
             dispatch(setNameBoxValue(globals.selectStart))
         }
 
-        document.addEventListener("keyup", (e) => {
-            if (e.key === "Control") {
-                globals.ctrlDown = false;
-            }
-        })
-
+        document.addEventListener("keyup", keyUpEventHandler)
         document.addEventListener("keydown", keyDownEventHandler);
         document.getElementById("cellgrid")?.addEventListener("mousedown", mouseDownEventHandler);
         document.getElementById("cellgrid")?.addEventListener("mouseover", mouseOverEventHandler);
-        document.getElementById("cellgrid")?.addEventListener("mouseup", () => {
-            isMouseDown.current = false;
-        })
-
-        document.getElementById("cellgrid")?.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-            const { clientX: mouseX, clientY: mouseY } = e;
-            const contextMenu = document.getElementById("contextmenu") as HTMLDivElement;
-            contextMenu.style.display = "block"
-            contextMenu.style.zIndex = "1000"
-            contextMenu.style.position = "absolute"
-            // left case
-            if (Math.abs(mouseX - window.innerWidth) < 250) {
-                contextMenu.style.left = mouseX - 250 + "px"
-            } else {
-                contextMenu.style.left = mouseX + "px"
-            }
-
-            // bottom case
-            if (Math.abs(mouseY - window.innerHeight) < 200) {
-                contextMenu.style.top = mouseY - 200 + "px"
-            } else {
-                contextMenu.style.top = mouseY + "px"
-            }
-        })
+        document.getElementById("cellgrid")?.addEventListener("mouseup", mouseUpEventHandler);
+        document.getElementById("cellgrid")?.addEventListener("contextmenu", contextMenuEventHandler)
 
         if (activeCol !== null) {
-            window.addEventListener("mousemove", mouseMoveHorizontal);
-            window.addEventListener("mouseup", mouseUp);
+            document.addEventListener("mousemove", mouseMoveHorizontalEventHandler);
+            document.addEventListener("mouseup", mouseUpEventHandler);
         }
 
         if (activeRow !== null) {
-            window.addEventListener("mousemove", mouseMoveVertical);
-            window.addEventListener("mouseup", mouseUp);
+            document.addEventListener("mousemove", mouseMoveVerticalEventHandler);
+            document.addEventListener("mouseup", mouseUpEventHandler);
         }
 
         return () => {
             removeListeners();
         };
-    }, [activeCol, activeRow, mouseMoveHorizontal, keyDownEventHandler, mouseDownEventHandler, mouseOverEventHandler, mouseMoveVertical, mouseUp, removeListeners, dispatch]);
+    }, [activeCol, activeRow, mouseUpEventHandler, keyUpEventHandler, contextMenuEventHandler, keyDownEventHandler, mouseDownEventHandler, mouseOverEventHandler, removeListeners, dispatch, mouseMoveHorizontalEventHandler, mouseMoveVerticalEventHandler]);
 
     const rowsNumbers: Array<React.ReactNode> = [];
     for (let i = 0; i < globals.rows; i++) {
@@ -486,9 +500,10 @@ export default function CellsGrid() {
             <ContextMenu />
             <Comment />
             <Note />
+            <FormulaList />
             <div data-testid="cellgrid" id="cellgrid" className={`bg-[#FFFFFF] ${formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-35px-37px)]' : !formulaBarVisible && toolBarVisible ? 'h-[calc(100vh-60px-40px-37px)]' : formulaBarVisible && !toolBarVisible ? 'h-[calc(100vh-60px-35px-37px)]' : 'h-[calc(100vh-60px-37px)]'} relative overflow-scroll p-0 m-0 hover:cursor-cell`}>
                 <div data-testid="greycell" className="fixed bg-slate-400 h-[30px] w-[46px] z-20 inline-block"></div>
-                <div data-testid="columns" className="h-[30px] ml-[46px] flex bg-inherit z-10">
+                <div data-testid="columns" className="h-[30px] ml-[46px] flex bg-inherit z-10 sticky top-0">
                     {
                         colNumbers
                     }

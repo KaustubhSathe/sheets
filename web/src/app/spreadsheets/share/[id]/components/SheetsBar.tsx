@@ -39,7 +39,9 @@ export default function SheetsBar() {
                                     FontWeight: elem.style.fontWeight,
                                     TextContent: elem.value,
                                     TextDecoration: elem.style.textDecoration,
-                                    FontSize: parseInt(elem.style.fontSize)
+                                    FontSize: parseInt(elem.style.fontSize),
+                                    BackGroundImage: "",
+                                    TextAlign: elem.style.textAlign
                                 }
                                 if (!globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key]) {
                                     globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key] = {
@@ -50,7 +52,9 @@ export default function SheetsBar() {
                                         FontWeight: "bold",
                                         TextContent: "",
                                         TextDecoration: "underline",
-                                        FontSize: parseInt(elem.style.fontSize)
+                                        FontSize: parseInt(elem.style.fontSize),
+                                        BackGroundImage: "",
+                                        TextAlign: "left"
                                     }
                                 }
                                 elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent

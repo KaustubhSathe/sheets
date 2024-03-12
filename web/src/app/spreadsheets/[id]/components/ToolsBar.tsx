@@ -438,18 +438,20 @@ export function FontResizer() {
                 }
             }
         }
-        if (globals.saved) {
-            globals.saved = false
-            dispatch(setSaved(STATUS.UNSAVED))
-        }
     }, [textFormat, dispatch])
 
     return (
         <>
-            <button onClick={() => dispatch(setTextFormat({
-                ...textFormat,
-                FontSize: textFormat.FontSize - 1
-            }))} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                dispatch(setTextFormat({
+                    ...textFormat,
+                    FontSize: textFormat.FontSize - 1
+                }))
+                if (globals.saved) {
+                    globals.saved = false
+                    dispatch(setSaved(STATUS.UNSAVED))
+                }
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <LuMinus />
             </button>
             <input
@@ -457,15 +459,27 @@ export function FontResizer() {
                 type="number"
                 className="pt-[4px] pb-[4px] pl-[4px] pr-[8px] mt-[5px] mb-[5px] ml-[8px] text-sm text-gray-900 border border-gray-300 rounded-lg w-[60px] outline-none"
                 value={textFormat.FontSize}
-                onChange={(e) => dispatch(setTextFormat({
-                    ...textFormat,
-                    FontSize: parseInt(e.target.value)
-                }))}
+                onChange={(e) => {
+                    dispatch(setTextFormat({
+                        ...textFormat,
+                        FontSize: parseInt(e.target.value)
+                    }))
+                    if (globals.saved) {
+                        globals.saved = false
+                        dispatch(setSaved(STATUS.UNSAVED))
+                    }
+                }}
             />
-            <button onClick={() => dispatch(setTextFormat({
-                ...textFormat,
-                FontSize: textFormat.FontSize + 1
-            }))} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
+            <button onClick={() => {
+                dispatch(setTextFormat({
+                    ...textFormat,
+                    FontSize: textFormat.FontSize + 1
+                }))
+                if (globals.saved) {
+                    globals.saved = false
+                    dispatch(setSaved(STATUS.UNSAVED))
+                }
+            }} className="ml-[8px] hover:bg-slate-200 hover:rounded-md mt-[4px] mb-[4px] p-[6px]">
                 <LuPlus />
             </button>
         </>

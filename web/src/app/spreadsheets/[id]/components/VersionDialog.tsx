@@ -144,7 +144,7 @@ export function VersionDialog({ setVersionHistory }: { setVersionHistory: Dispat
         <>
             <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-black opacity-20 z-[1000] flex justify-center align-middle" onClick={() => setVersionHistory(false)}>
             </div >
-            <div className="absolute right-0 z-[1000] w-[20vw] h-[100vh] bg-white rounded-xl p-[24px] flex flex-col gap-2">
+            <div className="absolute right-0 z-[1000] w-[25vw] h-[100vh] bg-white rounded-xl p-[24px] flex flex-col gap-2">
                 <span className='text-3xl font-roboto font-normal text-slate-700 block'>Version History</span>
                 <hr />
                 <div className="overflow-y-scroll h-[80%] flex flex-col gap-2">

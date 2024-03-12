@@ -1,26 +1,53 @@
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { useDispatch } from "react-redux";
 import globals from '@/app/lib/globals/globals';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { DetailedCellError, ExportedCellChange, ExportedChange, FunctionPluginDefinition, SimpleCellAddress } from 'hyperformula';
 import { setValue as setTextFormat } from '../../../lib/redux/textFormatSlice'
+import { FormulaList } from "./FormulaList";
+import { setValue as setSelectStart } from '../../../lib/redux/selectStartSlice';
 
 export default function Cell({ i, j }: { i: number, j: number }) {
     const dispatch = useDispatch()
     const id = String.fromCharCode(65 + j) + (i + 1).toString();
     const oldText = useRef<string>("");
+    const ref = useRef<HTMLDivElement>(null);
 
     return (
-        <div data-testid="cell-wrapper" className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
+        <div ref={ref} data-testid="cell-wrapper" className={`relative m-0 p-0 w-full rowbar-${(i + 1).toString()} h-[30px] hover:cursor-cell focus:cursor-text`}>
             <textarea data-testid="cell-textbox" className="overflow-hidden text-sm peer hover:cursor-cell focus:cursor-text overflow-x-clip overflow-y-clip p-[4px] break-words break-all h-full w-full border-b-[1px] border-r-[1px] border-solid border-[#E1E1E1] outline-none m-0 resize-none"
                 spellCheck={false}
                 id={id}
+                onBlur={() => {
+                    dispatch(setSelectStart({
+                        bottom: ref.current?.getBoundingClientRect().bottom as number,
+                        id: id,
+                        top: ref.current?.getBoundingClientRect().top as number,
+                        left: ref.current?.getBoundingClientRect().left as number,
+                        right: ref.current?.getBoundingClientRect().right as number,
+                        text: "",
+                        display: "none"
+                    }))
+                }}
                 onFocus={(e) => {
                     oldText.current = e.currentTarget.value
                     globals.selectStart = e.currentTarget.id
+                    const currentText = e.currentTarget.value
+                    if (currentText.charAt(0) === "=") {
+                        dispatch(setSelectStart({
+                            bottom: ref.current?.getBoundingClientRect().bottom as number,
+                            id: id,
+                            top: ref.current?.getBoundingClientRect().top as number,
+                            left: ref.current?.getBoundingClientRect().left as number,
+                            right: ref.current?.getBoundingClientRect().right as number,
+                            text: currentText,
+                            display: "block"
+                        }))
+                    }
                     const formulaBox = document.getElementById("formulaBox") as HTMLInputElement
                     if (formulaBox) {
-                        formulaBox.value = e.target.value
+                        const address = globals.hfInstance.simpleCellAddressFromString(id, globals.selectedSheet) as SimpleCellAddress
+                        formulaBox.value = globals.hfInstance.doesCellHaveFormula(address) ? globals.hfInstance.getCellFormula(address) + "" : currentText
                     }
                     if (globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id]) {
                         dispatch(setTextFormat(
@@ -45,6 +72,22 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                         dispatch(setSaved(STATUS.UNSAVED))
                     }
                     const currentText = e.currentTarget.value
+                    const formulaBox = document.getElementById("formulaBox") as HTMLInputElement
+                    if (formulaBox) {
+                        const address = globals.hfInstance.simpleCellAddressFromString(id, globals.selectedSheet) as SimpleCellAddress
+                        formulaBox.value = globals.hfInstance.doesCellHaveFormula(address) ? globals.hfInstance.getCellFormula(address) + "" : currentText
+                    }
+                    if (currentText.charAt(0) === "=") {
+                        dispatch(setSelectStart({
+                            bottom: ref.current?.getBoundingClientRect().bottom as number,
+                            id: id,
+                            top: ref.current?.getBoundingClientRect().top as number,
+                            left: ref.current?.getBoundingClientRect().left as number,
+                            right: ref.current?.getBoundingClientRect().right as number,
+                            text: currentText,
+                            display: "block"
+                        }))
+                    }
                     const oldTextVal = oldText.current
                     const currentTarget = e.currentTarget
                     globals.undoStack.push({
@@ -64,13 +107,10 @@ export default function Cell({ i, j }: { i: number, j: number }) {
                             elem.value = changes[i].newValue?.toString() as string
                         }
                     }
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextContent = currentText
                     const calculated = globals.hfInstance.getCellValue(address as SimpleCellAddress)
                     currentTarget.value = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
                     oldText.current = calculated instanceof DetailedCellError ? currentText : calculated?.toString() as string
-                    const formulaBox = document.getElementById("formulaBox") as HTMLInputElement
-                    if (formulaBox) {
-                        formulaBox.value = currentTarget.value
-                    }
                 }}
                 key={String.fromCharCode(65 + j) + (i + 1).toString()}
             />

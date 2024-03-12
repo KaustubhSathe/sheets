@@ -48,6 +48,8 @@ export default function ShareSpreadsheet() {
                             const key = String.fromCharCode(65 + j) + (i + 1).toString();
                             let elem = document.getElementById(key) as HTMLTextAreaElement
                             globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[key] = {
+                                BackGroundImage: "",
+                                TextAlign:  res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].TextAlign : "left",
                                 BackGroundColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].BackGroundColor : "#FFFFFF",
                                 FontColor: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontColor : "Black",
                                 FontFamily: res.Versions[0].Sheets[globals.selectedSheet].State[key] ? res.Versions[0].Sheets[globals.selectedSheet].State[key].FontFamily : "Roboto",

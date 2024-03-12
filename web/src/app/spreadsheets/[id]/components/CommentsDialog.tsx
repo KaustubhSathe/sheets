@@ -12,7 +12,7 @@ export function CommentsDialog({ setCommentsDialog }: { setCommentsDialog: Dispa
             </div >
             <div
                 data-testid="commentsDialog"
-                className="absolute right-0 z-[2000] w-[20vw] h-[100vh] bg-white rounded-xl p-[24px] flex flex-col gap-2"
+                className="absolute right-0 z-[2000] w-[25vw] h-[100vh] bg-white rounded-xl p-[24px] flex flex-col gap-2"
             >
                 <span className='text-3xl font-roboto font-normal text-slate-700 block'>Comments</span>
                 <hr />

@@ -144,12 +144,9 @@ export default function Dashboard() {
             </div>
             <div className="w-[75%] flex justify-start align-middle m-auto mt-0 mb-auto overflow-x-scroll">
               <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Red spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Green spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blue spreadsheet" />
             </div>
           </div>
           <div className="w-[75%] ml-auto mr-auto">

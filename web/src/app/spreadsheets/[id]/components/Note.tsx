@@ -16,19 +16,27 @@ export default function Note() {
 
     const saveNote = useCallback(async () => {
         const access_token = ((new URL(window.location.href).searchParams.get("access_token")) || localStorage.getItem("spreadsheet_access_token")) || "";
-        const res = await CreateNote(access_token, note, spreadSheetMetaData?.SpreadSheetID, globals.selectedSheet, selectStart);
+        const res = await CreateNote(access_token, note, spreadSheetMetaData?.SpreadSheetID, globals.selectedSheet, selectStart.id);
         return res;
     }, [note, selectStart, spreadSheetMetaData]);
 
     useEffect(() => {
-        const filteredNote = notes.filter(x => x.CellID.localeCompare(selectStart) === 0)
+        const filteredNote = notes.filter(x => x.CellID.localeCompare(selectStart.id) === 0)
         setNote(filteredNote.length > 0 ? filteredNote[0].Content : "")
         notes.forEach(cc => {
             const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
             cellMarker.style.borderRightColor = "#fcbc03"
             const cell = document.getElementById(cc.CellID) as HTMLDivElement
             cellMarker.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart(cc.CellID))
+                dispatch(setSelectStart({
+                    id: cc.CellID,
+                    bottom: "",
+                    left: "",
+                    right: "",
+                    text: "",
+                    top: "",
+                    display: "none"
+                }))
                 const note = document.getElementById("note") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
                 note.style.display = "block"
@@ -60,7 +68,15 @@ export default function Note() {
             })
 
             cell.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart(cc.CellID))
+                dispatch(setSelectStart({
+                id: cc.CellID,
+                bottom: "",
+                left: "",
+                right: "",
+                text: "",
+                top: "",
+                display: "none"
+            }))
                 const note = document.getElementById("note") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
                 note.style.display = "block"
@@ -123,10 +139,10 @@ export default function Note() {
                 }} className='w-[75px] h-[36px] text-blue-700 font-semibold hover:rounded-full hover:bg-blue-100'>Cancel</button>
                 {note === "" ? <button className='mr-4 w-[100px] h-[36px] font-semibold text-gray-500 bg-gray-200 rounded-full'>Save</button> :
                     <button onClick={async (e) => {
-                        const res = await saveNote();
+                        const res = await saveNote(); 
                         if (res.status === 200) {
                             const nn: Note = await res.json();
-                            dispatch(setNotes([...notes.filter(x => x.CellID.localeCompare(selectStart) !== 0), nn]))
+                            dispatch(setNotes([...notes.filter(x => x.CellID.localeCompare(selectStart.id) !== 0), nn]))
                         }
                     }} className="mr-4 w-[100px] h-[36px] font-semibold text-white bg-[#0b57d0] rounded-full hover:shadow-sm hover:shadow-black">
                         Save
