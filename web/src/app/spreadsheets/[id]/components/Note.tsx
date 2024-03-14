@@ -25,9 +25,8 @@ export default function Note() {
         setNote(filteredNote.length > 0 ? filteredNote[0].Content : "")
         notes.forEach(cc => {
             const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
-            cellMarker.style.borderRightColor = "#fcbc03"
             const cell = document.getElementById(cc.CellID) as HTMLDivElement
-            cellMarker.addEventListener('mouseover', (e) => {
+            const cellMarkerMouseOverEvenetHandler = (e: MouseEvent) => {
                 dispatch(setSelectStart({
                     id: cc.CellID,
                     bottom: 0,
@@ -65,18 +64,17 @@ export default function Note() {
                 } else {
                     note.style.left = x.getBoundingClientRect().left - note.offsetWidth + "px"
                 }
-            })
-
-            cell.addEventListener('mouseover', (e) => {
+            }
+            const cellMouseOverEventHandler = (e: MouseEvent) => {
                 dispatch(setSelectStart({
-                id: cc.CellID,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                text: "",
-                top: 0,
-                display: "none"
-            }))
+                    id: cc.CellID,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    text: "",
+                    top: 0,
+                    display: "none"
+                }))
                 const note = document.getElementById("note") as HTMLDivElement;
                 const x = document.getElementById(cc.CellID) as HTMLDivElement
                 note.style.display = "block"
@@ -103,18 +101,27 @@ export default function Note() {
                     note.style.left = x.getBoundingClientRect().right - note.offsetWidth + "px"
                     note.style.top = x.getBoundingClientRect().top - note.offsetHeight + "px"
                 }
-            })
-
-
-            cell.addEventListener('mouseleave', () => {
+            }
+            const cellMouseLeaveEventHandler = () => {
                 const comment = document.getElementById("note") as HTMLDivElement;
                 comment.style.display = "none";
-            })
-
-            cellMarker.addEventListener('mouseleave', () => {
+            }
+            const cellMarkerMouseLeaveEventHandler = () => {
                 const comment = document.getElementById("note") as HTMLDivElement;
                 comment.style.display = "none";
-            })
+            }
+
+            if (cc.SheetNo === globals.selectedSheet) {
+                cellMarker.style.borderRightColor = "#fcbc03"
+                cellMarker.addEventListener('mouseover', cellMarkerMouseOverEvenetHandler)
+                cell.addEventListener('mouseover', cellMouseOverEventHandler)
+                cell.addEventListener('mouseleave', cellMouseLeaveEventHandler)
+                cellMarker.addEventListener('mouseleave', cellMarkerMouseLeaveEventHandler)
+            } else {
+                cellMarker.style.borderRightColor = "transparent"
+                cellMarker.parentNode?.replaceChild(cellMarker.cloneNode(true), cellMarker)
+                cell.parentNode?.replaceChild(cell.cloneNode(true), cell)
+            }
         })
     }, [notes, dispatch, selectStart]);
 
@@ -139,7 +146,7 @@ export default function Note() {
                 }} className='w-[75px] h-[36px] text-blue-700 font-semibold hover:rounded-full hover:bg-blue-100'>Cancel</button>
                 {note === "" ? <button className='mr-4 w-[100px] h-[36px] font-semibold text-gray-500 bg-gray-200 rounded-full'>Save</button> :
                     <button onClick={async (e) => {
-                        const res = await saveNote(); 
+                        const res = await saveNote();
                         if (res.status === 200) {
                             const nn: Note = await res.json();
                             dispatch(setNotes([...notes.filter(x => x.CellID.localeCompare(selectStart.id) !== 0), nn]))

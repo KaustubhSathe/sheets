@@ -8,6 +8,7 @@ import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
 import globals from '@/app/lib/globals/globals';
 import { setValue as setComments } from '../../../lib/redux/commentsSlice';
+import { setValue as setNotes } from '../../../lib/redux/notesSlice'
 
 export default function SheetsBar() {
     const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
@@ -16,6 +17,7 @@ export default function SheetsBar() {
     const [sheetsDropDown, setSheetsDropDown] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
     const comments = useSelector((state: RootState) => state.comments.value)
+    const notes = useSelector((state: RootState) => state.notes.value)
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
             setSheetsDropDown(false);
@@ -41,6 +43,13 @@ export default function SheetsBar() {
                         SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                     }]
                 }))
+                for (let i = 0; i < globals.spreadsheet.Versions[0].Sheets.length; i++) {
+                    if (!globals.hfInstance.doesSheetExist(globals.spreadsheet.Versions[0].Sheets[i].SheetName)) {
+                        globals.hfInstance.addSheet(globals.spreadsheet.Versions[0].Sheets[i].SheetName)
+                        globals.hfInstance.addColumns(i, [0, globals.columns])
+                        globals.hfInstance.addRows(i, [0, globals.rows])
+                    }
+                }
                 if (globals.saved) {
                     globals.saved = false
                     dispatch(setSaved(STATUS.UNSAVED))
@@ -97,12 +106,18 @@ export default function SheetsBar() {
                                             elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontWeight
                                             elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextDecoration
                                             elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontSize + "px"
+                                            globals.hfInstance.setCellContents({
+                                                col: j,
+                                                row: i,
+                                                sheet: x.SheetIndex
+                                            }, globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent)
                                         }
                                     }
                                 }
                                 globals.selectedSheet = x.SheetIndex
                                 setSelectedSheet(x.SheetIndex)
                                 dispatch(setComments([...comments]));
+                                dispatch(setNotes([...notes]));
                             }}>
                                 {selectedSheet === x.SheetIndex && <MdCheck className="inline-block mt-auto mb-auto font-semibold" />}
                                 <span className="mt-auto mb-auto">{x.SheetName}</span>
@@ -156,12 +171,18 @@ export default function SheetsBar() {
                                 elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontWeight
                                 elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextDecoration
                                 elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontSize + "px"
+                                globals.hfInstance.setCellContents({
+                                    col: j,
+                                    row: i,
+                                    sheet: x.SheetIndex
+                                }, globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent)
                             }
                         }
                     }
                     globals.selectedSheet = x.SheetIndex
                     setSelectedSheet(x.SheetIndex)
                     dispatch(setComments([...comments]));
+                    dispatch(setNotes([...notes]));
                 }
                 } />)
             }
