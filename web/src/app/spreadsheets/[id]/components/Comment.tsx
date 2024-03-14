@@ -116,80 +116,85 @@ export default function Comment() {
 
     useEffect(() => {
         comments.forEach(cc => {
-            const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
-            cellMarker.style.borderRightColor = "#fcbc03"
-            const cell = document.getElementById(cc.CellID) as HTMLDivElement
-            cellMarker.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart({
-                    id: cc.CellID,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    text: "",
-                    top: 0,
-                    display: "none"
-                }))
-                const comment = document.getElementById("comment") as HTMLDivElement;
-                const x = document.getElementById(cc.CellID) as HTMLDivElement
-                comment.style.display = "block"
-                comment.style.zIndex = "1000"
-                comment.style.position = "absolute"
+            if (cc.SheetNo === globals.selectedSheet) {
+                const cellMarker = document.getElementById(cc.CellID + "comment") as HTMLDivElement
+                cellMarker.style.borderRightColor = "#fcbc03"
+                const cell = document.getElementById(cc.CellID) as HTMLDivElement
+                cellMarker.addEventListener('mouseover', (e) => {
+                    dispatch(setSelectStart({
+                        id: cc.CellID,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        text: "",
+                        top: 0,
+                        display: "none"
+                    }))
+                    const comment = document.getElementById("comment") as HTMLDivElement;
+                    const x = document.getElementById(cc.CellID) as HTMLDivElement
+                    comment.style.display = "block"
+                    comment.style.zIndex = "1000"
+                    comment.style.position = "absolute"
 
-                // bottom case
-                if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
-                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
-                } else {
-                    comment.style.top = x.getBoundingClientRect().top + "px"
-                }
+                    // bottom case
+                    if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
+                        comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
+                    } else {
+                        comment.style.top = x.getBoundingClientRect().top + "px"
+                    }
 
-                // right case
-                if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
-                    comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
-                } else {
-                    comment.style.left = x.getBoundingClientRect().right + "px"
-                }
-            })
+                    // right case
+                    if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
+                        comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
+                    } else {
+                        comment.style.left = x.getBoundingClientRect().right + "px"
+                    }
+                })
 
-            cell.addEventListener('mouseover', (e) => {
-                dispatch(setSelectStart({
-                    id: cc.CellID,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    text: "",
-                    top: 0,
-                    display: "none"
-                }))
-                const comment = document.getElementById("comment") as HTMLDivElement;
-                const x = document.getElementById(cc.CellID) as HTMLDivElement
-                comment.style.display = "block"
-                comment.style.zIndex = "1000"
-                comment.style.position = "absolute"
+                cell.addEventListener('mouseover', (e) => {
+                    dispatch(setSelectStart({
+                        id: cc.CellID,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        text: "",
+                        top: 0,
+                        display: "none"
+                    }))
+                    const comment = document.getElementById("comment") as HTMLDivElement;
+                    const x = document.getElementById(cc.CellID) as HTMLDivElement
+                    comment.style.display = "block"
+                    comment.style.zIndex = "1000"
+                    comment.style.position = "absolute"
 
-                // bottom case
-                if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
-                    comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
-                } else {
-                    comment.style.top = x.getBoundingClientRect().top + "px"
-                }
+                    // bottom case
+                    if (Math.abs(e.clientY - window.innerHeight) < comment.offsetHeight) {
+                        comment.style.top = x.getBoundingClientRect().top - comment.offsetHeight + cell.offsetHeight + "px"
+                    } else {
+                        comment.style.top = x.getBoundingClientRect().top + "px"
+                    }
 
-                // right case
-                if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
-                    comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
-                } else {
-                    comment.style.left = x.getBoundingClientRect().right + "px"
-                }
-            })
+                    // right case
+                    if (Math.abs(e.clientX - window.innerWidth) < comment.offsetWidth) {
+                        comment.style.left = x.getBoundingClientRect().left - comment.offsetWidth + "px"
+                    } else {
+                        comment.style.left = x.getBoundingClientRect().right + "px"
+                    }
+                })
 
-            cell.addEventListener('mouseleave', () => {
-                const comment = document.getElementById("comment") as HTMLDivElement;
-                comment.style.display = "none";
-            })
+                cell.addEventListener('mouseleave', () => {
+                    const comment = document.getElementById("comment") as HTMLDivElement;
+                    comment.style.display = "none";
+                })
 
-            cellMarker.addEventListener('mouseleave', () => {
-                const comment = document.getElementById("comment") as HTMLDivElement;
-                comment.style.display = "none";
-            })
+                cellMarker.addEventListener('mouseleave', () => {
+                    const comment = document.getElementById("comment") as HTMLDivElement;
+                    comment.style.display = "none";
+                })
+            } else {
+            
+                
+            }
         })
     }, [comments, dispatch]);
 

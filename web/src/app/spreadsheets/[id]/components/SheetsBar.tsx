@@ -7,13 +7,15 @@ import { RootState } from '@/app/lib/redux/store';
 import { STATUS, setValue as setSaved } from "../../../lib/redux/savedSlice"
 import { setValue as setSpreadSheetMetaData } from '../../../lib/redux/spreadSheetMetaDataSlice'
 import globals from '@/app/lib/globals/globals';
+import { setValue as setComments } from '../../../lib/redux/commentsSlice';
 
 export default function SheetsBar() {
-    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData).value;
+    const spreadSheetMetaData = useSelector((state: RootState) => state.spreadSheetMetaData.value);
     const [selectedSheet, setSelectedSheet] = useState<number>(0);
     const dispatch = useDispatch();
     const [sheetsDropDown, setSheetsDropDown] = useState<boolean>(false);
     const ref1 = useRef<HTMLDivElement>(null);
+    const comments = useSelector((state: RootState) => state.comments.value)
     const click = useCallback((e: MouseEvent) => {
         if (ref1.current && !ref1.current.contains(e.target as Node)) {
             setSheetsDropDown(false);
@@ -86,11 +88,21 @@ export default function SheetsBar() {
                                                 }
                                             }
                                             elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent
+                                            elem.style.textAlign = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextAlign
+                                            elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].BackGroundColor
+                                            elem.style.backgroundImage = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].BackGroundImage
+                                            elem.style.color = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontColor
+                                            elem.style.fontFamily = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontFamily
+                                            elem.style.fontStyle = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontStyle
+                                            elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontWeight
+                                            elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextDecoration
+                                            elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontSize + "px"
                                         }
                                     }
                                 }
                                 globals.selectedSheet = x.SheetIndex
                                 setSelectedSheet(x.SheetIndex)
+                                dispatch(setComments([...comments]));
                             }}>
                                 {selectedSheet === x.SheetIndex && <MdCheck className="inline-block mt-auto mb-auto font-semibold" />}
                                 <span className="mt-auto mb-auto">{x.SheetName}</span>
@@ -135,11 +147,21 @@ export default function SheetsBar() {
                                     }
                                 }
                                 elem.value = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextContent
+                                elem.style.textAlign = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextAlign
+                                elem.style.backgroundColor = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].BackGroundColor
+                                elem.style.backgroundImage = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].BackGroundImage
+                                elem.style.color = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontColor
+                                elem.style.fontFamily = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontFamily
+                                elem.style.fontStyle = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontStyle
+                                elem.style.fontWeight = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontWeight
+                                elem.style.textDecoration = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].TextDecoration
+                                elem.style.fontSize = globals.spreadsheet.Versions[0].Sheets[x.SheetIndex].State[key].FontSize + "px"
                             }
                         }
                     }
                     globals.selectedSheet = x.SheetIndex
                     setSelectedSheet(x.SheetIndex)
+                    dispatch(setComments([...comments]));
                 }
                 } />)
             }
