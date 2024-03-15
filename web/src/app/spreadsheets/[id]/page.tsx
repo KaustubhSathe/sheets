@@ -66,7 +66,7 @@ export default function Spreadsheet() {
                     })
                 }));
                 if (res && res.Versions && res.Versions[0] && res.Versions[0].Sheets && res.Versions[0].Sheets[globals.selectedSheet] && res.Versions[0].Sheets[globals.selectedSheet].State) {
-                    console.log(res)
+    
                     for (let i = 0; i < globals.spreadsheet.Versions[0].Sheets.length; i++) {
                         if (!globals.hfInstance.doesSheetExist(globals.spreadsheet.Versions[0].Sheets[i].SheetName)) {
                             globals.hfInstance.addSheet(globals.spreadsheet.Versions[0].Sheets[i].SheetName)

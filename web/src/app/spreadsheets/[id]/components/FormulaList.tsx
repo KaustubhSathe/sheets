@@ -2023,7 +2023,6 @@ export function FormulaList() {
                         id={x.Description + x.Syntax}
                         onMouseOver={() => {
                             setSelectedIndex(i)
-                            console.log(selectStart.id)
                             // ref.current?.style.display = "none"
                             const elem = document.getElementById(selectStart.id) as HTMLTextAreaElement
                             if (elem) {
