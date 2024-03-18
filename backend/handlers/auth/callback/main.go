@@ -77,7 +77,7 @@ func getUserInfo(accessToken string) (*model.UserInfo, error) {
 
 func saveUserToDB(ctx context.Context, userInfo *model.UserInfo) error {
 	if dynamo == nil {
-		dynamo = db.NewDynamo(ctx)
+		dynamo = db.NewDynamo()
 	}
 
 	// Now create a User object in DB

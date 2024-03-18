@@ -38,7 +38,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	if dynamo == nil {
-		dynamo = db.NewDynamo(ctx)
+		dynamo = db.NewDynamo()
 	}
 
 	// Now delete the comment using spreadsheet ID and commentID from dynamo DB

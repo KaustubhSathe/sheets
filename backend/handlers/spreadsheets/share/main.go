@@ -24,7 +24,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	spreadsheet_id := request.QueryStringParameters["spreadsheet_id"]
 
 	if dynamo == nil {
-		dynamo = db.NewDynamo(ctx)
+		dynamo = db.NewDynamo()
 	}
 
 	spreadsheet, err := dynamo.GetSpreadSheet(spreadsheet_id)

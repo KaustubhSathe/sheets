@@ -37,7 +37,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	if dynamo == nil {
-		dynamo = db.NewDynamo(ctx)
+		dynamo = db.NewDynamo()
 	}
 
 	// Now delete the spreadsheet using spreadsheet ID from redis first

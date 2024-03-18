@@ -3,7 +3,6 @@ package db
 import (
 	"backend-go/config"
 	"backend-go/db/model"
-	"context"
 	"fmt"
 	"log"
 	"time"
@@ -19,13 +18,13 @@ type Dynamo struct {
 	Client *dynamodb.DynamoDB
 }
 
-func NewDynamo(ctx context.Context) *Dynamo {
+func NewDynamo() *Dynamo {
 	return &Dynamo{
-		Client: initializeDynamo(ctx),
+		Client: initializeDynamo(),
 	}
 }
 
-func initializeDynamo(ctx context.Context) *dynamodb.DynamoDB {
+func initializeDynamo() *dynamodb.DynamoDB {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))

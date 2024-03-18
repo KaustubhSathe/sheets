@@ -38,7 +38,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	}
 
 	if dynamo == nil {
-		dynamo = db.NewDynamo(ctx)
+		dynamo = db.NewDynamo()
 	}
 
 	// Now parse body
