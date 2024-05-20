@@ -143,10 +143,10 @@ export default function Dashboard() {
               <span className="mt-auto mb-auto font-medium font-roboto">Start a new spreadsheet from template</span>
             </div>
             <div className="w-[75%] flex justify-start align-middle m-auto mt-0 mb-auto overflow-x-scroll">
-              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Red spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Green spreadsheet" />
-              <Template onClick={createSpreadSheet} templateName="Blue spreadsheet" />
+              <Template onClick={createSpreadSheet} templateName="Blank spreadsheet" bgColor="#FFFFFF"/>
+              <Template onClick={createSpreadSheet} templateName="Red spreadsheet" bgColor="#FF0000"/>
+              <Template onClick={createSpreadSheet} templateName="Green spreadsheet" bgColor="#00FF00"/>
+              <Template onClick={createSpreadSheet} templateName="Blue spreadsheet" bgColor="#0000FF"/>
             </div>
           </div>
           <div className="w-[75%] ml-auto mr-auto">

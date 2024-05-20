@@ -369,12 +369,40 @@ export function ClearFormattingOption({
     setAlignmentDropDown: Dispatch<SetStateAction<boolean>>,
     setFontDropDown: Dispatch<SetStateAction<boolean>>
 }) {
+    const dispatch = useDispatch()
+
+    const onClick = useCallback<MouseEventHandler<HTMLDivElement>>((e) => {
+        for (let j = Math.min(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j <= Math.max(globals.selectStart.charCodeAt(0), globals.selectEnd.charCodeAt(0)); j++) {
+            for (let i = Math.min(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i <= Math.max(parseInt(globals.selectStart.substring(1)), parseInt(globals.selectEnd.substring(1))); i++) {
+                const id = String.fromCharCode(j) + i.toString();
+                let cell = document.getElementById(id) as HTMLTextAreaElement;
+                if (cell) {
+                    cell.style.fontSize = "16px"
+                    cell.style.textAlign = "left"
+                    cell.style.fontWeight = "normal"
+                    cell.style.fontStyle = "normal"
+                    cell.style.textDecoration = "none"
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontSize = 16
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextAlign = "left"
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontWeight = "normal"
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].FontStyle = "normal"
+                    globals.spreadsheet.Versions[0].Sheets[globals.selectedSheet].State[id].TextDecoration = "none"
+                }
+            }
+        }
+        
+        if (globals.saved) {
+            globals.saved = false
+            dispatch(setSaved(STATUS.UNSAVED))
+        }
+    }, [dispatch])
+
     return (
         <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer rounded-md h-[40px]" onMouseOver={() => {
             setTextDropDown(false)
             setAlignmentDropDown(false)
             setFontDropDown(false)
-        }}>
+        }} onClick={onClick}>
             <MdOutlineFormatClear className="w-6 h-6 ml-2 mt-auto mb-auto" />
             <span className="inline-block mt-auto mb-auto">Clear Formatting</span>
         </div>

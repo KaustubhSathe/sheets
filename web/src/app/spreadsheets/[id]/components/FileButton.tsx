@@ -195,10 +195,10 @@ export default function FileButton({ text, setVersionHistory, setShareDialog }: 
                         <RiDeleteBin6Line className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Move to bin</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setVersionHistory(true)}>
+                    {/* <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setVersionHistory(true)}>
                         <MdHistory className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Version History</span>
-                    </div>
+                    </div> */}
                     <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]" onClick={() => setDetailsDialog(!openDialog)} >
                         <IoIosInformationCircleOutline className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Details</span>

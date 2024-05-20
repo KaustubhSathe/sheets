@@ -34,6 +34,7 @@ func initializeDynamo() *dynamodb.DynamoDB {
 }
 
 func (db *Dynamo) CreateUser(userInfo *model.UserInfo) error {
+	fmt.Println(userInfo)
 	user, err := dynamodbattribute.MarshalMap(model.User{
 		Base: model.Base{
 			PK:        db.UserPK(int64(userInfo.User["id"].(float64))),

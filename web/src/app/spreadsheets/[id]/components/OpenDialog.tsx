@@ -45,6 +45,7 @@ export function OpenDialog({ setOpenDialog }: { setOpenDialog: Dispatch<SetState
                             header: false,
                             skipEmptyLines: true,
                             complete: (results: { data: Array<Array<string>> }) => {
+                                console.log(results)
                                 for (let j = 0; j < globals.columns; j++) {
                                     for (let i = 0; i < globals.rows; i++) {
                                         const id = String.fromCharCode(65 + j) + (i + 1).toString();

@@ -71,7 +71,7 @@ func getUserInfo(accessToken string) (*model.UserInfo, error) {
 		fmt.Printf("Request error: %s\n", err)
 		return &model.UserInfo{}, err
 	}
-
+	
 	return &result, nil
 }
 

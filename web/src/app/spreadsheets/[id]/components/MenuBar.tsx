@@ -90,9 +90,9 @@ export default function MenuBar() {
                     </div>
                 </div>
                 <div className='sm:flex justify-end hidden relative'>
-                    <div onClick={() => setVersionHistory(!versionHistory)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:cursor-pointer hover:bg-slate-200 flex align-middle justify-center">
+                    {/* <div onClick={() => setVersionHistory(!versionHistory)} className="mt-auto mb-auto w-[50px] h-[50px] ml-[8px] mr-[8px] hover:rounded-full hover:cursor-pointer hover:bg-slate-200 flex align-middle justify-center">
                         <FaClockRotateLeft className=" w-[24px] h-[24px] ml-[8px] mr-[8px] mt-auto mb-auto" />
-                    </div>
+                    </div> */}
 
                     <div onClick={() => {
                         setCommentsDialog(true);

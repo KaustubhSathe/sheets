@@ -49,8 +49,17 @@ export default function InsertButton({ text }: { text: string }) {
                                 SheetName: "Sheet " + (spreadSheetMetaData.SheetsData.length ? spreadSheetMetaData.SheetsData[spreadSheetMetaData.SheetsData.length - 1].SheetIndex + 1 + 1 : 0 + 1).toString(),
                             }]
                         }))
-                        globals.saved = false
-                        dispatch(setSaved(STATUS.UNSAVED))
+                        for (let i = 0; i < globals.spreadsheet.Versions[0].Sheets.length; i++) {
+                            if (!globals.hfInstance.doesSheetExist(globals.spreadsheet.Versions[0].Sheets[i].SheetName)) {
+                                globals.hfInstance.addSheet(globals.spreadsheet.Versions[0].Sheets[i].SheetName)
+                                globals.hfInstance.addColumns(i, [0, globals.columns])
+                                globals.hfInstance.addRows(i, [0, globals.rows])
+                            }
+                        }
+                        if (globals.saved) {
+                            globals.saved = false
+                            dispatch(setSaved(STATUS.UNSAVED))
+                        }
                     }} className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <BsFillFileEarmarkSpreadsheetFill className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Sheet</span>
@@ -59,10 +68,10 @@ export default function InsertButton({ text }: { text: string }) {
                         <MdOutlineImage className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Insert an image in the cell</span>
                     </div>
-                    <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
+                    {/* <div className="flex gap-2 justify-start hover:bg-slate-100 hover:cursor-pointer h-[40px]">
                         <MdOutlineEmojiEmotions className="w-6 h-6 ml-2 mt-auto mb-auto" />
                         <span className="inline-block mt-auto mb-auto">Emoji</span>
-                    </div>
+                    </div> */}
                     <div onClick={(e) => {
                         e.preventDefault();
                         const comment = document.getElementById("comment") as HTMLDivElement;
